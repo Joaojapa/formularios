@@ -21,7 +21,7 @@ export default function Login() {
     }
 
     toast.success("Login realizado com sucesso!");
-    navigate("/"); // redireciona para dashboard ou página inicial
+    navigate("/home"); // redireciona para dashboard ou página inicial
   };
 
   return (

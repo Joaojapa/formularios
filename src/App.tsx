@@ -45,21 +45,15 @@ function Navbar() {
     <nav className="bg-primary text-primary-foreground shadow-lg rounded-b-2xl">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
-          {/* Nome do sistema */}
+          {/* Logo / nome do sistema */}
           <Link
-            to="/"
+            to="/home"
             className="text-xl font-bold hover:opacity-80 transition-opacity"
           >
             SINPAF
           </Link>
 
-          {/* Botão de login */}
-          <Link
-            to="/login"
-            className="bg-white text-primary px-4 py-2 rounded-xl hover:bg-primary-foreground/20 transition font-medium"
-          >
-            Login
-          </Link>
+          {/* Removemos o botão Login daqui */}
 
           {/* Menu de formulários */}
           <div className="flex gap-1">
@@ -87,18 +81,22 @@ function Navbar() {
   );
 }
 
+
 function Layout() {
   const location = useLocation();
-  // Esconde navbar em login e register
+  // Esconder Navbar em login e register (incluindo rota "/")
   const hideNavbar =
-    location.pathname === "/login" || location.pathname === "/register";
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/register";
 
   return (
     <div className="min-h-screen flex flex-col">
       {!hideNavbar && <Navbar />}
       <main className="flex-1">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/ap" element={<FormAP />} />
           <Route path="/as" element={<FormAS />} />
           <Route path="/av" element={<FormAV />} />
