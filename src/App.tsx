@@ -19,7 +19,7 @@ import FormBCB from "./pages/FormBCB";
 import FormRPS from "./pages/FormRPS";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/login";
-
+import Register from "./pages/Register";
 
 const queryClient = new QueryClient();
 
@@ -89,7 +89,9 @@ function Navbar() {
 
 function Layout() {
   const location = useLocation();
-  const hideNavbar = location.pathname === "/login";
+  // Esconde navbar em login e register
+  const hideNavbar =
+    location.pathname === "/login" || location.pathname === "/register";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -109,6 +111,7 @@ function Layout() {
           <Route path="/bcb" element={<FormBCB />} />
           <Route path="/rps" element={<FormRPS />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

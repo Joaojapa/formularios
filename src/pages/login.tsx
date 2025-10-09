@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {Card,CardContent,CardDescription,CardHeader,CardTitle,} 
-from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Lock, User } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,26 +21,21 @@ export default function Login() {
     }
 
     toast.success("Login realizado com sucesso!");
-    navigate("/");
-  };
-
-  const handleGoogleLogin = () => {
-    toast.success("Login com Google em breve!");
-    navigate("/");
+    navigate("/"); // redireciona para dashboard ou página inicial
   };
 
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
       style={{
-        backgroundImage: `url('/CNDH_Site.webp')`, // coloque o arquivo em "public/"
+        backgroundImage: `url('/CNDH_Site.webp')`, // imagem de fundo
       }}
     >
       {/* Leve escurecimento no fundo */}
       <div className="bg-black/50 absolute inset-0"></div>
 
       <div className="relative z-10 flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md shadow-2xl bg-white/90 backdrop-blur-sm rounded-2xl">
+        <Card className="w-full max-w-md shadow-2xl bg-white rounded-2xl"> {/* card branco sólido */}
           <CardHeader className="space-y-2 text-center">
             {/* Logo SINPAF */}
             <img
@@ -49,11 +43,10 @@ export default function Login() {
               alt="Logo SINPAF"
               className="mx-auto w-28 h-auto mb-2"
             />
-
-            <h2 className="text-2xl font-bold text-green-700">SINPAF</h2>
+            <h2 className="text-2xl font-bold text-green-700"></h2>
             <CardTitle className="text-2xl">Bem-vindo de volta</CardTitle>
             <CardDescription>
-              Entre com suas credenciais para acessar o sistema
+              Entre com as credenciais da seção para acessar o sistema
             </CardDescription>
           </CardHeader>
 
@@ -97,27 +90,6 @@ export default function Login() {
               </Button>
             </form>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white/90 px-2 text-muted-foreground">
-                  Ou continue com
-                </span>
-              </div>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full rounded-xl"
-              onClick={handleGoogleLogin}
-            >
-              <Mail className="mr-2 h-4 w-4" />
-              Entrar com Google
-            </Button>
-
             <div className="text-center space-y-2">
               <a
                 href="#"
@@ -136,7 +108,7 @@ export default function Login() {
                   className="text-primary hover:underline font-medium"
                   onClick={(e) => {
                     e.preventDefault();
-                    toast.info("Função em desenvolvimento");
+                    navigate("/register"); // Direciona para a tela de registro
                   }}
                 >
                   Criar conta
@@ -149,5 +121,3 @@ export default function Login() {
     </div>
   );
 }
-
-
