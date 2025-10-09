@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { FileText, Send, CheckCircle } from "lucide-react";
+import { FileText, CheckCircle, Send, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
 
 const Home = () => {
   const forms = [
@@ -82,6 +82,15 @@ const Home = () => {
                   </p>
                 </div>
               </div>
+              <div className="flex items-start gap-3">
+  <Mail className="w-5 h-5 text-primary mt-1" />
+  <div>
+    <h3 className="font-semibold mb-1">4. Envie o formulário</h3>
+    <p className="text-sm text-muted-foreground">
+      Os formulários devem ser enviados para <strong>contabilidade@sinpaf.org.br</strong>
+    </p>
+  </div>
+</div>
             </CardContent>
           </Card>
         </div>
