@@ -44,33 +44,31 @@ function Navbar() {
   return (
     <nav className="bg-primary text-primary-foreground shadow-lg rounded-b-2xl">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between py-4">
-          {/* Logo / nome do sistema */}
+        <div className="flex items-center justify-between py-4 relative">
+          {/* Logo à esquerda */}
           <Link
             to="/home"
-            className="text-xl font-bold hover:opacity-80 transition-opacity"
+            className="text-xl font-bold hover:opacity-80 transition-opacity z-10"
           >
             SINPAF
           </Link>
 
-          {/* Removemos o botão Login daqui */}
-
-          {/* Menu de formulários */}
-          <div className="flex gap-1">
+          {/* Menu centralizado */}
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
+                  className={`flex items-center gap-1 px-3 py-2 rounded-xl transition-colors text-sm font-medium ${
                     isActive(item.path)
                       ? "bg-primary-foreground text-primary"
-                      : "hover:bg-primary-foreground/10"
+                      : "hover:bg-primary-foreground/20"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="hidden md:inline">{item.label}</span>
+                  {item.label}
                 </Link>
               );
             })}
@@ -80,6 +78,7 @@ function Navbar() {
     </nav>
   );
 }
+
 
 
 function Layout() {
