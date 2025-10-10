@@ -84,18 +84,6 @@ function Navbar() {
               >
                 Trocar Senha
               </Link>
-
-              {/* Ícone de aviso */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="w-6 h-6 bg-green-400 text-white rounded-full flex items-center justify-center cursor-pointer font-bold text-sm">
-                    !
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs text-black bg-white shadow-md border border-black p-2 rounded !opacity-100 !text-black">
-                  Sua senha atual é temporária. Por motivos de segurança, é necessário alterá-la.
-                </TooltipContent>
-              </Tooltip>
             </div>
           </div>
         </div>
@@ -103,7 +91,6 @@ function Navbar() {
     </nav>
   );
 }
-
 
 
 function Layout() {
