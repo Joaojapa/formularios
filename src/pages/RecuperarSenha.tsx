@@ -7,31 +7,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Mail, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
-export default function Register() {
+export default function RecuperarSenha() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("email") || "";
-  });
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGeneratePassword = async (e: React.FormEvent) => {
+  const handleRecover = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!email) {
-      toast.error("Por favor, preencha seu e-mail");
+      toast.error("Digite seu e-mail");
       return;
     }
 
     setIsLoading(true);
     try {
-      // Simulação de envio de senha aleatória
+      // Simula envio de link de recuperação
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      toast.success("Senha aleatória enviada para seu e-mail!");
+      toast.success("Link de recuperação enviado!");
+      navigate("/login"); // volta para login após envio
     } catch (error: any) {
-      console.error("Erro ao gerar senha:", error);
-      toast.error(error.message || "Erro ao gerar senha. Tente novamente.");
+      console.error("Erro ao enviar link:", error);
+      toast.error(error.message || "Erro ao enviar Senha. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -40,29 +37,22 @@ export default function Register() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-8 bg-cover bg-center relative"
-      style={{
-        backgroundImage: `url('/CNDH_Site.webp')`,
-      }}
+      style={{ backgroundImage: `url('/CNDH_Site.webp')` }}
     >
-      {/* Leve escurecimento no fundo */}
       <div className="absolute inset-0 bg-black/50"></div>
 
       <div className="relative z-10 w-full max-w-md">
-        <Card className="shadow-2xl rounded-2xl bg-white"> {/* Card branco e arredondado */}
+        <Card className="shadow-2xl rounded-2xl bg-white">
           <CardHeader className="space-y-2 text-center">
-            {/* Logo SINPAF */}
-            <img
-              src="/SINPAF.png"
-              alt="Logo SINPAF"
-              className="mx-auto w-28 h-auto mb-2"
-            />
-            <CardTitle className="text-2xl">Cadastrar</CardTitle>
+            <img src="/SINPAF.png" alt="Logo SINPAF" className="mx-auto w-28 h-auto mb-2" />
+            <CardTitle className="text-2xl">Recuperar Senha</CardTitle>
             <CardDescription>
-              Informe o e-mail da sua SEÇÃO para receber uma senha aleatória
+              Insira seu e-mail para receber a senha temporária
             </CardDescription>
           </CardHeader>
+
           <CardContent className="space-y-4">
-            <form onSubmit={handleGeneratePassword} className="space-y-4">
+            <form onSubmit={handleRecover} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
                 <div className="relative">
@@ -70,7 +60,7 @@ export default function Register() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="seu@email.com"
+                    placeholder="Digite seu e-mail"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 rounded-xl"
@@ -79,12 +69,12 @@ export default function Register() {
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-primary hover:bg-primary/90 rounded-xl"
                 disabled={isLoading}
               >
-                {isLoading ? "Enviando..." : "Gerar Senha"}
+                {isLoading ? "Enviando..." : "Enviar Senha"}
               </Button>
             </form>
 

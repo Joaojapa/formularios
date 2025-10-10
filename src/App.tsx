@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import { FileText } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 import Home from "./pages/Home";
 import FormAP from "./pages/FormAP";
@@ -17,9 +18,11 @@ import FormPCS from "./pages/FormPCS";
 import FormPCV from "./pages/FormPCV";
 import FormBCB from "./pages/FormBCB";
 import FormRPS from "./pages/FormRPS";
+import ChangePassword from "./pages/trocarsenha";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/login";
 import Register from "./pages/Register";
+import RecuperarSenha from "./pages/RecuperarSenha";
 
 const queryClient = new QueryClient();
 
@@ -54,7 +57,7 @@ function Navbar() {
           </Link>
 
           {/* Menu centralizado */}
-          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex gap-2">
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -72,6 +75,28 @@ function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Botão "Trocar Senha" com aviso */}
+            <div className="ml-6 flex items-center gap-2">
+              <Link
+                to="/change-password"
+                className="bg-white text-primary px-8 py-0 rounded-xl font-semibold hover:bg-primary-foreground hover:text-black transition-colors"
+              >
+                Trocar Senha
+              </Link>
+
+              {/* Ícone de aviso */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="w-6 h-6 bg-green-400 text-white rounded-full flex items-center justify-center cursor-pointer font-bold text-sm">
+                    !
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs text-black bg-white shadow-md border border-black p-2 rounded !opacity-100 !text-black">
+                  Sua senha atual é temporária. Por motivos de segurança, é necessário alterá-la.
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -83,11 +108,11 @@ function Navbar() {
 
 function Layout() {
   const location = useLocation();
-  // Esconder Navbar em login e register (incluindo rota "/")
   const hideNavbar =
     location.pathname === "/" ||
     location.pathname === "/login" ||
-    location.pathname === "/register";
+    location.pathname === "/register" ||
+    location.pathname === "/forgot-password"; // esconder navbar aqui também
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -95,6 +120,9 @@ function Layout() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<RecuperarSenha />} />
           <Route path="/home" element={<Home />} />
           <Route path="/ap" element={<FormAP />} />
           <Route path="/as" element={<FormAS />} />
@@ -107,8 +135,7 @@ function Layout() {
           <Route path="/pcv" element={<FormPCV />} />
           <Route path="/bcb" element={<FormBCB />} />
           <Route path="/rps" element={<FormRPS />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

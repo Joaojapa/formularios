@@ -27,23 +27,14 @@ export default function Login() {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
-      style={{
-        backgroundImage: `url('/CNDH_Site.webp')`, // imagem de fundo
-      }}
+      style={{ backgroundImage: `url('/CNDH_Site.webp')` }}
     >
-      {/* Leve escurecimento no fundo */}
       <div className="bg-black/50 absolute inset-0"></div>
 
       <div className="relative z-10 flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md shadow-2xl bg-white rounded-2xl"> {/* card branco sólido */}
+        <Card className="w-full max-w-md shadow-2xl bg-white rounded-2xl">
           <CardHeader className="space-y-2 text-center">
-            {/* Logo SINPAF */}
-            <img
-              src="/SINPAF.png"
-              alt="Logo SINPAF"
-              className="mx-auto w-28 h-auto mb-2"
-            />
-            <h2 className="text-2xl font-bold text-green-700"></h2>
+            <img src="/SINPAF.png" alt="Logo SINPAF" className="mx-auto w-28 h-auto mb-2" />
             <CardTitle className="text-2xl">Bem-vindo de volta</CardTitle>
             <CardDescription>
               Entre com as credenciais da seção para acessar o sistema
@@ -96,7 +87,7 @@ export default function Login() {
                 className="text-sm text-destructive hover:underline block"
                 onClick={(e) => {
                   e.preventDefault();
-                  toast.info("Função em desenvolvimento");
+                  navigate("/forgot-password"); // redireciona para recuperação de senha
                 }}
               >
                 Esqueceu sua senha?
@@ -108,7 +99,7 @@ export default function Login() {
                   className="text-primary hover:underline font-medium"
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate("/register"); // Direciona para a tela de registro
+                    navigate("/register");
                   }}
                 >
                   Criar conta
