@@ -63,7 +63,7 @@ const FormAP = () => {
             </div>
             <div className="col-span-3 text-center p-2">
               <div className="text-red-600 font-bold text-sm">
-                AUTORIZAÇÃO DE PAGAMENTO - AV
+                AUTORIZAÇÃO DE PAGAMENTO - AS
               </div>
               <div className="flex justify-between text-green-700 text-sm mt-1">
                 <div>

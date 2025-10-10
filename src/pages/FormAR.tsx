@@ -3,20 +3,43 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export default function AutorizacaoRecebimento() {
   const { toast } = useToast();
 
-  const handleDownload = () => {
+  const generatePDF = async () => {
+    const formElement = document.querySelector("#form-recebimento");
+    if (!formElement) return;
+
     toast({
-      title: "Download",
-      description: "Formulário gerado com sucesso!",
+      title: "Gerando PDF...",
+      description: "Aguarde enquanto o formulário é processado.",
+    });
+
+    const canvas = await html2canvas(formElement as HTMLElement, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("Autorizacao_Recebimento.pdf");
+
+    toast({
+      title: "Download concluído",
+      description: "O PDF foi gerado com sucesso!",
     });
   };
 
   return (
     <div className="w-full p-4 flex justify-center">
-      <div className="border border-green-700 w-[900px] text-sm">
+      <div
+        id="form-recebimento"
+        className="border border-green-700 w-[900px] text-sm bg-white"
+      >
         {/* Cabeçalho */}
         <div className="grid grid-cols-12 border border-green-700 mb-1">
           <div className="col-span-3 flex items-center justify-center border-r border-green-700 p-2">
@@ -30,7 +53,7 @@ export default function AutorizacaoRecebimento() {
               Sindicato Nacional dos Trabalhadores de Pesquisa e Desenvolvimento Agropecuário
             </div>
             <div className="text-left mt-1 text-green-700 font-semibold text-sm">
-              SEÇÃO: 
+              SEÇÃO:
               <Input className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
             </div>
           </div>
@@ -40,11 +63,11 @@ export default function AutorizacaoRecebimento() {
             </div>
             <div className="flex justify-between text-green-700 text-sm mt-1">
               <div>
-                Nº 
+                Nº
                 <Input className="inline w-16 h-6 border border-green-700 ml-1 text-sm rounded-none focus:outline-none focus:ring-0" />
               </div>
               <div>
-                ANO: 
+                ANO:
                 <Input className="inline w-16 h-6 border border-green-700 ml-1 text-sm rounded-none focus:outline-none focus:ring-0" />
               </div>
             </div>
@@ -105,7 +128,9 @@ export default function AutorizacaoRecebimento() {
             </div>
           </div>
           <div className="grid grid-cols-6 border-t border-green-700 text-sm">
-            <div className="col-span-5 border-r border-green-700 text-right p-1 font-semibold text-green-700">TOTAL</div>
+            <div className="col-span-5 border-r border-green-700 text-right p-1 font-semibold text-green-700">
+              TOTAL
+            </div>
             <div className="col-span-1 text-right p-1">
               <Input className="w-full text-right border-none font-semibold text-sm rounded-none focus:outline-none focus:ring-0" />
             </div>
@@ -146,9 +171,9 @@ export default function AutorizacaoRecebimento() {
         </div>
 
         {/* Botão download */}
-        <div className="flex justify-end p-2">
-          <Button onClick={handleDownload}>
-            <Download className="mr-2 h-4 w-4" /> Baixar
+        <div className="flex justify-end p-2 bg-white">
+          <Button onClick={generatePDF}>
+            <Download className="mr-2 h-4 w-4" /> Baixar PDF
           </Button>
         </div>
       </div>
