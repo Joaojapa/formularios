@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,98 +7,111 @@ import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-const FormAP = () => {
+const FormAS = () => {
   const [formData, setFormData] = useState({
     secao: "",
     numero: "",
     ano: "",
     nome: "",
-    cpfCnpj: "",
-    endereco: "",
-    cidadeUf: "",
+    cargo: "",
+    cpf: "",
     banco: "",
     agencia: "",
-    cidadeUfBanco: "",
-    historico: "",
+    conta: "",
+    cidadeEstadoBanco: "",
+    dataPrestacao: "",
+    objetivo: "",
     valor: "",
-    total: "",
+    valorExtenso: "",
+    observacoes: "",
   });
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  // Função para gerar e baixar PDF
+  // ✅ Função corrigida para gerar PDF
   const generatePDF = async () => {
-    const formElement = document.querySelector("form");
+    const formElement = document.getElementById("form-as");
+
+    if (!formElement) {
+      alert("Elemento do formulário não encontrado!");
+      return;
+    }
 
     const canvas = await html2canvas(formElement, {
-      scale: 2, // aumenta qualidade
-      useCORS: true, // permite imagens externas
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: "#ffffff",
     });
 
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
-
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Autorizacao_Pagamento.pdf");
+    pdf.save("Autorizacao_de_Suprimento.pdf");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="container mx-auto px-4">
+        {/* 🔹 ID do formulário corrigido */}
         <form
-          className="bg-white border border-green-700 p-4 rounded-md max-w-5xl mx-auto"
+          id="form-as"
+          className="bg-white border border-green-700 p-2 rounded-md max-w-5xl mx-auto text-green-800"
         >
           {/* Cabeçalho */}
           <div className="grid grid-cols-12 border border-green-700 mb-1">
-            <div className="col-span-3 flex items-center justify-center border-r border-green-700 p-2">
-              <div className="text-center text-green-700 font-bold">
-                <div className="text-2xl">SINPAF</div>
-                <div className="text-xs">Filiação à CUT</div>
+            <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 p-2">
+              <img src="/SINPAF.png" alt="SINPAF" className="w-20 mb-1" />
+              <div className="text-xs text-green-800 font-semibold">
+                Filiação à CUT
               </div>
             </div>
+
             <div className="col-span-6 text-center p-2 border-r border-green-700">
-              <div className="text-green-700 font-semibold text-sm">
-                Sindicato Nacional dos Trabalhadores de Pesquisa e Desenvolvimento Agropecuário
+              <div className="text-green-800 font-semibold text-sm leading-tight">
+                Sindicato Nacional dos Trabalhadores de Pesquisa e
+                Desenvolvimento Agropecuário
               </div>
-              <div className="text-left mt-1 text-green-700 font-semibold text-sm">
+              <div className="text-red-600 font-bold mt-1">
+                AS - AUTORIZAÇÃO DE SUPRIMENTO
+              </div>
+              <div className="text-left mt-1 text-green-800 font-semibold text-sm">
                 SEÇÃO:{" "}
                 <Input
                   name="secao"
                   value={formData.secao}
-                  onChange={handleInputChange}
-                  className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
+                  onChange={handleChange}
+                  className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm"
                 />
               </div>
             </div>
+
             <div className="col-span-3 text-center p-2">
-              <div className="text-red-600 font-bold text-sm">
-                AUTORIZAÇÃO DE PAGAMENTO - AP
-              </div>
-              <div className="flex justify-between text-green-700 text-sm mt-1">
-                <div>
-                  Nº{" "}
+              <div className="flex flex-col items-center justify-center h-full">
+                <div className="flex justify-between w-full text-green-800 text-sm mb-1">
+                  <span>Número</span>
                   <Input
                     name="numero"
                     value={formData.numero}
-                    onChange={handleInputChange}
-                    className="inline w-16 h-6 border border-green-700 ml-1 text-sm"
+                    onChange={handleChange}
+                    className="inline w-16 h-6 border border-green-700 text-sm"
                   />
                 </div>
-                <div>
-                  ANO:{" "}
+                <div className="flex justify-between w-full text-green-800 text-sm">
+                  <span>Ano</span>
                   <Input
                     name="ano"
                     value={formData.ano}
-                    onChange={handleInputChange}
-                    className="inline w-16 h-6 border border-green-700 ml-1 text-sm"
+                    onChange={handleChange}
+                    className="inline w-16 h-6 border border-green-700 text-sm"
                   />
                 </div>
               </div>
@@ -105,153 +119,170 @@ const FormAP = () => {
           </div>
 
           {/* Favorecido */}
-          <div className="border border-green-700">
-            <div className="bg-green-700 text-white text-sm px-2 py-1 font-semibold">
-              FAVORECIDO
-            </div>
-            <div className="grid grid-cols-2 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Nome:
-                <Input
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleInputChange}
-                  className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm"
-                />
+          <div className="border border-green-700 text-sm">
+            <div className="grid grid-cols-12 border-b border-green-700">
+              <div className="col-span-1 flex items-center justify-center bg-green-50 font-semibold border-r border-green-700">
+                FAVORECIDO
               </div>
-              <div className="p-1">
-                CPF/CNPJ:
-                <Input
-                  name="cpfCnpj"
-                  value={formData.cpfCnpj}
-                  onChange={handleInputChange}
-                  className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Endereço:
-                <Input
-                  name="endereco"
-                  value={formData.endereco}
-                  onChange={handleInputChange}
-                  className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-              <div className="p-1">
-                Cidade/UF:
-                <Input
-                  name="cidadeUf"
-                  value={formData.cidadeUf}
-                  onChange={handleInputChange}
-                  className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Banco/C.C.:
-                <Input
-                  name="banco"
-                  value={formData.banco}
-                  onChange={handleInputChange}
-                  className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-              <div className="border-r border-green-700 p-1">
-                Agência:
-                <Input
-                  name="agencia"
-                  value={formData.agencia}
-                  onChange={handleInputChange}
-                  className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-              <div className="p-1">
-                Cidade/UF:
-                <Input
-                  name="cidadeUfBanco"
-                  value={formData.cidadeUfBanco}
-                  onChange={handleInputChange}
-                  className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm"
-                />
+              <div className="col-span-11 p-2 space-y-1">
+                <div className="flex items-center">
+                  Nome:
+                  <Input
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    className="inline w-2/3 h-6 border border-green-700 ml-2"
+                  />
+                  <span className="ml-4">CPF:</span>
+                  <Input
+                    name="cpf"
+                    value={formData.cpf}
+                    onChange={handleChange}
+                    className="inline w-1/3 h-6 border border-green-700 ml-2"
+                  />
+                </div>
+                <div className="flex items-center">
+                  Cargo:
+                  <Input
+                    name="cargo"
+                    value={formData.cargo}
+                    onChange={handleChange}
+                    className="inline w-2/5 h-6 border border-green-700 ml-2"
+                  />
+                  <span className="ml-4">Banco (nome/código):</span>
+                  <Input
+                    name="banco"
+                    value={formData.banco}
+                    onChange={handleChange}
+                    className="inline w-2/5 h-6 border border-green-700 ml-2"
+                  />
+                </div>
+                <div className="flex items-center">
+                  Agência:
+                  <Input
+                    name="agencia"
+                    value={formData.agencia}
+                    onChange={handleChange}
+                    className="inline w-1/4 h-6 border border-green-700 ml-2"
+                  />
+                  <span className="ml-4">Conta Corrente:</span>
+                  <Input
+                    name="conta"
+                    value={formData.conta}
+                    onChange={handleChange}
+                    className="inline w-1/4 h-6 border border-green-700 ml-2"
+                  />
+                  <span className="ml-4">Cidade/Estado:</span>
+                  <Input
+                    name="cidadeEstadoBanco"
+                    value={formData.cidadeEstadoBanco}
+                    onChange={handleChange}
+                    className="inline w-1/4 h-6 border border-green-700 ml-2"
+                  />
+                  <span className="ml-4">Data limite prestação:</span>
+                  <Input
+                    name="dataPrestacao"
+                    value={formData.dataPrestacao}
+                    onChange={handleChange}
+                    className="inline w-1/4 h-6 border border-green-700 ml-2"
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Histórico e Valor */}
-          <div className="border border-green-700 mt-1">
-            <div className="grid grid-cols-6 bg-green-50 border-b border-green-700 text-green-700 text-sm font-semibold">
-              <div className="col-span-5 border-r border-green-700 p-1">
-                Histórico
-              </div>
-              <div className="col-span-1 p-1 text-center">Valor</div>
+          {/* Objetivo */}
+          <div className="grid grid-cols-12 border-x border-b border-green-700 text-sm">
+            <div className="col-span-1 flex items-center justify-center bg-green-50 font-semibold border-r border-green-700">
+              OBJETIVO
             </div>
-            <div className="grid grid-cols-6 text-sm">
-              <div className="col-span-5 border-r border-green-700">
-                <Textarea
-                  name="historico"
-                  value={formData.historico}
-                  onChange={handleInputChange}
-                  className="w-full h-40 border-none resize-none text-sm"
-                />
-              </div>
-              <div className="col-span-1">
-                <Textarea
-                  name="valor"
-                  value={formData.valor}
-                  onChange={handleInputChange}
-                  className="w-full h-40 border-none resize-none text-sm text-right"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-6 border-t border-green-700 text-sm">
-              <div className="col-span-5 border-r border-green-700 text-right p-1 font-semibold text-green-700">
-                TOTAL
-              </div>
-              <div className="col-span-1 text-right p-1">
-                <Input
-                  name="total"
-                  value={formData.total}
-                  onChange={handleInputChange}
-                  className="w-full text-right border-none font-semibold text-sm"
-                />
-              </div>
+            <div className="col-span-11">
+              <Textarea
+                name="objetivo"
+                value={formData.objetivo}
+                onChange={handleChange}
+                className="w-full h-24 border-none resize-none text-sm"
+              />
             </div>
           </div>
 
-          {/* Rodapé */}
-          <div className="grid grid-cols-4 border border-green-700 mt-2 text-sm">
-            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1">
-              EMITENTE
+          {/* Valor */}
+          <div className="grid grid-cols-12 border-x border-b border-green-700 text-sm">
+            <div className="col-span-2 flex items-center justify-center bg-green-50 font-semibold border-r border-green-700">
+              VALOR EM R$
             </div>
-            <div className="border-r border-green-700 text-center p-1 text-[11px]">
-              ATESTO QUE OS SERVIÇOS FORAM PRESTADOS EM FAVOR DO SINPAF
-            </div>
-            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1">
-              APROVAÇÃO
-            </div>
-            <div className="text-center p-1 text-[11px]">
-              Recebi o valor líquido constante acima
-              <br />____/____/____ Data
+            <div className="col-span-10 p-1">
+              <Input
+                name="valor"
+                value={formData.valor}
+                onChange={handleChange}
+                className="w-1/3 h-6 border border-green-700"
+              />
+              <span className="ml-4">Por extenso:</span>
+              <Input
+                name="valorExtenso"
+                value={formData.valorExtenso}
+                onChange={handleChange}
+                className="inline w-2/3 h-6 border border-green-700 ml-2"
+              />
             </div>
           </div>
-          <div className="grid grid-cols-4 border-x border-b border-green-700 text-sm">
-            {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className="text-center p-4 border-r border-green-700 last:border-r-0"
-              >
-                <div className="border-t border-dotted border-green-700 mt-4" />
-                <div className="text-green-700 mt-1">Assinatura</div>
+
+          {/* Observações */}
+          <div className="border border-green-700 text-center font-semibold text-sm">
+            O B S E R V A Ç Õ E S
+          </div>
+          <Textarea
+            name="observacoes"
+            value={formData.observacoes}
+            onChange={handleChange}
+            className="w-full h-20 border-x border-b border-green-700 resize-none text-sm"
+          />
+
+          {/* Autorizo + Recibo */}
+          <div className="grid grid-cols-12 border border-green-700 text-sm mt-2">
+            <div className="col-span-3 border-r border-green-700 text-center">
+              <div className="font-semibold text-green-700 border-b border-green-700 p-1">
+                AUTORIZO
               </div>
-            ))}
+              <div className="p-2">
+                <div className="border-b border-green-700 w-3/4 mx-auto mt-6" />
+                <div className="mt-2">Data</div>
+                <div className="border-b border-green-700 w-3/4 mx-auto mt-6" />
+                <div className="mt-2">Assinatura</div>
+              </div>
+            </div>
+            <div className="col-span-9 p-2">
+              <div className="text-justify leading-tight">
+                Recebi a importância acima e autorizo o débito dos valores sob
+                minha responsabilidade no presente suprimento, em minha folha de
+                pagamento, no caso de inadimplência do prazo de prestação de
+                contas.
+              </div>
+              <div className="flex justify-between mt-6 px-4">
+                <div>
+                  Local{" "}
+                  <div className="border-b border-green-700 w-24 inline-block ml-2" />
+                </div>
+                <div>
+                  Data{" "}
+                  <div className="border-b border-green-700 w-24 inline-block ml-2" />
+                </div>
+                <div className="border-b border-green-700 w-40 text-center">
+                  Assinatura
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Botão PDF */}
           <div className="mt-6 flex justify-center">
-            <Button type="button" size="lg" className="gap-2" onClick={generatePDF}>
+            <Button
+              type="button"
+              size="lg"
+              className="gap-2"
+              onClick={generatePDF}
+            >
               <Download className="w-4 h-4" />
               Salvar como PDF
             </Button>
@@ -262,4 +293,4 @@ const FormAP = () => {
   );
 };
 
-export default FormAP;
+export default FormAS;
