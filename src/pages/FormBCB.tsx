@@ -1,172 +1,562 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
-const FormAP = () => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({
+const NUM_BANCOS_ROWS = 6; // linhas para discriminação das disponibilidades bancárias
+const NUM_APLIC_ROWS = 6; // linhas para discriminação das aplicações financeiras
+
+const FormBCB = () => {
+  const formRef = useRef(null);
+
+  // Header
+  const [header, setHeader] = useState({
     secao: "",
     numero: "",
-    ano: "",
-    nome: "",
-    cpfCnpj: "",
-    endereco: "",
-    cidadeUf: "",
-    banco: "",
-    agencia: "",
-    cidadeUfBanco: "",
-    historico: "",
-    valor: "",
-    total: "",
+    periodo: "",
   });
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  // 1 - Resumo (linhas Caixa, Bancos, SUB-TOTAL, Aplicações, TOTAL)
+  const [resumo, setResumo] = useState({
+    caixa: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
+    bancos: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
+    subTotal: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
+    aplicacoes: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
+    total: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
+  });
+
+  // 2 - Discriminação das disponibilidades bancárias
+  const initialBancos = Array.from({ length: NUM_BANCOS_ROWS }, () => ({
+    instituicao: "",
+    saldoAnterior: "",
+    entradas: "",
+    saidas: "",
+    saldoAtual: "",
+  }));
+  const [bancosRows, setBancosRows] = useState(initialBancos);
+
+  // 3 - Discriminação das aplicações financeiras
+  const initialAplic = Array.from({ length: NUM_APLIC_ROWS }, () => ({
+    instituicao: "",
+    tipo: "",
+    dataAplicacao: "",
+    resgate: "",
+    valor: "",
+  }));
+  const [aplicRows, setAplicRows] = useState(initialAplic);
+
+  // Observações
+  const [observacoes, setObservacoes] = useState("");
+
+  // Rodapé assinaturas
+  const [assinaturas, setAssinaturas] = useState({
+    preparadoNome: "",
+    preparadoData: "",
+    conferidoNome: "",
+    conferidoData: "",
+    aprovadoNome: "",
+    aprovadoData: "",
+  });
+
+  const handleHeaderChange = (e) => {
+    setHeader({ ...header, [e.target.name]: e.target.value });
+  };
+
+  const handleResumoChange = (section, field, value) => {
+    setResumo({
+      ...resumo,
+      [section]: { ...resumo[section], [field]: value },
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    toast({
-      title: "Formulário salvo!",
-      description: "Use Ctrl+P para salvar como PDF.",
+  const handleBancosChange = (index, field, value) => {
+    const copy = [...bancosRows];
+    copy[index] = { ...copy[index], [field]: value };
+    setBancosRows(copy);
+  };
+
+  const handleAplicChange = (index, field, value) => {
+    const copy = [...aplicRows];
+    copy[index] = { ...copy[index], [field]: value };
+    setAplicRows(copy);
+  };
+
+  const handleAssinaturasChange = (e) => {
+    setAssinaturas({ ...assinaturas, [e.target.name]: e.target.value });
+  };
+
+  const generatePDF = async () => {
+    if (!formRef.current) return;
+
+    // html2canvas com scale maior para melhor resolução no PDF
+    const canvas = await html2canvas(formRef.current, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
     });
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("Boletim_Caixa_Bancos.pdf");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="container mx-auto px-4">
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white border border-green-700 p-4 rounded-md max-w-5xl mx-auto"
+        <div
+          ref={formRef}
+          className="bg-white border border-green-700 p-3 rounded-md max-w-4xl mx-auto text-[13px]"
+          style={{ color: "#003300" }}
         >
           {/* Cabeçalho */}
-          <div className="grid grid-cols-12 border border-green-700 mb-1">
-            <div className="col-span-3 flex items-center justify-center border-r border-green-700 p-2">
-              <div className="text-center text-green-700 font-bold">
-                <div className="text-2xl">SINPAF</div>
-                <div className="text-xs">Filiação à CUT</div>
-              </div>
+          <div className="grid grid-cols-12 border border-green-700 p-2">
+            <div className="col-span-2 flex items-start justify-center pr-2 border-r border-green-700">
+              <img src="/SINPAF.png" alt="SINPAF" className="h-16 object-contain" />
             </div>
-            <div className="col-span-6 text-center p-2 border-r border-green-700">
-              <div className="text-green-700 font-semibold text-sm">
-                Sindicato Nacional dos Trabalhadores de Pesquisa e Desenvolvimento Agropecuário
-              </div>
-              <div className="text-left mt-1 text-green-700 font-semibold text-sm">
-                SEÇÃO: <Input name="secao" value={formData.secao} onChange={handleInputChange} className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm" />
-              </div>
-            </div>
-            <div className="col-span-3 text-center p-2">
-              <div className="text-red-600 font-bold text-sm">
-                AUTORIZAÇÃO DE PAGAMENTO - AS
-              </div>
-              <div className="flex justify-between text-green-700 text-sm mt-1">
-                <div>
-                  Nº <Input name="numero" value={formData.numero} onChange={handleInputChange} className="inline w-16 h-6 border border-green-700 ml-1 text-sm" />
+
+            <div className="col-span-8 px-2">
+              <div className="border border-green-700 p-1 text-center">
+                <div className="font-semibold text-sm">
+                  Sindicato Nacional dos Trabalhadores de Pesquisa e
+                  Desenvolvimento Agropecuário
                 </div>
-                <div>
-                  ANO: <Input name="ano" value={formData.ano} onChange={handleInputChange} className="inline w-16 h-6 border border-green-700 ml-1 text-sm" />
+              </div>
+
+              <div className="mt-2">
+                <div className="text-center font-bold text-lg text-green-700">
+                  SEÇÃO:
+                </div>
+                <div className="mt-1">
+                  <Input
+                    name="secao"
+                    value={header.secao}
+                    onChange={handleHeaderChange}
+                    className="w-full h-7 text-sm border border-green-700"
+                    placeholder=""
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="col-span-2 pl-2 border-l border-green-700">
+              <div className="flex justify-between items-center">
+                <div className="font-semibold text-sm">BOLETIM DE CAIXA E BANCOS</div>
+              </div>
+              <div className="mt-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="flex-1">
+                    Nº
+                    <Input
+                      name="numero"
+                      value={header.numero}
+                      onChange={handleHeaderChange}
+                      className="ml-2 h-7 text-sm border border-green-700"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    Período:
+                    <Input
+                      name="periodo"
+                      value={header.periodo}
+                      onChange={handleHeaderChange}
+                      className="ml-2 h-7 text-sm border border-green-700"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Favorecido */}
-          <div className="border border-green-700">
-            <div className="bg-green-700 text-white text-sm px-2 py-1 font-semibold">FAVORECIDO</div>
-            <div className="grid grid-cols-2 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Nome:
-                <Input name="nome" value={formData.nome} onChange={handleInputChange} className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm" />
-              </div>
-              <div className="p-1">
-                CPF/CNPJ:
-                <Input name="cpfCnpj" value={formData.cpfCnpj} onChange={handleInputChange} className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm" />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Endereço:
-                <Input name="endereco" value={formData.endereco} onChange={handleInputChange} className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm" />
-              </div>
-              <div className="p-1">
-                Cidade/UF:
-                <Input name="cidadeUf" value={formData.cidadeUf} onChange={handleInputChange} className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm" />
-              </div>
-            </div>
-            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Banco/C.C.:
-                <Input name="banco" value={formData.banco} onChange={handleInputChange} className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm" />
-              </div>
-              <div className="border-r border-green-700 p-1">
-                Agência:
-                <Input name="agencia" value={formData.agencia} onChange={handleInputChange} className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm" />
-              </div>
-              <div className="p-1">
-                Cidade/UF:
-                <Input name="cidadeUfBanco" value={formData.cidadeUfBanco} onChange={handleInputChange} className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm" />
-              </div>
-            </div>
-          </div>
+          {/* 1 - RESUMO */}
+          <div className="mt-3 border border-green-700">
+            <div className="bg-green-700 text-white px-2 py-1 font-semibold">1 - RESUMO</div>
 
-          {/* Histórico e Valor */}
-          <div className="border border-green-700 mt-1">
-            <div className="grid grid-cols-6 bg-green-50 border-b border-green-700 text-green-700 text-sm font-semibold">
-              <div className="col-span-5 border-r border-green-700 p-1">Histórico</div>
-              <div className="col-span-1 p-1 text-center">Valor</div>
-            </div>
-            <div className="grid grid-cols-6 text-sm">
-              <div className="col-span-5 border-r border-green-700">
-                <Textarea name="historico" value={formData.historico} onChange={handleInputChange} className="w-full h-40 border-none resize-none text-sm" />
-              </div>
-              <div className="col-span-1">
-                <Textarea name="valor" value={formData.valor} onChange={handleInputChange} className="w-full h-40 border-none resize-none text-sm text-right" />
-              </div>
-            </div>
             <div className="grid grid-cols-6 border-t border-green-700 text-sm">
-              <div className="col-span-5 border-r border-green-700 text-right p-1 font-semibold text-green-700">TOTAL</div>
-              <div className="col-span-1 text-right p-1">
-                <Input name="total" value={formData.total} onChange={handleInputChange} className="w-full text-right border-none font-semibold text-sm" />
+              <div className="col-span-2 border-r border-green-700 p-1 font-semibold">DISPONIBILIDADES</div>
+              <div className="col-span-1 border-r border-green-700 p-1 text-center font-semibold">SALDO ANTERIOR</div>
+              <div className="col-span-1 border-r border-green-700 p-1 text-center font-semibold">ENTRADAS</div>
+              <div className="col-span-1 border-r border-green-700 p-1 text-center font-semibold">SAÍDAS</div>
+              <div className="col-span-1 p-1 text-center font-semibold">SALDO ATUAL</div>
+            </div>
+
+            {/* Caixa */}
+            <div className="grid grid-cols-6 border-t border-green-200 text-sm">
+              <div className="col-span-2 border-r border-green-700 p-1">Caixa</div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.caixa.saldoAnterior}
+                  onChange={(e) => handleResumoChange("caixa", "saldoAnterior", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.caixa.entradas}
+                  onChange={(e) => handleResumoChange("caixa", "entradas", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.caixa.saidas}
+                  onChange={(e) => handleResumoChange("caixa", "saidas", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 p-1">
+                <Input
+                  value={resumo.caixa.saldoAtual}
+                  onChange={(e) => handleResumoChange("caixa", "saldoAtual", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+            </div>
+
+            {/* Bancos */}
+            <div className="grid grid-cols-6 border-t border-green-200 text-sm">
+              <div className="col-span-2 border-r border-green-700 p-1">Bancos</div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.bancos.saldoAnterior}
+                  onChange={(e) => handleResumoChange("bancos", "saldoAnterior", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.bancos.entradas}
+                  onChange={(e) => handleResumoChange("bancos", "entradas", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.bancos.saidas}
+                  onChange={(e) => handleResumoChange("bancos", "saidas", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 p-1">
+                <Input
+                  value={resumo.bancos.saldoAtual}
+                  onChange={(e) => handleResumoChange("bancos", "saldoAtual", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+            </div>
+
+            {/* SUB-TOTAL */}
+            <div className="grid grid-cols-6 border-t border-green-200 text-sm">
+              <div className="col-span-2 border-r border-green-700 p-1">SUB-TOTAL</div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.subTotal.saldoAnterior}
+                  onChange={(e) => handleResumoChange("subTotal", "saldoAnterior", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.subTotal.entradas}
+                  onChange={(e) => handleResumoChange("subTotal", "entradas", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.subTotal.saidas}
+                  onChange={(e) => handleResumoChange("subTotal", "saidas", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 p-1">
+                <Input
+                  value={resumo.subTotal.saldoAtual}
+                  onChange={(e) => handleResumoChange("subTotal", "saldoAtual", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+            </div>
+
+            {/* Aplicações */}
+            <div className="grid grid-cols-6 border-t border-green-200 text-sm">
+              <div className="col-span-2 border-r border-green-700 p-1">Aplicações</div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.aplicacoes.saldoAnterior}
+                  onChange={(e) => handleResumoChange("aplicacoes", "saldoAnterior", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.aplicacoes.entradas}
+                  onChange={(e) => handleResumoChange("aplicacoes", "entradas", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.aplicacoes.saidas}
+                  onChange={(e) => handleResumoChange("aplicacoes", "saidas", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+              <div className="col-span-1 p-1">
+                <Input
+                  value={resumo.aplicacoes.saldoAtual}
+                  onChange={(e) => handleResumoChange("aplicacoes", "saldoAtual", e.target.value)}
+                  className="w-full h-7 text-sm text-right"
+                />
+              </div>
+            </div>
+
+            {/* TOTAL */}
+            <div className="grid grid-cols-6 border-t border-green-200 text-sm">
+              <div className="col-span-2 border-r border-green-700 p-1 font-semibold">TOTAL</div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.total.saldoAnterior}
+                  onChange={(e) => handleResumoChange("total", "saldoAnterior", e.target.value)}
+                  className="w-full h-7 text-sm text-right font-semibold"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.total.entradas}
+                  onChange={(e) => handleResumoChange("total", "entradas", e.target.value)}
+                  className="w-full h-7 text-sm text-right font-semibold"
+                />
+              </div>
+              <div className="col-span-1 border-r border-green-700 p-1">
+                <Input
+                  value={resumo.total.saidas}
+                  onChange={(e) => handleResumoChange("total", "saidas", e.target.value)}
+                  className="w-full h-7 text-sm text-right font-semibold"
+                />
+              </div>
+              <div className="col-span-1 p-1">
+                <Input
+                  value={resumo.total.saldoAtual}
+                  onChange={(e) => handleResumoChange("total", "saldoAtual", e.target.value)}
+                  className="w-full h-7 text-sm text-right font-semibold"
+                />
               </div>
             </div>
           </div>
 
-          {/* Rodapé */}
-          <div className="grid grid-cols-4 border border-green-700 mt-2 text-sm">
-            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1">EMITENTE</div>
-            <div className="border-r border-green-700 text-center p-1 text-[11px]">
-              ATESTO QUE OS SERVIÇOS FORAM PRESTADOS EM FAVOR DO SINPAF
+          {/* 2 - Discriminação das disponibilidades bancárias */}
+          <div className="mt-3 border border-green-700">
+            <div className="bg-green-700 text-white px-2 py-1 font-semibold">2 - DISCRIMINAÇÃO DAS DISPONIBILIDADES BANCÁRIAS</div>
+
+            <div className="grid grid-cols-5 border-t border-green-700 text-sm font-semibold">
+              <div className="p-1 border-r border-green-700">INSTITUIÇÃO</div>
+              <div className="p-1 border-r border-green-700 text-center">SALDO ANTERIOR</div>
+              <div className="p-1 border-r border-green-700 text-center">ENTRADAS</div>
+              <div className="p-1 border-r border-green-700 text-center">SAÍDAS</div>
+              <div className="p-1 text-center">SALDO ATUAL</div>
             </div>
-            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1">APROVAÇÃO</div>
-            <div className="text-center p-1 text-[11px]">
-              Recebi o valor líquido constante acima<br />____/____/____ Data
-            </div>
-          </div>
-          <div className="grid grid-cols-4 border-x border-b border-green-700 text-sm">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="text-center p-4 border-r border-green-700 last:border-r-0">
-                <div className="border-t border-dotted border-green-700 mt-4" />
-                <div className="text-green-700 mt-1">Assinatura</div>
+
+            {bancosRows.map((row, idx) => (
+              <div key={idx} className="grid grid-cols-5 border-t border-green-200 text-sm">
+                <div className="p-1 border-r border-green-700">
+                  <Input
+                    value={row.instituicao}
+                    onChange={(e) => handleBancosChange(idx, "instituicao", e.target.value)}
+                    className="w-full h-8 text-sm"
+                    placeholder=""
+                  />
+                </div>
+                <div className="p-1 border-r border-green-700">
+                  <Input
+                    value={row.saldoAnterior}
+                    onChange={(e) => handleBancosChange(idx, "saldoAnterior", e.target.value)}
+                    className="w-full h-8 text-sm text-right"
+                  />
+                </div>
+                <div className="p-1 border-r border-green-700">
+                  <Input
+                    value={row.entradas}
+                    onChange={(e) => handleBancosChange(idx, "entradas", e.target.value)}
+                    className="w-full h-8 text-sm text-right"
+                  />
+                </div>
+                <div className="p-1 border-r border-green-700">
+                  <Input
+                    value={row.saidas}
+                    onChange={(e) => handleBancosChange(idx, "saidas", e.target.value)}
+                    className="w-full h-8 text-sm text-right"
+                  />
+                </div>
+                <div className="p-1">
+                  <Input
+                    value={row.saldoAtual}
+                    onChange={(e) => handleBancosChange(idx, "saldoAtual", e.target.value)}
+                    className="w-full h-8 text-sm text-right"
+                  />
+                </div>
               </div>
             ))}
+
+            {/* Totais linha */}
+            <div className="grid grid-cols-5 border-t border-green-700 text-sm font-semibold">
+              <div className="p-1 border-r border-green-700">TOTAL</div>
+              <div className="p-1 border-r border-green-700 text-right">-</div>
+              <div className="p-1 border-r border-green-700 text-right">-</div>
+              <div className="p-1 border-r border-green-700 text-right">-</div>
+              <div className="p-1 text-right">-</div>
+            </div>
           </div>
 
-          <div className="mt-6 flex justify-center">
-            <Button type="submit" size="lg" className="gap-2">
+          {/* 3 - Discriminação das aplicações financeiras */}
+          <div className="mt-3 border border-green-700">
+            <div className="bg-green-700 text-white px-2 py-1 font-semibold">3 - DISCRIMINAÇÃO DAS APLICAÇÕES FINANCEIRAS</div>
+
+            <div className="grid grid-cols-5 border-t border-green-700 text-sm font-semibold">
+              <div className="p-1 border-r border-green-700">INSTITUIÇÃO</div>
+              <div className="p-1 border-r border-green-700">TIPO</div>
+              <div className="p-1 border-r border-green-700 text-center">DATA DA APLICAÇÃO</div>
+              <div className="p-1 border-r border-green-700 text-center">RESGATE</div>
+              <div className="p-1 text-center">VALOR</div>
+            </div>
+
+            {aplicRows.map((r, i) => (
+              <div key={i} className="grid grid-cols-5 border-t border-green-200 text-sm">
+                <div className="p-1 border-r border-green-700">
+                  <Input
+                    value={r.instituicao}
+                    onChange={(e) => handleAplicChange(i, "instituicao", e.target.value)}
+                    className="w-full h-8 text-sm"
+                  />
+                </div>
+                <div className="p-1 border-r border-green-700">
+                  <Input
+                    value={r.tipo}
+                    onChange={(e) => handleAplicChange(i, "tipo", e.target.value)}
+                    className="w-full h-8 text-sm"
+                  />
+                </div>
+                <div className="p-1 border-r border-green-700">
+                  <Input
+                    value={r.dataAplicacao}
+                    onChange={(e) => handleAplicChange(i, "dataAplicacao", e.target.value)}
+                    className="w-full h-8 text-sm"
+                  />
+                </div>
+                <div className="p-1 border-r border-green-700">
+                  <Input
+                    value={r.resgate}
+                    onChange={(e) => handleAplicChange(i, "resgate", e.target.value)}
+                    className="w-full h-8 text-sm"
+                  />
+                </div>
+                <div className="p-1">
+                  <Input
+                    value={r.valor}
+                    onChange={(e) => handleAplicChange(i, "valor", e.target.value)}
+                    className="w-full h-8 text-sm text-right"
+                  />
+                </div>
+              </div>
+            ))}
+
+            <div className="grid grid-cols-5 border-t border-green-700 text-sm font-semibold">
+              <div className="p-1 border-r border-green-700">TOTAL</div>
+              <div className="p-1 border-r border-green-700 text-center">-</div>
+              <div className="p-1 border-r border-green-700 text-center">-</div>
+              <div className="p-1 border-r border-green-700 text-center">-</div>
+              <div className="p-1 text-right">-</div>
+            </div>
+          </div>
+
+          {/* Observações */}
+          <div className="mt-3 border border-green-700 p-2">
+            <div className="font-semibold text-sm">Observações:</div>
+            <Textarea
+              value={observacoes}
+              onChange={(e) => setObservacoes(e.target.value)}
+              className="w-full h-24 mt-2 resize-none border border-green-700 text-sm"
+            />
+          </div>
+
+          {/* Rodapé assinaturas */}
+          <div className="mt-4 border border-green-700">
+            <div className="grid grid-cols-3 text-sm">
+              <div className="p-3 border-r border-green-700 text-center">Preparado por</div>
+              <div className="p-3 border-r border-green-700 text-center">Conferido por</div>
+              <div className="p-3 text-center">Aprovado por</div>
+            </div>
+
+            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
+              <div className="p-3 border-r border-green-700 text-center">
+                <Input
+                  name="preparadoNome"
+                  value={assinaturas.preparadoNome}
+                  onChange={handleAssinaturasChange}
+                  className="w-full h-8 text-sm mb-2"
+                  placeholder="Nome"
+                />
+                <div className="text-[12px]">Data</div>
+                <Input
+                  name="preparadoData"
+                  value={assinaturas.preparadoData}
+                  onChange={handleAssinaturasChange}
+                  className="w-32 mx-auto h-8 text-sm"
+                />
+              </div>
+              <div className="p-3 border-r border-green-700 text-center">
+                <Input
+                  name="conferidoNome"
+                  value={assinaturas.conferidoNome}
+                  onChange={handleAssinaturasChange}
+                  className="w-full h-8 text-sm mb-2"
+                  placeholder="Nome"
+                />
+                <div className="text-[12px]">Data</div>
+                <Input
+                  name="conferidoData"
+                  value={assinaturas.conferidoData}
+                  onChange={handleAssinaturasChange}
+                  className="w-32 mx-auto h-8 text-sm"
+                />
+              </div>
+              <div className="p-3 text-center">
+                <Input
+                  name="aprovadoNome"
+                  value={assinaturas.aprovadoNome}
+                  onChange={handleAssinaturasChange}
+                  className="w-full h-8 text-sm mb-2"
+                  placeholder="Nome"
+                />
+                <div className="text-[12px]">Data</div>
+                <Input
+                  name="aprovadoData"
+                  value={assinaturas.aprovadoData}
+                  onChange={handleAssinaturasChange}
+                  className="w-32 mx-auto h-8 text-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Botão PDF */}
+          <div className="mt-4 flex justify-center">
+            <Button onClick={generatePDF} size="lg" className="gap-2">
               <Download className="w-4 h-4" />
-              Salvar (use Ctrl+P para PDF)
+              Salvar como PDF
             </Button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
 };
 
-export default FormAP;
+export default FormBCB;

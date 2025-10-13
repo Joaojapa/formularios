@@ -105,7 +105,7 @@ const FormBFF = () => {
               <div className="flex items-center gap-3">
                 <img src="/SINPAF.png" alt="SINPAF" className="h-14 object-contain" />
                 <div className="text-green-700 font-bold leading-none">
-                  <div className="text-lg">SINPAF</div>
+                  <div className="text-lg"></div>
                   <div className="text-[10px]">Filiação à CUT</div>
                 </div>
               </div>
