@@ -346,114 +346,138 @@ const FormPCV = () => {
           </div>
 
           {/* -------- Saída / Retorno / Outros / Totais bloco ---------- */}
-          <div className="border border-green-700 mt-2 p-2 text-sm">
-            <div className="grid grid-cols-12 gap-2">
-              <div className="col-span-6">
-                <div className="grid grid-cols-12 gap-1 items-center">
-                  <div className="col-span-2 font-semibold">Saída:</div>
-                  <div className="col-span-2">
-                    Nº dias (C):
-                    <Input name="saidaDias" value={viagemInfo.saidaDias} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                  <div className="col-span-4">
-                    Valor das Diárias(C):
-                    <Input name="saidaValorDiarias" value={viagemInfo.saidaValorDiarias} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                  <div className="col-span-4">
-                    Adiant. Total Diária de Capital:
-                    <Input name="saidaAdiantDiariaCapital" value={viagemInfo.saidaAdiantDiariaCapital} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                </div>
+          {/* Seção de Saída / Retorno / Outros / Valor Total */}
+<div className="grid grid-cols-2 border border-green-700 text-sm mt-1">
+  {/* Coluna Esquerda */}
+  <div className="border-r border-green-700 p-2 space-y-2">
+    {/* Saída */}
+    <div className="grid grid-cols-12 items-center gap-2">
+      <div className="col-span-2 font-semibold">Saída:</div>
+      <div className="col-span-2 flex items-center gap-1">
+        <span className="text-xs">Nº dias (C):</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div className="col-span-3 flex items-center gap-1">
+        <span className="text-xs">Valor das Diárias (C):</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div className="col-span-5 flex items-center gap-1">
+        <span className="text-xs">Adiant. Total Diária de Capital:</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+    </div>
 
-                <div className="grid grid-cols-12 gap-1 items-center mt-2">
-                  <div className="col-span-2 font-semibold">Retorno:</div>
-                  <div className="col-span-2">
-                    Nº dias (I):
-                    <Input name="retornoDias" value={viagemInfo.retornoDias} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                  <div className="col-span-4">
-                    Valor das Diárias(I):
-                    <Input name="retornoValorDiarias" value={viagemInfo.retornoValorDiarias} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                  <div className="col-span-4">
-                    Adiant. Total Diária de Interior:
-                    <Input name="retornoAdiantDiariaInterior" value={viagemInfo.retornoAdiantDiariaInterior} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                </div>
+    {/* Retorno */}
+    <div className="grid grid-cols-12 items-center gap-2">
+      <div className="col-span-2 font-semibold">Retorno:</div>
+      <div className="col-span-2 flex items-center gap-1">
+        <span className="text-xs">Nº dias (I):</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div className="col-span-3 flex items-center gap-1">
+        <span className="text-xs">Valor das Diárias (I):</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div className="col-span-5 flex items-center gap-1">
+        <span className="text-xs">Adiant. Total Diária de Interior:</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+    </div>
 
-                <div className="grid grid-cols-12 gap-1 items-center mt-2">
-                  <div className="col-span-2 font-semibold">Outros:</div>
-                  <div className="col-span-4">
-                    <Input name="outrosDescricao" value={viagemInfo.outrosDescricao} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" placeholder="Descrição" />
-                  </div>
-                  <div className="col-span-4">
-                    Valor (R$):
-                    <Input name="outrosValor" value={viagemInfo.outrosValor} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                  <div className="col-span-2">
-                    Total Adiantamento (R$):
-                    <Input name="totalAdiantamento" value={viagemInfo.totalAdiantamento} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                </div>
+    {/* Outros */}
+    <div className="grid grid-cols-12 items-center gap-2">
+      <div className="col-span-2 font-semibold">Outros:</div>
+      <div className="col-span-4 flex items-center gap-1">
+        <span className="text-xs">Descrição:</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div className="col-span-3 flex items-center gap-1">
+        <span className="text-xs">Valor (R$):</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div className="col-span-3 flex items-center gap-1">
+        <span className="text-xs">Total Adiantamento (R$):</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+    </div>
 
-                <div className="grid grid-cols-12 gap-1 items-center mt-2">
-                  <div className="col-span-4 font-semibold">Valor Total (R$):</div>
-                  <div className="col-span-4">
-                    <Input name="valorTotal" value={viagemInfo.valorTotal} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                  <div className="col-span-4">
-                    Valor Total Por Extenso (R$):
-                    <Input name="valorPorExtenso" value={viagemInfo.valorPorExtenso} onChange={handleViagemInfoChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                </div>
-              </div>
+    {/* Valor Total */}
+    <div className="grid grid-cols-12 items-center gap-2">
+      <div className="col-span-2 font-semibold">Valor Total (R$):</div>
+      <div className="col-span-4">
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div className="col-span-6 flex items-center gap-1">
+        <span className="text-xs">Valor Total Por Extenso (R$):</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+    </div>
+  </div>
 
-              {/* periodo efetivo da viagem */}
-              <div className="col-span-6 border-l border-green-700 pl-4">
-                <div className="font-semibold text-sm mb-1">ADIANTAMENTO RECEBIDO EM PASSAGEM - R$</div>
-                <div className="text-xs italic mb-1">EM CASO DE RECUPERAÇÃO DE PASSAGEM INDICAR:</div>
+  {/* Coluna Direita */}
+  <div className="p-2 space-y-2">
+    <div className="font-semibold text-center">
+      ADIANTAMENTO RECEBIDO EM PASSAGEM - R$
+    </div>
+    <div className="text-xs italic text-center">
+      EM CASO DE RECUPERAÇÃO DE PASSAGEM INDICAR:
+    </div>
+    <div className="grid grid-cols-3 gap-2 mt-1">
+      <div>
+        <span className="text-xs">Fornecedor</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div>
+        <span className="text-xs">Número do Bilhete</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+      <div>
+        <span className="text-xs">Trecho(s)</span>
+        <Input className="h-6 w-full border-green-700" />
+      </div>
+    </div>
 
-                <div className="grid grid-cols-12 gap-1 items-center">
-                  <div className="col-span-6">
-                    <div className="text-sm">FORNECEDOR</div>
-                    <Input name="fornecedor" value={passagem.fornecedor} onChange={handlePassagemChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                  <div className="col-span-3">
-                    <div className="text-sm">NÚMERO DO BILHETE</div>
-                    <Input name="numBilhete" value={passagem.numBilhete} onChange={handlePassagemChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                  <div className="col-span-3">
-                    <div className="text-sm">TRECHO(S)</div>
-                    <Input name="trechos" value={passagem.trechos} onChange={handlePassagemChange} className="h-7 text-sm border border-green-700" />
-                  </div>
-                </div>
+    <div className="font-semibold text-center mt-3">
+      PERÍODO EFETIVO DA VIAGEM
+    </div>
+    <div className="grid grid-cols-4 gap-2 text-xs text-center mt-1">
+      <div className="col-span-2">
+        <div className="font-semibold">Saída</div>
+        <div className="grid grid-cols-2 gap-1 mt-1">
+          <Input placeholder="Data" className="h-6 border-green-700" />
+          <Input placeholder="Hora" className="h-6 border-green-700" />
+        </div>
+      </div>
+      <div className="col-span-2">
+        <div className="font-semibold">Retorno</div>
+        <div className="grid grid-cols-2 gap-1 mt-1">
+          <Input placeholder="Data" className="h-6 border-green-700" />
+          <Input placeholder="Hora" className="h-6 border-green-700" />
+        </div>
+      </div>
+    </div>
 
-                <div className="mt-3 text-sm font-semibold">PERÍODO EFETIVO DA VIAGEM</div>
-                <div className="grid grid-cols-12 gap-1 items-center mt-1 text-sm">
-                  <div className="col-span-3">
-                    <div className="text-xs">SAÍDA</div>
-                    <Input name="saidaData" value={periodoViagem.saidaData} onChange={handlePeriodoChange} className="h-7 text-sm border border-green-700" placeholder="Data" />
-                    <Input name="saidaHora" value={periodoViagem.saidaHora} onChange={handlePeriodoChange} className="h-7 text-sm border border-green-700 mt-1" placeholder="Hora" />
-                  </div>
-                  <div className="col-span-3">
-                    <div className="text-xs">RETORNO</div>
-                    <Input name="retornoData" value={periodoViagem.retornoData} onChange={handlePeriodoChange} className="h-7 text-sm border border-green-700" placeholder="Data" />
-                    <Input name="retornoHora" value={periodoViagem.retornoHora} onChange={handlePeriodoChange} className="h-7 text-sm border border-green-700 mt-1" placeholder="Hora" />
-                  </div>
-                  <div className="col-span-3">
-                    <div className="text-xs">Nº DIAS</div>
-                    <Input name="nDiasC" value={periodoViagem.nDiasC} onChange={handlePeriodoChange} className="h-7 text-sm border border-green-700" placeholder="(C)" />
-                    <Input name="nDiasI" value={periodoViagem.nDiasI} onChange={handlePeriodoChange} className="h-7 text-sm border border-green-700 mt-1" placeholder="(I)" />
-                  </div>
-                  <div className="col-span-3">
-                    <div className="text-xs">VALOR DIÁRIAS</div>
-                    <Input name="valorDiariasC" value={periodoViagem.valorDiariasC} onChange={handlePeriodoChange} className="h-7 text-sm border border-green-700" placeholder="(C)" />
-                    <Input name="valorDiariasI" value={periodoViagem.valorDiariasI} onChange={handlePeriodoChange} className="h-7 text-sm border border-green-700 mt-1" placeholder="(I)" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="grid grid-cols-4 gap-2 text-xs text-center mt-2">
+      <div>
+        <div className="font-semibold">Nº dias (C)</div>
+        <Input className="h-6 border-green-700" />
+      </div>
+      <div>
+        <div className="font-semibold">Valor Diárias (C)</div>
+        <Input className="h-6 border-green-700" />
+      </div>
+      <div>
+        <div className="font-semibold">Nº dias (I)</div>
+        <Input className="h-6 border-green-700" />
+      </div>
+      <div>
+        <div className="font-semibold">Valor Diárias (I)</div>
+        <Input className="h-6 border-green-700" />
+      </div>
+    </div>
+  </div>
+</div>
+
 
           {/* -------- Tabela ITEM / HISTÓRICO / DIÁRIAS / HOSPEDAGEM / OUTRAS ---------- */}
           <div className="mt-3 border border-green-700">
