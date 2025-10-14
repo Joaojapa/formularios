@@ -249,7 +249,7 @@ const FormPCV = () => {
                       onChange={handleCabecalhoChange}
                       className="mr-1"
                     />
-                    ( ) SINPAF
+                    SINPAF
                   </label>
                   <label className="inline-flex items-center mr-4">
                     <input
@@ -259,7 +259,7 @@ const FormPCV = () => {
                       onChange={handleCabecalhoChange}
                       className="mr-1"
                     />
-                    ( ) CONVIDADO
+                     CONVIDADO
                   </label>
                 </div>
               </div>

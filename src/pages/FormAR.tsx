@@ -97,21 +97,29 @@ export default function AutorizacaoRecebimento() {
               <Input className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
             </div>
           </div>
-          <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-            <div className="border-r border-green-700 p-1">
-              Banco/C.C.:
-              <Input className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
-            </div>
-            <div className="border-r border-green-700 p-1">
-              Agência:
-              <Input className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
-            </div>
-            <div className="p-1">
-              Cidade/UF:
-              <Input className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
-            </div>
-          </div>
-        </div>
+       <div className="grid grid-cols-3 border-t border-green-700 text-sm font-semibold">
+  <div className="border-r border-green-700 p-1 flex items-center">
+    <span className="whitespace-nowrap text-green-700">Banco/C.C.:</span>
+    <Input
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0"
+    />
+  </div>
+
+  <div className="border-r border-green-700 p-1 flex items-center">
+    <span className="whitespace-nowrap text-green-700">Agência:</span>
+    <Input
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0"
+    />
+  </div>
+
+  <div className="p-1 flex items-center">
+    <span className="whitespace-nowrap text-green-700">Cidade/UF:</span>
+    <Input
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0"
+    />
+  </div>
+</div>
+ </div>
 
         {/* Histórico e Valor */}
         <div className="border border-green-700 mt-1">

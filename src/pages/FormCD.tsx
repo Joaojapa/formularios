@@ -147,7 +147,7 @@ const FormCD = () => {
                 />
               </div>
             </div>
-            <div className="border-t border-green-700 text-xs flex">
+          <div className="border-t border-green-700 text-xs block">
               <div className="text-green-700 font-semibold py-1 pl-2 w-full">
                 TOTAL POR EXTENSO:
                 <Input

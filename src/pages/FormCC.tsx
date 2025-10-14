@@ -66,78 +66,70 @@ const FormCC = () => {
           {/* Conteúdo principal */}
           <div className="ml-28">
             {/* Nome e Valor */}
-            <div className="grid grid-cols-12 border border-green-700">
-              <div className="col-span-8 border-r border-green-700 p-1 text-sm font-semibold">
-                Nome da Seção Sindical:
-                <Input
-                  name="secaoSindical"
-                  value={formData.secaoSindical}
-                  onChange={handleInputChange}
-                  className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-              <div className="col-span-4 p-1 text-sm font-semibold">
-                Valor (R$):
-                <Input
-                  name="valor"
-                  value={formData.valor}
-                  onChange={handleInputChange}
-                  className="inline w-3/4 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-            </div>
+<div className="grid grid-cols-12 border border-green-700 text-sm font-semibold">
+  <div className="col-span-8 border-r border-green-700 p-1 flex items-center">
+    <span className="whitespace-nowrap">Nome da Seção Sindical:</span>
+    <Input
+      name="secaoSindical"
+      value={formData.secaoSindical}
+      onChange={handleInputChange}
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+    />
+  </div>
 
-            {/* Valor por extenso */}
-            <div className="border-x border-b border-green-700 p-1 text-sm font-semibold">
-              Valor por extenso:
-              <Input
-                name="valorExtenso"
-                value={formData.valorExtenso}
-                onChange={handleInputChange}
-                className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm"
-              />
-            </div>
+  <div className="col-span-4 p-1 flex items-center">
+    <span className="whitespace-nowrap">Valor (R$):</span>
+    <Input
+      name="valor"
+      value={formData.valor}
+      onChange={handleInputChange}
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+    />
+  </div>
+</div>
 
-            {/* Banco / Agência / Conta / Cheque */}
-            <div className="grid grid-cols-12 border-x border-b border-green-700 text-sm font-semibold">
-              <div className="col-span-3 border-r border-green-700 p-1">
-                Banco:
-                <Input
-                  name="banco"
-                  value={formData.banco}
-                  onChange={handleInputChange}
-                  className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-              <div className="col-span-3 border-r border-green-700 p-1">
-                Agência:
-                <Input
-                  name="agencia"
-                  value={formData.agencia}
-                  onChange={handleInputChange}
-                  className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-              <div className="col-span-3 border-r border-green-700 p-1">
-                C/Corrente:
-                <Input
-                  name="conta"
-                  value={formData.conta}
-                  onChange={handleInputChange}
-                  className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-              <div className="col-span-3 p-1">
-                Nº Cheque:
-                <Input
-                  name="cheque"
-                  value={formData.cheque}
-                  onChange={handleInputChange}
-                  className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
-                />
-              </div>
-            </div>
+{/* Banco / Agência / Conta / Cheque */}
+<div className="grid grid-cols-12 border-x border-b border-green-700 text-sm font-semibold">
+  <div className="col-span-3 border-r border-green-700 p-1 flex items-center">
+    <span className="whitespace-nowrap">Banco:</span>
+    <Input
+      name="banco"
+      value={formData.banco}
+      onChange={handleInputChange}
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+    />
+  </div>
 
+  <div className="col-span-3 border-r border-green-700 p-1 flex items-center">
+    <span className="whitespace-nowrap">Agência:</span>
+    <Input
+      name="agencia"
+      value={formData.agencia}
+      onChange={handleInputChange}
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+    />
+  </div>
+
+  <div className="col-span-3 border-r border-green-700 p-1 flex items-center">
+    <span className="whitespace-nowrap">C/Corrente:</span>
+    <Input
+      name="conta"
+      value={formData.conta}
+      onChange={handleInputChange}
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+    />
+  </div>
+
+  <div className="col-span-3 p-1 flex items-center">
+    <span className="whitespace-nowrap">Nº Cheque:</span>
+    <Input
+      name="cheque"
+      value={formData.cheque}
+      onChange={handleInputChange}
+      className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+    />
+  </div>
+</div>
             {/* Favorecido */}
             <div className="border-x border-b border-green-700 p-1 text-sm font-semibold">
               Favorecido:

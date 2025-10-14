@@ -92,7 +92,7 @@ const FormRPS = () => {
               <div className="w-full text-center">
                 {/* ajuste o src caso necessário */}
                 <img src="/SINPAF.png" alt="logo" className="max-h-20 mx-auto mb-1" />
-                <div className="text-red-600 text-xs">Filiação à CUT</div>
+                <div className="text-red-600 text-xs"></div>
               </div>
             </div>
 

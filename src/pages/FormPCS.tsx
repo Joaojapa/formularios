@@ -68,16 +68,14 @@ export default function PCSForm() {
           ref={formRef}
           className="bg-white border-2 border-green-700 rounded-md max-w-6xl mx-auto p-2 text-[12px] text-green-800"
         >
-          {/* Header */}
-          <div className="grid grid-cols-12 border border-green-700">
-            <div className="col-span-3 flex items-center justify-center border-r border-green-700 p-3">
-              {/* Logo area similar to imagem */}
-              <div className="text-center text-green-700 font-bold">
-                <div className="text-2xl">SINPAF</div>
-                <div className="text-xs">Filiação à CUT</div>
-              </div>
-            </div>
-
+         <div className="grid grid-cols-12 border border-green-700">
+  {/* Logo à esquerda */}
+  <div className="col-span-3 border-r border-green-700 p-3 flex items-center justify-center">
+    <div className="w-full text-center">
+      <img src="/SINPAF.png" alt="logo" className="max-h-20 mx-auto mb-1" />
+      <div className="text-green-700 text-xs font-semibold">Filiação à CUT</div>
+    </div>
+  </div>
             <div className="col-span-6 p-2 border-r border-green-700">
               <div className="text-center font-bold text-sm text-green-700">
                 Sindicato Nacional dos Trabalhadores de Pesquisa e Desenvolvimento

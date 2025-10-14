@@ -50,11 +50,13 @@ const FormAV = () => {
     const canvas = await html2canvas(formElement, {
       scale: 2,
       useCORS: true,
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: document.documentElement.offsetWidth,
     });
 
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
-
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
@@ -64,6 +66,11 @@ const FormAV = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
+      <style>{`
+        .nobreak { white-space: nowrap; }
+        .nowrap-input { display: inline-flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
+      `}</style>
+
       <div className="container mx-auto px-4">
         <form
           id="form-av"
@@ -73,22 +80,18 @@ const FormAV = () => {
           <div className="grid grid-cols-12 border border-green-700 mb-1">
             {/* Logo */}
             <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 p-2">
-              <img
-                src="/SINPAF.png"
-                alt="SINPAF"
-                className="w-20 mb-1"
-              />
+              <img src="/SINPAF.png" alt="SINPAF" className="w-20 mb-1" />
               <div className="text-xs text-green-700 font-semibold">
                 Filiação à CUT
               </div>
             </div>
 
             {/* Título e seção */}
-            <div className="col-span-6 border-r border-green-700 p-2 text-center">
-              <div className="text-green-700 font-semibold text-sm">
+            <div className="col-span-6 border-r border-green-7 p-2 text-center">
+           <div className="text-green-700 font-semibold text-xs leading-tight mx-auto max-w-[240px] text-center break-words">
                 Sindicato Nacional dos Trabalhadores de Pesquisa e Desenvolvimento Agropecuário
               </div>
-              <div className="text-green-700 font-semibold text-sm">
+              <div className="text-green-700 font-semibold text-sm mt-1">
                 SEÇÃO:{" "}
                 <Input
                   name="secao"
@@ -142,100 +145,166 @@ const FormAV = () => {
             <div className="grid grid-cols-2 border-t border-green-700">
               <div className="border-r border-green-700 p-1">
                 Nome:
-                <Input name="nome" value={formData.nome} onChange={handleInputChange} className="inline w-5/6 h-6 border border-green-700 ml-2" />
+                <Input
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleInputChange}
+                  className="inline w-5/6 h-6 border border-green-700 ml-2"
+                />
               </div>
-              <div className="p-1">
+              <div className="p-1 nowrap-input">
                 CPF:
-                <Input name="cpf" value={formData.cpf} onChange={handleInputChange} className="inline w-4/6 h-6 border border-green-700 ml-2" />
+                <Input
+                  name="cpf"
+                  value={formData.cpf}
+                  onChange={handleInputChange}
+                  className="inline w-1/3 h-6 border border-green-700 ml-2"
+                />
                 Cargo:
-                <Input name="cargo" value={formData.cargo} onChange={handleInputChange} className="inline w-3/6 h-6 border border-green-700 ml-2" />
+                <Input
+                  name="cargo"
+                  value={formData.cargo}
+                  onChange={handleInputChange}
+                  className="inline w-1/3 h-6 border border-green-700 ml-2"
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-2 border-t border-green-700">
-              <div className="border-r border-green-700 p-1">
+              <div className="border-r border-green-700 p-1 nowrap-input">
                 Banco:
-                <Input name="banco" value={formData.banco} onChange={handleInputChange} className="inline w-5/6 h-6 border border-green-700 ml-2" />
+                <Input
+                  name="banco"
+                  value={formData.banco}
+                  onChange={handleInputChange}
+                  className="inline w-5/6 h-6 border border-green-700 ml-2"
+                />
               </div>
-              <div className="p-1">
+              <div className="p-1 nowrap-input">
                 Agência:
-                <Input name="agencia" value={formData.agencia} onChange={handleInputChange} className="inline w-1/4 h-6 border border-green-700 ml-2" />
+                <Input
+                  name="agencia"
+                  value={formData.agencia}
+                  onChange={handleInputChange}
+                  className="inline w-1/4 h-6 border border-green-700 ml-2"
+                />
                 C/C:
-                <Input name="cc" value={formData.cc} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
+                <Input
+                  name="cc"
+                  value={formData.cc}
+                  onChange={handleInputChange}
+                  className="inline w-1/3 h-6 border border-green-700 ml-2"
+                />
               </div>
             </div>
 
-            <div className="border-t border-green-700 p-1">
+            <div className="border-t border-green-700 p-1 nowrap-input">
               Cidade/Estado:
-              <Input name="cidadeEstado" value={formData.cidadeEstado} onChange={handleInputChange} className="inline w-2/3 h-6 border border-green-700 ml-2" />
+              <Input
+                name="cidadeEstado"
+                value={formData.cidadeEstado}
+                onChange={handleInputChange}
+                className="inline w-2/3 h-6 border border-green-700 ml-2"
+              />
             </div>
 
-            <div className="border-t border-green-700 p-1">
+            <div className="border-t border-green-700 p-1 nowrap-input">
               Roteiro:
-              <Input name="roteiro" value={formData.roteiro} onChange={handleInputChange} className="inline w-5/6 h-6 border border-green-700 ml-2" />
+              <Input
+                name="roteiro"
+                value={formData.roteiro}
+                onChange={handleInputChange}
+                className="inline w-5/6 h-6 border border-green-700 ml-2"
+              />
             </div>
 
-            <div className="border-t border-green-700 p-1">
+            <div className="border-t border-green-700 p-1 nowrap-input">
               Objetivo:
-              <Input name="objetivo" value={formData.objetivo} onChange={handleInputChange} className="inline w-5/6 h-6 border border-green-700 ml-2" />
+              <Input
+                name="objetivo"
+                value={formData.objetivo}
+                onChange={handleInputChange}
+                className="inline w-5/6 h-6 border border-green-700 ml-2"
+              />
             </div>
 
             <div className="border-t border-green-700 p-1">
               Observações:
-              <Textarea name="observacoes" value={formData.observacoes} onChange={handleInputChange} className="w-full h-16 border-none resize-none" />
+              <Textarea
+                name="observacoes"
+                value={formData.observacoes}
+                onChange={handleInputChange}
+                className="w-full h-20 border border-green-700 resize-none mt-1"
+              />
             </div>
 
-            {/* Saída e retorno */}
+{/* Saída, Adiantamentos e Retorno */}
+<div className="grid grid-cols-3 border-t border-green-700 text-sm">
+  {/* Coluna 1 - Saída */}
+  <div className="border-r border-green-700 p-1 nowrap-input">
+    <span>Saída: Nº dias (C):</span>
+    <Input
+      name="saidaDiasC"
+      value={formData.saidaDiasC}
+      onChange={handleInputChange}
+      className="inline w-1/3 h-6 border border-green-700 ml-2"
+    />
+    <span>Valor das Diárias (C):</span>
+    <Input
+      name="valorDiariasC"
+      value={formData.valorDiariasC}
+      onChange={handleInputChange}
+      className="inline w-1/3 h-6 border border-green-700 ml-2"
+    />
+  </div>
+
+  {/* Coluna 2 - Adiantamentos */}
+  <div className="col-span-2 p-1 flex flex-col gap-1">
+    <div className="nowrap-input">
+      <span>Adiant. Total Diária de Capital:</span>
+      <Input
+        name="adiantCapital"
+        value={formData.adiantCapital}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+    <div className="nowrap-input">
+      <span>Adiant. Total Diária de Interior:</span>
+      <Input
+        name="adiantInterior"
+        value={formData.adiantInterior}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+  </div>
+</div>
+              
+
+
             <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Saída: Nº dias (C):
-                <Input name="saidaDiasC" value={formData.saidaDiasC} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
-                Valor das Diárias (C):
-                <Input name="valorDiariasC" value={formData.valorDiariasC} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
+              <div className="border-r border-green-700 p-1 nowrap-input">
+                <span>Retorno: Nº dias (I):</span>
+                <Input
+                  name="retornoDiasI"
+                  value={formData.retornoDiasI}
+                  onChange={handleInputChange}
+                  className="inline w-1/3 h-6 border border-green-700 ml-2"
+                />
+                <span>Valor das Diárias (I):</span>
+                <Input
+                  name="valorDiariasI"
+                  value={formData.valorDiariasI}
+                  onChange={handleInputChange}
+                  className="inline w-1/3 h-6 border border-green-700 ml-2"
+                />
               </div>
-              <div className="border-r border-green-700 p-1">
-                Adiant. Total Diária de Capital:
-                <Input name="adiantCapital" value={formData.adiantCapital} onChange={handleInputChange} className="inline w-2/3 h-6 border border-green-700 ml-2" />
-              </div>
-            </div>
+                </div>
+                    </div>
+             
+             
 
-            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Retorno: Nº dias (I):
-                <Input name="retornoDiasI" value={formData.retornoDiasI} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
-                Valor das Diárias (I):
-                <Input name="valorDiariasI" value={formData.valorDiariasI} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
-              </div>
-              <div className="border-r border-green-700 p-1">
-                Adiant. Total Diária de Interior:
-                <Input name="adiantInterior" value={formData.adiantInterior} onChange={handleInputChange} className="inline w-2/3 h-6 border border-green-700 ml-2" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Outros:
-                <Input name="outrosValor" value={formData.outrosValor} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
-              </div>
-              <div className="p-1">
-                Valor (R$):
-                <Input name="valorTotal" value={formData.valorTotal} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
-                Total Adiantamento (R$):
-                <Input name="totalAdiantamento" value={formData.totalAdiantamento} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                Valor Total (R$):
-                <Input name="valorTotal" value={formData.valorTotal} onChange={handleInputChange} className="inline w-1/3 h-6 border border-green-700 ml-2" />
-              </div>
-              <div className="p-1">
-                Valor por extenso (R$):
-                <Input name="valorExtenso" value={formData.valorExtenso} onChange={handleInputChange} className="inline w-2/3 h-6 border border-green-700 ml-2" />
-              </div>
-            </div>
-          </div>
 
           {/* Rodapé */}
           <div className="grid grid-cols-2 border border-green-700 mt-2">

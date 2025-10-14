@@ -228,16 +228,29 @@ const FormAS = () => {
             </div>
           </div>
 
-          {/* Observações */}
-          <div className="border border-green-700 text-center font-semibold text-sm">
-            O B S E R V A Ç Õ E S
-          </div>
-          <Textarea
-            name="observacoes"
-            value={formData.observacoes}
-            onChange={handleChange}
-            className="w-full h-20 border-x border-b border-green-700 resize-none text-sm"
-          />
+
+{/* Observações */}
+<div className="border border-green-700 text-center font-semibold text-sm py-[5px]">
+  OBSERVAÇÕES
+</div>
+
+
+<div className="border-x border-b border-green-700">
+  <div className="p-2 h-[150px]">
+    <textarea
+      name="observacoes"
+      value={formData.observacoes}
+      onChange={handleChange}
+      className="w-full h-full resize-none text-sm leading-relaxed outline-none border-none"
+      style={{
+        paddingTop: "4px",
+        display: "block",
+        transform: "translateY(2px)",
+      }}
+    />
+  </div>
+</div>
+
 
           {/* Autorizo + Recibo */}
           <div className="grid grid-cols-12 border border-green-700 text-sm mt-2">
@@ -268,8 +281,8 @@ const FormAS = () => {
                   Data{" "}
                   <div className="border-b border-green-700 w-24 inline-block ml-2" />
                 </div>
-                <div className="border-b border-green-700 w-40 text-center">
-                  Assinatura
+              <div className="border-b border-green-700 w-40 text-center">
+               
                 </div>
               </div>
             </div>
