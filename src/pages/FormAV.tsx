@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,6 +33,8 @@ const FormAV = () => {
     valorExtenso: "",
   });
 
+  const formRef = useRef(null);
+
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -40,19 +42,38 @@ const FormAV = () => {
     });
   };
 
+  // ✅ Igual ao PCSForm – Gera PDF com texto visível no lugar dos inputs
   const generatePDF = async () => {
-    const formElement = document.getElementById("form-av");
-    if (!formElement) {
-      alert("Erro: formulário não encontrado!");
-      return;
-    }
+        const element = document.querySelector("#form-av");
+    if (!formRef.current) return;
 
-    const canvas = await html2canvas(formElement, {
+
+    // 🔹 Substitui inputs e textarea por spans visíveis
+    const inputs = element.querySelectorAll("input, textarea");
+     const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
+
+        inputs.forEach((input) => {
+      const span = document.createElement("span");
+      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+      span.style.whiteSpace = "pre-wrap";
+      span.style.wordBreak = "break-word";
+      span.style.fontSize = window.getComputedStyle(input).fontSize;
+      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+      span.style.color = window.getComputedStyle(input).color;
+      span.style.padding = "2px";
+      span.style.display = "inline-block";
+      span.style.border = "1px solid transparent";
+      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+
+     input.parentNode?.insertBefore(span, input);
+      tempElements.push({ input: input as HTMLElement, span });
+      (input as HTMLElement).style.display = "none";
+    });
+    const canvas = await html2canvas(element as HTMLElement, {
       scale: 2,
       useCORS: true,
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: document.documentElement.offsetWidth,
+      backgroundColor: "#ffffff",
     });
 
     const imgData = canvas.toDataURL("image/png");
@@ -61,9 +82,15 @@ const FormAV = () => {
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Autorizacao_Viagem.pdf");
-  };
+    pdf.save("Autorizacao_de_Suprimento.pdf");
 
+    // 🔹 Restaura inputs originais
+    tempElements.forEach(({ input, span }) => {
+      input.style.display = "";
+      span.remove();
+    });
+  };
+  
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <style>{`
@@ -73,6 +100,7 @@ const FormAV = () => {
 
       <div className="container mx-auto px-4">
         <form
+          ref={formRef}
           id="form-av"
           className="bg-white border border-green-700 p-4 rounded-md max-w-5xl mx-auto text-sm"
         >
@@ -81,14 +109,11 @@ const FormAV = () => {
             {/* Logo */}
             <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 p-2">
               <img src="/SINPAF.png" alt="SINPAF" className="w-20 mb-1" />
-              <div className="text-xs text-green-700 font-semibold">
-                Filiação à CUT
-              </div>
             </div>
 
             {/* Título e seção */}
             <div className="col-span-6 border-r border-green-7 p-2 text-center">
-           <div className="text-green-700 font-semibold text-xs leading-tight mx-auto max-w-[240px] text-center break-words">
+              <div className="text-green-700 font-semibold text-xs leading-tight mx-auto max-w-[240px] text-center break-words">
                 Sindicato Nacional dos Trabalhadores de Pesquisa e Desenvolvimento Agropecuário
               </div>
               <div className="text-green-700 font-semibold text-sm mt-1">
@@ -238,50 +263,46 @@ const FormAV = () => {
               />
             </div>
 
-{/* Saída, Adiantamentos e Retorno */}
-<div className="grid grid-cols-3 border-t border-green-700 text-sm">
-  {/* Coluna 1 - Saída */}
-  <div className="border-r border-green-700 p-1 nowrap-input">
-    <span>Saída: Nº dias (C):</span>
-    <Input
-      name="saidaDiasC"
-      value={formData.saidaDiasC}
-      onChange={handleInputChange}
-      className="inline w-1/3 h-6 border border-green-700 ml-2"
-    />
-    <span>Valor das Diárias (C):</span>
-    <Input
-      name="valorDiariasC"
-      value={formData.valorDiariasC}
-      onChange={handleInputChange}
-      className="inline w-1/3 h-6 border border-green-700 ml-2"
-    />
-  </div>
+            {/* Saída / Adiantamentos / Retorno */}
+            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
+              <div className="border-r border-green-700 p-1 nowrap-input">
+                <span>Saída: Nº dias (C):</span>
+                <Input
+                  name="saidaDiasC"
+                  value={formData.saidaDiasC}
+                  onChange={handleInputChange}
+                  className="inline w-1/3 h-6 border border-green-700 ml-2"
+                />
+                <span>Valor das Diárias (C):</span>
+                <Input
+                  name="valorDiariasC"
+                  value={formData.valorDiariasC}
+                  onChange={handleInputChange}
+                  className="inline w-1/3 h-6 border border-green-700 ml-2"
+                />
+              </div>
 
-  {/* Coluna 2 - Adiantamentos */}
-  <div className="col-span-2 p-1 flex flex-col gap-1">
-    <div className="nowrap-input">
-      <span>Adiant. Total Diária de Capital:</span>
-      <Input
-        name="adiantCapital"
-        value={formData.adiantCapital}
-        onChange={handleInputChange}
-        className="inline w-1/2 h-6 border border-green-700 ml-2"
-      />
-    </div>
-    <div className="nowrap-input">
-      <span>Adiant. Total Diária de Interior:</span>
-      <Input
-        name="adiantInterior"
-        value={formData.adiantInterior}
-        onChange={handleInputChange}
-        className="inline w-1/2 h-6 border border-green-700 ml-2"
-      />
-    </div>
-  </div>
-</div>
-              
-
+              <div className="col-span-2 p-1 flex flex-col gap-1">
+                <div className="nowrap-input">
+                  <span>Adiant. Total Diária de Capital:</span>
+                  <Input
+                    name="adiantCapital"
+                    value={formData.adiantCapital}
+                    onChange={handleInputChange}
+                    className="inline w-1/2 h-6 border border-green-700 ml-2"
+                  />
+                </div>
+                <div className="nowrap-input">
+                  <span>Adiant. Total Diária de Interior:</span>
+                  <Input
+                    name="adiantInterior"
+                    value={formData.adiantInterior}
+                    onChange={handleInputChange}
+                    className="inline w-1/2 h-6 border border-green-700 ml-2"
+                  />
+                </div>
+              </div>
+            </div>
 
             <div className="grid grid-cols-3 border-t border-green-700 text-sm">
               <div className="border-r border-green-700 p-1 nowrap-input">
@@ -300,11 +321,8 @@ const FormAV = () => {
                   className="inline w-1/3 h-6 border border-green-700 ml-2"
                 />
               </div>
-                </div>
-                    </div>
-             
-             
-
+            </div>
+          </div>
 
           {/* Rodapé */}
           <div className="grid grid-cols-2 border border-green-700 mt-2">

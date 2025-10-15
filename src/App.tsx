@@ -49,12 +49,17 @@ function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4 relative">
           {/* Logo à esquerda */}
-          <Link
-            to="/home"
-            className="text-xl font-bold hover:opacity-80 transition-opacity z-10"
-          >
-            SINPAF
-          </Link>
+     <Link
+  to="/home"
+  className="flex items-center gap-2 text-xl font-bold hover:opacity-80 transition-opacity z-10"
+>
+  <img
+    src="/Sinpa.png"
+    alt="Logo SINPAF"
+    className="h-9 w-auto object-contain"
+  />
+  <span className="text-2xl">SINPAF</span>
+</Link>
 
           {/* Menu centralizado */}
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">

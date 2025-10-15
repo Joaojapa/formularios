@@ -20,7 +20,6 @@ const FormCD = () => {
     recebidoAssinatura: "",
   });
 
-  // ✅ Atualiza campos simples
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -28,14 +27,12 @@ const FormCD = () => {
     }));
   };
 
-  // ✅ Atualiza linhas de despesas
   const handleDespesaChange = (index, field, value) => {
     const newDespesas = [...formData.despesas];
     newDespesas[index] = { ...newDespesas[index], [field]: value };
     setFormData((prev) => ({ ...prev, despesas: newDespesas }));
   };
 
-  // ✅ Gera PDF idêntico à tela
   const generatePDF = async () => {
     const formElement = document.querySelector("form");
     const canvas = await html2canvas(formElement, {
@@ -58,9 +55,13 @@ const FormCD = () => {
         <form className="bg-white border border-green-700 p-4 rounded-md max-w-4xl mx-auto text-sm">
           {/* Cabeçalho */}
           <div className="grid grid-cols-12 border border-green-700">
+            {/* 🔹 LOGO ADICIONADA AQUI */}
             <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 py-2">
-              <div className="text-green-700 font-bold text-2xl">SINPAF</div>
-              <div className="text-red-600 text-xs font-semibold">Filiação à CUT</div>
+             <img
+                src="/SINPAF.png"
+                  alt="SINPAF"
+                    className="w-16 h-auto mb-1"
+              />
             </div>
 
             <div className="col-span-9 text-center">
@@ -92,7 +93,8 @@ const FormCD = () => {
             </div>
           </div>
 
-          {/* Tabela de despesas */}
+          {/* ... resto do seu código permanece idêntico */}
+          
           <div className="border border-green-700 mt-1">
             <div className="grid grid-cols-12 bg-green-50 border-b border-green-700 text-green-700 font-semibold text-xs">
               <div className="col-span-2 border-r border-green-700 text-center py-1">DATA</div>
@@ -134,7 +136,6 @@ const FormCD = () => {
               </div>
             ))}
 
-            {/* Total */}
             <div className="grid grid-cols-12 border-t border-green-700 text-xs font-semibold">
               <div className="col-span-10 border-r border-green-700 text-right text-green-700 py-1 pr-2">
                 TOTAL R$
@@ -147,7 +148,8 @@ const FormCD = () => {
                 />
               </div>
             </div>
-          <div className="border-t border-green-700 text-xs block">
+
+            <div className="border-t border-green-700 text-xs block">
               <div className="text-green-700 font-semibold py-1 pl-2 w-full">
                 TOTAL POR EXTENSO:
                 <Input
@@ -161,14 +163,10 @@ const FormCD = () => {
             </div>
           </div>
 
-          {/* Rodapé */}
+          {/* Rodapé e botão PDF continuam iguais */}
           <div className="grid grid-cols-3 border border-green-700 mt-2 text-xs font-semibold text-green-700">
-            <div className="border-r border-green-700 text-center py-1">
-              FAVORECIDO
-            </div>
-            <div className="border-r border-green-700 text-center py-1">
-              APROVAÇÃO
-            </div>
+            <div className="border-r border-green-700 text-center py-1">FAVORECIDO</div>
+            <div className="border-r border-green-700 text-center py-1">APROVAÇÃO</div>
             <div className="text-center py-1">
               RECEBI O VALOR REFERENTE À PRESENTE DESPESA
             </div>
@@ -215,14 +213,8 @@ const FormCD = () => {
             </div>
           </div>
 
-          {/* Botão PDF */}
           <div className="mt-6 flex justify-center">
-            <Button
-              type="button"
-              size="lg"
-              className="gap-2"
-              onClick={generatePDF}
-            >
+            <Button type="button" size="lg" className="gap-2" onClick={generatePDF}>
               <Download className="w-4 h-4" />
               Salvar como PDF
             </Button>

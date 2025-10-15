@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,19 +32,38 @@ const FormAS = () => {
     });
   };
 
-  // ✅ Função corrigida para gerar PDF
+  // ✅ Função atualizada com substituição de inputs e geração de PDF
   const generatePDF = async () => {
-    const formElement = document.getElementById("form-as");
+    const element = document.querySelector("#form-as");
+    if (!element) return;
 
-    if (!formElement) {
-      alert("Elemento do formulário não encontrado!");
-      return;
-    }
+    // 🔹 Substitui inputs/textarea por spans temporários
+    const inputs = element.querySelectorAll("input, textarea");
+    const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
-    const canvas = await html2canvas(formElement, {
+    inputs.forEach((input) => {
+      const span = document.createElement("span");
+      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+      span.style.whiteSpace = "pre-wrap";
+      span.style.wordBreak = "break-word";
+      span.style.fontSize = window.getComputedStyle(input).fontSize;
+      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+      span.style.color = window.getComputedStyle(input).color;
+      span.style.padding = "2px";
+      span.style.display = "inline-block";
+      span.style.border = "1px solid transparent";
+      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+
+      input.parentNode?.insertBefore(span, input);
+      tempElements.push({ input: input as HTMLElement, span });
+      (input as HTMLElement).style.display = "none";
+    });
+
+    // 🔹 Captura o formulário como imagem
+    const canvas = await html2canvas(element as HTMLElement, {
       scale: 2,
       useCORS: true,
-      logging: false,
       backgroundColor: "#ffffff",
     });
 
@@ -56,9 +74,15 @@ const FormAS = () => {
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Autorizacao_de_Suprimento.pdf");
+
+    // 🔹 Restaura inputs originais
+    tempElements.forEach(({ input, span }) => {
+      input.style.display = "";
+      span.remove();
+    });
   };
 
-  return (
+   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="container mx-auto px-4">
         {/* 🔹 ID do formulário corrigido */}
@@ -71,7 +95,7 @@ const FormAS = () => {
             <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 p-2">
               <img src="/SINPAF.png" alt="SINPAF" className="w-20 mb-1" />
               <div className="text-xs text-green-800 font-semibold">
-                Filiação à CUT
+              
               </div>
             </div>
 

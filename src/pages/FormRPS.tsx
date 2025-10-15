@@ -102,7 +102,7 @@ const FormRPS = () => {
                 Sindicato Nacional dos Trabalhadores de Pesquisa e Desenvolvimento Agropecuário
               </div>
               <div className="mt-2 text-left text-sm text-green-800 font-semibold">
-                <span className="inline-block align-middle">RPS</span>
+                <span className="inline-block align-middle"></span>
                 <span className="inline-block align-middle ml-3">{" "}</span>
                 <div className="mt-2">
                   <label className="font-semibold">SEÇÃO:</label>
