@@ -1,12 +1,15 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { toast } from "@/components/ui/use-toast";
 
-const NUM_ROWS = 35; // <- agora 35 linhas
+const NUM_ROWS = 35;
+
+const STORAGE_KEY = "formBFFData"; // 🔹 chave única para este formulário
 
 const FormBFF = () => {
   const formRef = useRef(null);
@@ -51,6 +54,26 @@ const FormBFF = () => {
     recebidoData: "",
   });
 
+  // 🔹 Carrega dados salvos do localStorage ao abrir a página
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      setHeader(data.header || {});
+      setFavorecido(data.favorecido || {});
+      setRows(data.rows || initialRows);
+      setSaldos(data.saldos || {});
+      setAssinaturas(data.assinaturas || {});
+    }
+  }, []);
+
+  // 🔹 Salva tudo no localStorage sempre que mudar
+  useEffect(() => {
+    const data = { header, favorecido, rows, saldos, assinaturas };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }, [header, favorecido, rows, saldos, assinaturas]);
+
+  // 🔹 Handlers de mudança
   const handleHeaderChange = (e) => {
     setHeader({ ...header, [e.target.name]: e.target.value });
   };
@@ -73,22 +96,63 @@ const FormBFF = () => {
     setAssinaturas({ ...assinaturas, [e.target.name]: e.target.value });
   };
 
+  // 🔹 Gera PDF
   const generatePDF = async () => {
-    if (!formRef.current) return;
+    const element = formRef.current;
+    if (!element) return;
 
-    const canvas = await html2canvas(formRef.current, {
+    toast({
+      title: "Gerando PDF...",
+      description: "Aguarde enquanto o formulário é processado.",
+    });
+
+    const inputs = element.querySelectorAll("input, textarea");
+    const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
+
+    inputs.forEach((input) => {
+      const span = document.createElement("span");
+      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+      span.style.whiteSpace = "pre-wrap";
+      span.style.wordBreak = "break-word";
+      span.style.fontSize = window.getComputedStyle(input).fontSize;
+      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+      span.style.color = window.getComputedStyle(input).color;
+      span.style.padding = "2px";
+      span.style.display = "inline-block";
+      span.style.border = "1px solid transparent";
+      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+
+      input.parentNode?.insertBefore(span, input);
+      tempElements.push({ input: input as HTMLElement, span });
+      (input as HTMLElement).style.display = "none";
+    });
+
+    const canvas = await html2canvas(element as HTMLElement, {
       scale: 2,
       useCORS: true,
-      allowTaint: true,
+      backgroundColor: "#ffffff",
     });
 
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Boletim_Fundo_Fixo.pdf");
+
+    tempElements.forEach(({ input, span }) => {
+      input.style.display = "";
+      span.remove();
+    });
+
+    toast({
+      title: "Download concluído!",
+      description: "O PDF foi gerado com sucesso.",
+    });
+
+    // 🔹 (Opcional) limpar o armazenamento após salvar PDF
+    // localStorage.removeItem(STORAGE_KEY);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +27,19 @@ const FormAP = () => {
   });
 
   const formRef = useRef<HTMLFormElement | null>(null);
+
+   // ✅ Carrega dados salvos do localStorage ao montar o componente
+  useEffect(() => {
+    const savedData = localStorage.getItem("formData_AP");
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
+
+  // ✅ Salva automaticamente no localStorage quando o formData muda
+  useEffect(() => {
+    localStorage.setItem("formData_AP", JSON.stringify(formData));
+  }, [formData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +24,21 @@ const FormAS = () => {
     valorExtenso: "",
     observacoes: "",
   });
+  
+ // ✅ Carrega dados salvos no localStorage ao abrir a página
+  useEffect(() => {
+    const savedData = localStorage.getItem("formASData");
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
+
+  // ✅ Salva automaticamente no localStorage sempre que formData muda
+  useEffect(() => {
+    localStorage.setItem("formASData", JSON.stringify(formData));
+  }, [formData]);
+
+
 
   const handleChange = (e) => {
     setFormData({

@@ -1,5 +1,4 @@
-// FormRPS.jsx
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,21 +6,18 @@ import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
+const STORAGE_KEY = "formRPSData"; // 🔹 Chave única no localStorage
+
 const FormRPS = () => {
   const [formData, setFormData] = useState({
-    // Cabeçalho
     secao: "",
     numero: "",
     ano: "",
-
-    // Recebimento
     recebiDe:
       "SINPAF - Sindicato Nacional dos Trabalhadores de Pesquisa e Desenvolvimento Agropecuário",
     quantia: "",
     valorExtenso: "",
     referente: "",
-
-    // Favorecido
     nome: "",
     cpfCnpj: "",
     endereco: "",
@@ -29,46 +25,77 @@ const FormRPS = () => {
     banco: "",
     agencia: "",
     cidadeUfBanco: "",
-
-    // Valores e históricos
     historico: "",
     valor: "",
     total: "",
-
-    // Descontos
     irrfPercent: "",
     issPercent: "",
     inssPercent: "",
     totalDescontos: "",
     valorBruto: "",
     valorLiquido: "",
-
-    // Info adicional
     tel: "",
     cpfN: "",
     inscrInss: "",
     local: "",
     data: "",
-
-    // Observações
     obs: "",
   });
-  
+
+  const formRef = useRef(null);
+
+  // 🔹 Carrega dados salvos ao iniciar
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      try {
+        setFormData(JSON.parse(savedData));
+      } catch {
+        console.warn("Erro ao ler dados salvos");
+      }
+    }
+  }, []);
+
+  // 🔹 Salva automaticamente sempre que o formData muda
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+  }, [formData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Gera e baixa PDF do formulário (captura a tag <form>)
   const generatePDF = async () => {
-    const formElement = document.querySelector("form");
-    if (!formElement) return;
+    const element = formRef.current;
+    if (!element) return;
+    console.log("Gerando PDF... aguarde.");
 
-    const canvas = await html2canvas(formElement, {
+    const inputs = element.querySelectorAll("input, textarea");
+    const tempElements = [];
+
+    inputs.forEach((input) => {
+      const span = document.createElement("span");
+      span.textContent = input.value;
+      span.style.whiteSpace = "pre-wrap";
+      span.style.wordBreak = "break-word";
+      span.style.fontSize = window.getComputedStyle(input).fontSize;
+      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+      span.style.color = window.getComputedStyle(input).color;
+      span.style.padding = "2px";
+      span.style.display = "inline-block";
+      span.style.border = "1px solid transparent";
+      span.style.width = `${input.offsetWidth}px`;
+      span.style.height = `${input.offsetHeight}px`;
+
+      input.parentNode.insertBefore(span, input);
+      tempElements.push({ input, span });
+      input.style.display = "none";
+    });
+
+    const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
-      allowTaint: true,
       backgroundColor: "#ffffff",
     });
 
@@ -79,13 +106,22 @@ const FormRPS = () => {
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Recibo_Prestacao_Servicos_RPS.pdf");
-  };
 
+    tempElements.forEach(({ input, span }) => {
+      input.style.display = "";
+      span.remove();
+    });
+
+    console.log("PDF gerado com sucesso!");
+  };
+  
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="container mx-auto px-4">
-        <form className="bg-white border border-green-800 p-0 rounded-md max-w-6xl mx-auto shadow-sm">
-          {/* === Top header with logo and RPS box === */}
+ <form
+  ref={formRef}
+  className="bg-white border border-green-800 p-0 rounded-md max-w-6xl mx-auto shadow-sm">
+        
           <div className="grid grid-cols-12 border border-green-800">
             {/* logo left */}
             <div className="col-span-3 border-r border-green-800 p-3 flex items-center justify-center">
@@ -472,5 +508,6 @@ const FormRPS = () => {
     </div>
   );
 };
+
 
 export default FormRPS;

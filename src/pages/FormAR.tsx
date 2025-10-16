@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,7 +10,26 @@ import jsPDF from "jspdf";
 export default function AutorizacaoRecebimento() {
   const { toast } = useToast();
 
-  // ✅ Gera PDF com campos visíveis (versão com substituição e restauração)
+  // 🔹 Estado que armazena todos os campos
+  const [formData, setFormData] = useState<{ [key: string]: string }>({});
+
+  // 🔹 Atualiza o estado ao digitar
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  // 🔹 Carrega dados do localStorage ao abrir a página
+  useEffect(() => {
+    const savedData = localStorage.getItem("formRecebimentoData");
+    if (savedData) setFormData(JSON.parse(savedData));
+  }, []);
+
+  // 🔹 Salva dados no localStorage sempre que mudar
+  useEffect(() => {
+    localStorage.setItem("formRecebimentoData", JSON.stringify(formData));
+  }, [formData]);
+
+  // ✅ Gera PDF com campos visíveis (mantendo valores)
   const generatePDF = async () => {
     const element = document.querySelector("#form-recebimento");
     if (!element) return;
@@ -19,7 +39,6 @@ export default function AutorizacaoRecebimento() {
       description: "Aguarde enquanto o formulário é processado.",
     });
 
-    // 🔹 Substitui inputs/textarea por spans temporários
     const inputs = element.querySelectorAll("input, textarea");
     const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
@@ -42,7 +61,6 @@ export default function AutorizacaoRecebimento() {
       (input as HTMLElement).style.display = "none";
     });
 
-    // 🔹 Captura o formulário como imagem
     const canvas = await html2canvas(element as HTMLElement, {
       scale: 2,
       useCORS: true,
@@ -56,7 +74,7 @@ export default function AutorizacaoRecebimento() {
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Autorizacao_Recebimento.pdf");
 
-    // 🔹 Restaura inputs originais
+    // Restaura os inputs
     tempElements.forEach(({ input, span }) => {
       input.style.display = "";
       span.remove();
@@ -66,6 +84,9 @@ export default function AutorizacaoRecebimento() {
       title: "Download concluído",
       description: "O PDF foi gerado com sucesso!",
     });
+
+    // (Opcional) limpar storage depois do PDF:
+    // localStorage.removeItem("formRecebimentoData");
   };
 
   return (
@@ -77,11 +98,7 @@ export default function AutorizacaoRecebimento() {
         {/* Cabeçalho */}
         <div className="grid grid-cols-12 border border-green-700 mb-1">
           <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 p-2">
-            <img
-              src="/SINPAF.png"
-              alt="Logo SINPAF"
-              className="w-16 h-16 object-contain mb-1"
-            />
+            <img src="/SINPAF.png" alt="Logo SINPAF" className="w-16 h-16 object-contain mb-1" />
           </div>
 
           <div className="col-span-6 text-center p-2 border-r border-green-700">
@@ -90,22 +107,35 @@ export default function AutorizacaoRecebimento() {
             </div>
             <div className="text-left mt-1 text-green-700 font-semibold text-sm">
               SEÇÃO:
-              <Input className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="secao"
+                value={formData.secao || ""}
+                onChange={handleChange}
+                className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
           </div>
 
           <div className="col-span-3 text-center p-2">
-            <div className="text-red-600 font-bold text-sm">
-              AUTORIZAÇÃO DE RECEBIMENTO - AR
-            </div>
+            <div className="text-red-600 font-bold text-sm">AUTORIZAÇÃO DE RECEBIMENTO - AR</div>
             <div className="flex justify-between text-green-700 text-sm mt-1">
               <div>
                 Nº
-                <Input className="inline w-16 h-6 border border-green-700 ml-1 text-sm rounded-none focus:outline-none focus:ring-0" />
+                <Input
+                  name="numero"
+                  value={formData.numero || ""}
+                  onChange={handleChange}
+                  className="inline w-16 h-6 border border-green-700 ml-1 text-sm rounded-none focus:outline-none focus:ring-0"
+                />
               </div>
               <div>
                 ANO:
-                <Input className="inline w-16 h-6 border border-green-700 ml-1 text-sm rounded-none focus:outline-none focus:ring-0" />
+                <Input
+                  name="ano"
+                  value={formData.ano || ""}
+                  onChange={handleChange}
+                  className="inline w-16 h-6 border border-green-700 ml-1 text-sm rounded-none focus:outline-none focus:ring-0"
+                />
               </div>
             </div>
           </div>
@@ -113,44 +143,77 @@ export default function AutorizacaoRecebimento() {
 
         {/* Favorecido */}
         <div className="border border-green-700">
-          <div className="bg-green-700 text-white text-sm px-2 py-1 font-semibold">
-            FAVORECIDO
-          </div>
+          <div className="bg-green-700 text-white text-sm px-2 py-1 font-semibold">FAVORECIDO</div>
 
           <div className="grid grid-cols-2 border-t border-green-700 text-sm">
             <div className="border-r border-green-700 p-1">
               Nome:
-              <Input className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="nome"
+                value={formData.nome || ""}
+                onChange={handleChange}
+                className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
             <div className="p-1">
               CPF/CNPJ:
-              <Input className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="cpf"
+                value={formData.cpf || ""}
+                onChange={handleChange}
+                className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-2 border-t border-green-700 text-sm">
             <div className="border-r border-green-700 p-1">
               Endereço:
-              <Input className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="endereco"
+                value={formData.endereco || ""}
+                onChange={handleChange}
+                className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
             <div className="p-1">
               Cidade/UF:
-              <Input className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="cidadeUF"
+                value={formData.cidadeUF || ""}
+                onChange={handleChange}
+                className="inline w-4/6 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-3 border-t border-green-700 text-sm font-semibold">
             <div className="border-r border-green-700 p-1 flex items-center">
               <span className="whitespace-nowrap text-green-700">Banco/C.C.:</span>
-              <Input className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="banco"
+                value={formData.banco || ""}
+                onChange={handleChange}
+                className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
             <div className="border-r border-green-700 p-1 flex items-center">
               <span className="whitespace-nowrap text-green-700">Agência:</span>
-              <Input className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="agencia"
+                value={formData.agencia || ""}
+                onChange={handleChange}
+                className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
             <div className="p-1 flex items-center">
               <span className="whitespace-nowrap text-green-700">Cidade/UF:</span>
-              <Input className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="bancoCidadeUF"
+                value={formData.bancoCidadeUF || ""}
+                onChange={handleChange}
+                className="ml-2 flex-1 h-6 border border-green-700 text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
           </div>
         </div>
@@ -163,10 +226,20 @@ export default function AutorizacaoRecebimento() {
           </div>
           <div className="grid grid-cols-6 text-sm">
             <div className="col-span-5 border-r border-green-700">
-              <Textarea className="w-full h-40 border-none resize-none text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Textarea
+                name="historico"
+                value={formData.historico || ""}
+                onChange={handleChange}
+                className="w-full h-40 border-none resize-none text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
             <div className="col-span-1">
-              <Textarea className="w-full h-40 border-none resize-none text-sm text-right rounded-none focus:outline-none focus:ring-0" />
+              <Textarea
+                name="valor"
+                value={formData.valor || ""}
+                onChange={handleChange}
+                className="w-full h-40 border-none resize-none text-sm text-right rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
           </div>
           <div className="grid grid-cols-6 border-t border-green-700 text-sm">
@@ -174,7 +247,12 @@ export default function AutorizacaoRecebimento() {
               TOTAL
             </div>
             <div className="col-span-1 text-right p-1">
-              <Input className="w-full text-right border-none font-semibold text-sm rounded-none focus:outline-none focus:ring-0" />
+              <Input
+                name="total"
+                value={formData.total || ""}
+                onChange={handleChange}
+                className="w-full text-right border-none font-semibold text-sm rounded-none focus:outline-none focus:ring-0"
+              />
             </div>
           </div>
         </div>

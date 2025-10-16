@@ -1,5 +1,4 @@
-// src/components/FormPCV.jsx
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,180 +6,202 @@ import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-/**
- * FormPCV.jsx
- * PCV - Prestação de Contas de Viagem
- * - Usa public/SINPAF.png como logo
- * - Gera PDF Prestacao_Contas_Viagem.pdf
- * - Todos os campos editáveis (Inputs / Textareas)
- * - Layout inspirado na imagem fornecida
- */
-
-const NUM_ITEM_ROWS = 12; // número de linhas na tabela de despesas (ITEM / HISTÓRICO / DIÁRIAS / HOSPEDAGEM / OUTRAS)
+const NUM_ITEM_ROWS = 12;
 
 const FormPCV = () => {
   const formRef = useRef(null);
 
-  // Cabeçalho
-  const [cabecalho, setCabecalho] = useState({
-    secao: "",
-    numero: "",
-    ano: "",
-    sinpafChecked: false,
-    convidadoChecked: false,
-    // outros campos se desejar
-  });
+  // ✅ Carrega dados salvos antes de renderizar
+  const saved = typeof window !== "undefined" ? localStorage.getItem("formPCVData") : null;
+  const savedData = saved ? JSON.parse(saved) : null;
 
-  // Favorecido bloco
-  const [favorecido, setFavorecido] = useState({
-    nome: "",
-    cpf: "",
-    cargo: "",
-    banco: "",
-    agencia: "",
-    cidadeEstado: "",
-    cc: "",
-  });
+  // --- Estados principais com dados salvos ou padrão ---
+  const [cabecalho, setCabecalho] = useState(
+    savedData?.cabecalho || {
+      secao: "",
+      numero: "",
+      ano: "",
+      sinpafChecked: false,
+      convidadoChecked: false,
+    }
+  );
 
-  // Roteiro / Objetivo / Observações principais
-  const [roteiro, setRoteiro] = useState("");
-  const [objetivo, setObjetivo] = useState("");
-  const [obsPrincipais, setObsPrincipais] = useState("");
+  const [favorecido, setFavorecido] = useState(
+    savedData?.favorecido || {
+      nome: "",
+      cpf: "",
+      cargo: "",
+      banco: "",
+      agencia: "",
+      cidadeEstado: "",
+      cc: "",
+    }
+  );
 
-  // Saída / Retorno / Outros / Valores
-  const [viagemInfo, setViagemInfo] = useState({
-    saidaDias: "",
-    saidaValorDiarias: "",
-    saidaAdiantDiariaCapital: "",
-    retornoDias: "",
-    retornoValorDiarias: "",
-    retornoAdiantDiariaInterior: "",
-    outrosDescricao: "",
-    outrosValor: "",
-    totalAdiantamento: "",
-    valorTotal: "",
-    valorPorExtenso: "",
-  });
+  const [roteiro, setRoteiro] = useState(savedData?.roteiro || "");
+  const [objetivo, setObjetivo] = useState(savedData?.objetivo || "");
+  const [obsPrincipais, setObsPrincipais] = useState(savedData?.obsPrincipais || "");
 
-  // Adiantamento recebido em passagem
-  const [passagem, setPassagem] = useState({
-    fornecedor: "",
-    numBilhete: "",
-    trechos: "",
-  });
+  const [viagemInfo, setViagemInfo] = useState(
+    savedData?.viagemInfo || {
+      saidaDias: "",
+      saidaValorDiarias: "",
+      saidaAdiantDiariaCapital: "",
+      retornoDias: "",
+      retornoValorDiarias: "",
+      retornoAdiantDiariaInterior: "",
+      outrosDescricao: "",
+      outrosValor: "",
+      totalAdiantamento: "",
+      valorTotal: "",
+      valorPorExtenso: "",
+    }
+  );
 
-  // Periodo efetivo da viagem
-  const [periodoViagem, setPeriodoViagem] = useState({
-    saidaData: "",
-    saidaHora: "",
-    retornoData: "",
-    retornoHora: "",
-    nDiasC: "",
-    valorDiariasC: "",
-    nDiasI: "",
-    valorDiariasI: "",
-  });
+  const [passagem, setPassagem] = useState(
+    savedData?.passagem || {
+      fornecedor: "",
+      numBilhete: "",
+      trechos: "",
+    }
+  );
 
-  // Itens de despesas (linha por linha)
-  const initialItems = Array.from({ length: NUM_ITEM_ROWS }, (_, i) => ({
-    item: i + 1,
-    historico: i === 0 ? "DIÁRIAS" : i === 1 ? "TÁXI URBANO" : "",
-    diarias: "",
-    hospedagem: "",
-    outras: "",
-  }));
-  const [items, setItems] = useState(initialItems);
+  const [periodoViagem, setPeriodoViagem] = useState(
+    savedData?.periodoViagem || {
+      saidaData: "",
+      saidaHora: "",
+      retornoData: "",
+      retornoHora: "",
+      nDiasC: "",
+      valorDiariasC: "",
+      nDiasI: "",
+      valorDiariasI: "",
+    }
+  );
 
-  // Totais / Saldo / Receber/Devolver checks
-  const [totais, setTotais] = useState({
-    totalDespesasDiarias: "",
-    totalDespesasHospedagem: "",
-    totalDespesasOutras: "",
-    adiantamentoRecebidoEspecie: "",
-    totalGeralDespesa: "",
-    saldoTipo: "", // "Receber" | "Devolver"
-  });
+  const [items, setItems] = useState(
+    savedData?.items ||
+      Array.from({ length: NUM_ITEM_ROWS }, (_, i) => ({
+        item: i + 1,
+        historico: i === 0 ? "DIÁRIAS" : i === 1 ? "TÁXI URBANO" : "",
+        diarias: "",
+        hospedagem: "",
+        outras: "",
+      }))
+  );
 
-  // Observações vertical (apenas texto)
-  const [observacaoVertical, setObservacaoVertical] = useState("");
+  const [totais, setTotais] = useState(
+    savedData?.totais || {
+      totalDespesasDiarias: "",
+      totalDespesasHospedagem: "",
+      totalDespesasOutras: "",
+      adiantamentoRecebidoEspecie: "",
+      totalGeralDespesa: "",
+      saldoTipo: "",
+    }
+  );
 
-  // Rodapé assinaturas
-  const [rodape, setRodape] = useState({
-    emitenteData: "",
-    emitenteVisto: "",
-    recebiDocData: "",
-    recebiDocVisto: "",
-    conferidoData: "",
-    conferidoVisto: "",
-    aprovacaoData: "",
-    aprovacaoVisto: "",
-    recebiLocal: "",
-    recebiDataFinal: "",
-    recebiAssinatura: "",
-  });
+  const [observacaoVertical, setObservacaoVertical] = useState(savedData?.observacaoVertical || "");
 
-  // Handlers gerais
+  const [rodape, setRodape] = useState(
+    savedData?.rodape || {
+      emitenteData: "",
+      emitenteVisto: "",
+      recebiDocData: "",
+      recebiDocVisto: "",
+      conferidoData: "",
+      conferidoVisto: "",
+      aprovacaoData: "",
+      aprovacaoVisto: "",
+      recebiLocal: "",
+      recebiDataFinal: "",
+      recebiAssinatura: "",
+    }
+  );
+
+  // ✅ Salva automaticamente no localStorage sempre que algo muda
+  useEffect(() => {
+    const dataToSave = {
+      cabecalho,
+      favorecido,
+      roteiro,
+      objetivo,
+      obsPrincipais,
+      viagemInfo,
+      passagem,
+      periodoViagem,
+      items,
+      totais,
+      observacaoVertical,
+      rodape,
+    };
+    localStorage.setItem("formPCVData", JSON.stringify(dataToSave));
+  }, [
+    cabecalho,
+    favorecido,
+    roteiro,
+    objetivo,
+    obsPrincipais,
+    viagemInfo,
+    passagem,
+    periodoViagem,
+    items,
+    totais,
+    observacaoVertical,
+    rodape,
+  ]);
+
+  // --- Seus handlers (mantêm o mesmo código) ---
   const handleCabecalhoChange = (e) => {
     const { name, value, type, checked } = e.target;
     setCabecalho((s) => ({ ...s, [name]: type === "checkbox" ? checked : value }));
   };
+  const handleFavChange = (e) => setFavorecido((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const handleViagemInfoChange = (e) => setViagemInfo((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const handlePassagemChange = (e) => setPassagem((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const handlePeriodoChange = (e) => setPeriodoViagem((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const handleItemChange = (i, f, v) => setItems((p) => p.map((it, idx) => (idx === i ? { ...it, [f]: v } : it)));
+  const handleTotaisChange = (e) => setTotais((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const handleRodapeChange = (e) => setRodape((s) => ({ ...s, [e.target.name]: e.target.value }));
 
-  const handleFavChange = (e) => {
-    const { name, value } = e.target;
-    setFavorecido((s) => ({ ...s, [name]: value }));
-  };
-
-  const handleViagemInfoChange = (e) => {
-    const { name, value } = e.target;
-    setViagemInfo((s) => ({ ...s, [name]: value }));
-  };
-
-  const handlePassagemChange = (e) => {
-    const { name, value } = e.target;
-    setPassagem((s) => ({ ...s, [name]: value }));
-  };
-
-  const handlePeriodoChange = (e) => {
-    const { name, value } = e.target;
-    setPeriodoViagem((s) => ({ ...s, [name]: value }));
-  };
-
-  const handleItemChange = (index, field, value) => {
-    setItems((prev) => {
-      const copy = [...prev];
-      copy[index] = { ...copy[index], [field]: value };
-      return copy;
-    });
-  };
-
-  const handleTotaisChange = (e) => {
-    const { name, value } = e.target;
-    setTotais((s) => ({ ...s, [name]: value }));
-  };
-
-  const handleRodapeChange = (e) => {
-    const { name, value } = e.target;
-    setRodape((s) => ({ ...s, [name]: value }));
-  };
-
-  // PDF
+  // --- Seu generatePDF igual ---
   const generatePDF = async () => {
-    if (!formRef.current) return;
+    const element = formRef.current;
+    if (!element) return;
+    const inputs = element.querySelectorAll("input, textarea");
+    const tempElements = [];
 
-    // html2canvas com escala para qualidade
-    const canvas = await html2canvas(formRef.current, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
+    inputs.forEach((input) => {
+      const span = document.createElement("span");
+      span.textContent = input.value;
+      span.style.whiteSpace = "pre-wrap";
+      span.style.wordBreak = "break-word";
+      span.style.fontSize = window.getComputedStyle(input).fontSize;
+      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+      span.style.color = window.getComputedStyle(input).color;
+      span.style.padding = "2px";
+      span.style.display = "inline-block";
+      span.style.border = "1px solid transparent";
+      span.style.width = `${input.offsetWidth}px`;
+      span.style.height = `${input.offsetHeight}px`;
+
+      input.parentNode.insertBefore(span, input);
+      tempElements.push({ input, span });
+      input.style.display = "none";
     });
 
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Prestacao_Contas_Viagem.pdf");
+
+    tempElements.forEach(({ input, span }) => {
+      input.style.display = "";
+      span.remove();
+    });
   };
 
   // markup — replicando fielmente o layout com Tailwind classes e bordas verdes

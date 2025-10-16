@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,21 +6,23 @@ import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-const NUM_BANCOS_ROWS = 6; // linhas para discriminação das disponibilidades bancárias
-const NUM_APLIC_ROWS = 6; // linhas para discriminação das aplicações financeiras
+const NUM_BANCOS_ROWS = 6;
+const NUM_APLIC_ROWS = 6;
 
 const FormBCB = () => {
   const formRef = useRef(null);
 
-  // Header
-  const [header, setHeader] = useState({
+  // ✅ Carrega os dados salvos antes de criar o estado
+  const saved = typeof window !== "undefined" ? localStorage.getItem("formBCBData") : null;
+  const savedData = saved ? JSON.parse(saved) : null;
+
+  const [header, setHeader] = useState(savedData?.header || {
     secao: "",
     numero: "",
     periodo: "",
   });
 
-  // 1 - Resumo (linhas Caixa, Bancos, SUB-TOTAL, Aplicações, TOTAL)
-  const [resumo, setResumo] = useState({
+  const [resumo, setResumo] = useState(savedData?.resumo || {
     caixa: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
     bancos: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
     subTotal: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
@@ -28,38 +30,53 @@ const FormBCB = () => {
     total: { saldoAnterior: "", entradas: "", saidas: "", saldoAtual: "" },
   });
 
-  // 2 - Discriminação das disponibilidades bancárias
-  const initialBancos = Array.from({ length: NUM_BANCOS_ROWS }, () => ({
-    instituicao: "",
-    saldoAnterior: "",
-    entradas: "",
-    saidas: "",
-    saldoAtual: "",
-  }));
-  const [bancosRows, setBancosRows] = useState(initialBancos);
+  const [bancosRows, setBancosRows] = useState(
+    savedData?.bancosRows ||
+      Array.from({ length: NUM_BANCOS_ROWS }, () => ({
+        instituicao: "",
+        saldoAnterior: "",
+        entradas: "",
+        saidas: "",
+        saldoAtual: "",
+      }))
+  );
 
-  // 3 - Discriminação das aplicações financeiras
-  const initialAplic = Array.from({ length: NUM_APLIC_ROWS }, () => ({
-    instituicao: "",
-    tipo: "",
-    dataAplicacao: "",
-    resgate: "",
-    valor: "",
-  }));
-  const [aplicRows, setAplicRows] = useState(initialAplic);
+  const [aplicRows, setAplicRows] = useState(
+    savedData?.aplicRows ||
+      Array.from({ length: NUM_APLIC_ROWS }, () => ({
+        instituicao: "",
+        tipo: "",
+        dataAplicacao: "",
+        resgate: "",
+        valor: "",
+      }))
+  );
 
-  // Observações
-  const [observacoes, setObservacoes] = useState("");
+  const [observacoes, setObservacoes] = useState(savedData?.observacoes || "");
 
-  // Rodapé assinaturas
-  const [assinaturas, setAssinaturas] = useState({
-    preparadoNome: "",
-    preparadoData: "",
-    conferidoNome: "",
-    conferidoData: "",
-    aprovadoNome: "",
-    aprovadoData: "",
-  });
+  const [assinaturas, setAssinaturas] = useState(
+    savedData?.assinaturas || {
+      preparadoNome: "",
+      preparadoData: "",
+      conferidoNome: "",
+      conferidoData: "",
+      aprovadoNome: "",
+      aprovadoData: "",
+    }
+  );
+
+  // ✅ Salva automaticamente no localStorage ao alterar qualquer coisa
+  useEffect(() => {
+    const dataToSave = {
+      header,
+      resumo,
+      bancosRows,
+      aplicRows,
+      observacoes,
+      assinaturas,
+    };
+    localStorage.setItem("formBCBData", JSON.stringify(dataToSave));
+  }, [header, resumo, bancosRows, aplicRows, observacoes, assinaturas]);
 
   const handleHeaderChange = (e) => {
     setHeader({ ...header, [e.target.name]: e.target.value });
@@ -91,7 +108,6 @@ const FormBCB = () => {
   const generatePDF = async () => {
     if (!formRef.current) return;
 
-    // html2canvas com scale maior para melhor resolução no PDF
     const canvas = await html2canvas(formRef.current, {
       scale: 2,
       useCORS: true,

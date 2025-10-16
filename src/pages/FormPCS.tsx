@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,36 +6,50 @@ import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-// PCS - PRESTAÇÃO DE CONTAS DE SUPRIMENTO
 export default function PCSForm() {
-  const [formData, setFormData] = useState({
-    secao: "",
-    numero: "",
-    ano: "",
-    nome: "",
-    cpfCnpj: "",
-    cargo: "",
-    cidadeEstado: "",
-    agenciaCodigo: "",
-    bancoNomeCodigo: "",
-    contaCorrente: "",
-    objetivo: "",
-    valorEmRs: "",
-    porExtenso: "",
-    docHistorico: Array.from({ length: 8 }).map(() => ({ historico: "", valor: "" })),
-    totalDespesas: "",
-    observacao: "",
-    valorSuprimento: "",
-    despesasRealizadas: "",
-    saldoReceber: false,
-    saldoDevolver: false,
-  });
-
   const formRef = useRef(null);
 
+  // ✅ 1. Carrega dados salvos (antes de renderizar)
+  const saved = typeof window !== "undefined" ? localStorage.getItem("pcsFormData") : null;
+  const savedData = saved ? JSON.parse(saved) : null;
+
+  const [formData, setFormData] = useState(
+    savedData || {
+      secao: "",
+      numero: "",
+      ano: "",
+      nome: "",
+      cpfCnpj: "",
+      cargo: "",
+      cidadeEstado: "",
+      agenciaCodigo: "",
+      bancoNomeCodigo: "",
+      contaCorrente: "",
+      objetivo: "",
+      valorEmRs: "",
+      porExtenso: "",
+      docHistorico: Array.from({ length: 8 }).map(() => ({ historico: "", valor: "" })),
+      totalDespesas: "",
+      observacao: "",
+      valorSuprimento: "",
+      despesasRealizadas: "",
+      saldoReceber: false,
+      saldoDevolver: false,
+    }
+  );
+
+  // ✅ 2. Salva automaticamente no localStorage sempre que muda
+  useEffect(() => {
+    localStorage.setItem("pcsFormData", JSON.stringify(formData));
+  }, [formData]);
+
+  // ✅ 3. Manipuladores de estado
   function handleInputChange(e) {
-    const { name, value } = e.target;
-    setFormData((s) => ({ ...s, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((s) => ({
+      ...s,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   }
 
   function handleDocChange(index, field, value) {
@@ -46,12 +60,12 @@ export default function PCSForm() {
     });
   }
 
-  // ✅ Gera PDF mostrando os textos digitados
+  // ✅ 4. Gera PDF mostrando os textos digitados
   const generatePDF = async () => {
     if (!formRef.current) return;
     const element = formRef.current;
 
-    // 🔹 Substitui inputs/textarea por spans com o texto visível
+    // Substitui inputs/textarea por spans pra mostrar os textos
     const inputs = element.querySelectorAll("input, textarea");
     const tempElements = [];
 
@@ -74,7 +88,7 @@ export default function PCSForm() {
       input.style.display = "none";
     });
 
-    // 🔹 Captura a tela
+    // Captura o formulário em imagem
     const canvas = await html2canvas(element, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
@@ -83,12 +97,13 @@ export default function PCSForm() {
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("PCS_Prestacao_Contas_Suprimento.pdf");
 
-    // 🔹 Restaura inputs originais
+    // Restaura os inputs originais
     tempElements.forEach(({ input, span }) => {
       input.style.display = "";
       span.remove();
     });
   };
+
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">

@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
+const STORAGE_KEY = "formCDData"; // 🔹 chave única no localStorage
+
 const FormCD = () => {
+  const formRef = useRef(null);
+
   const [formData, setFormData] = useState({
     cd: "",
     secao: "",
-    despesas: Array(12).fill({ data: "", discriminacao: "", valor: "" }),
+    despesas: Array.from({ length: 12 }, () => ({
+      data: "",
+      discriminacao: "",
+      valor: "",
+    })),
     total: "",
     totalExtenso: "",
     favorecidoData: "",
@@ -20,11 +28,19 @@ const FormCD = () => {
     recebidoAssinatura: "",
   });
 
+  // 🔹 Carregar dados salvos no localStorage ao abrir
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) setFormData(JSON.parse(saved));
+  }, []);
+
+  // 🔹 Salvar automaticamente sempre que algo muda
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+  }, [formData]);
+
   const handleInputChange = (name, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleDespesaChange = (index, field, value) => {
@@ -34,10 +50,39 @@ const FormCD = () => {
   };
 
   const generatePDF = async () => {
-    const formElement = document.querySelector("form");
-    const canvas = await html2canvas(formElement, {
+    const element = formRef.current;
+    if (!element) return;
+
+    alert("Gerando PDF... Aguarde enquanto o formulário é processado.");
+
+    // Substitui inputs por spans (melhor renderização no PDF)
+    const inputs = element.querySelectorAll("input, textarea");
+    const tempElements = [];
+
+    inputs.forEach((input) => {
+      const span = document.createElement("span");
+      span.textContent = input.value;
+      span.style.whiteSpace = "pre-wrap";
+      span.style.wordBreak = "break-word";
+      span.style.fontSize = window.getComputedStyle(input).fontSize;
+      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+      span.style.color = window.getComputedStyle(input).color;
+      span.style.padding = "2px";
+      span.style.display = "inline-block";
+      span.style.border = "1px solid transparent";
+      span.style.width = `${input.offsetWidth}px`;
+      span.style.height = `${input.offsetHeight}px`;
+
+      input.parentNode.insertBefore(span, input);
+      tempElements.push({ input, span });
+      input.style.display = "none";
+    });
+
+    // Captura a tela
+    const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
+      backgroundColor: "#ffffff",
     });
 
     const imgData = canvas.toDataURL("image/png");
@@ -47,20 +92,32 @@ const FormCD = () => {
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Comprovante_de_Despesas.pdf");
-  };
 
+    // Restaura os inputs
+    tempElements.forEach(({ input, span }) => {
+      input.style.display = "";
+      span.remove();
+    });
+
+    alert("Download concluído! O PDF foi gerado com sucesso.");
+
+    // 🔹 (Opcional) limpar storage depois de gerar PDF
+    // localStorage.removeItem(STORAGE_KEY);
+  };
   return (
     <div className="min-h-screen bg-gray-100 py-6">
       <div className="container mx-auto px-4">
-        <form className="bg-white border border-green-700 p-4 rounded-md max-w-4xl mx-auto text-sm">
+        <form
+          ref={formRef}
+          className="bg-white border border-green-700 p-4 rounded-md max-w-4xl mx-auto text-sm"
+        >
           {/* Cabeçalho */}
           <div className="grid grid-cols-12 border border-green-700">
-            {/* 🔹 LOGO ADICIONADA AQUI */}
             <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 py-2">
-             <img
+              <img
                 src="/SINPAF.png"
-                  alt="SINPAF"
-                    className="w-16 h-auto mb-1"
+                alt="SINPAF"
+                className="w-16 h-auto mb-1"
               />
             </div>
 
@@ -93,11 +150,12 @@ const FormCD = () => {
             </div>
           </div>
 
-          {/* ... resto do seu código permanece idêntico */}
-          
+          {/* Tabela de despesas */}
           <div className="border border-green-700 mt-1">
             <div className="grid grid-cols-12 bg-green-50 border-b border-green-700 text-green-700 font-semibold text-xs">
-              <div className="col-span-2 border-r border-green-700 text-center py-1">DATA</div>
+              <div className="col-span-2 border-r border-green-700 text-center py-1">
+                DATA
+              </div>
               <div className="col-span-8 border-r border-green-700 text-center py-1">
                 DISCRIMINAÇÃO
               </div>
@@ -105,7 +163,10 @@ const FormCD = () => {
             </div>
 
             {formData.despesas.map((linha, index) => (
-              <div key={index} className="grid grid-cols-12 border-t border-green-700 text-xs">
+              <div
+                key={index}
+                className="grid grid-cols-12 border-t border-green-700 text-xs"
+              >
                 <div className="col-span-2 border-r border-green-700">
                   <Input
                     value={linha.data}
@@ -163,10 +224,14 @@ const FormCD = () => {
             </div>
           </div>
 
-          {/* Rodapé e botão PDF continuam iguais */}
+          {/* Rodapé */}
           <div className="grid grid-cols-3 border border-green-700 mt-2 text-xs font-semibold text-green-700">
-            <div className="border-r border-green-700 text-center py-1">FAVORECIDO</div>
-            <div className="border-r border-green-700 text-center py-1">APROVAÇÃO</div>
+            <div className="border-r border-green-700 text-center py-1">
+              FAVORECIDO
+            </div>
+            <div className="border-r border-green-700 text-center py-1">
+              APROVAÇÃO
+            </div>
             <div className="text-center py-1">
               RECEBI O VALOR REFERENTE À PRESENTE DESPESA
             </div>
@@ -213,8 +278,14 @@ const FormCD = () => {
             </div>
           </div>
 
+          {/* Botão PDF */}
           <div className="mt-6 flex justify-center">
-            <Button type="button" size="lg" className="gap-2" onClick={generatePDF}>
+            <Button
+              type="button"
+              size="lg"
+              className="gap-2"
+              onClick={generatePDF}
+            >
               <Download className="w-4 h-4" />
               Salvar como PDF
             </Button>
