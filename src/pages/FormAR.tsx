@@ -143,7 +143,7 @@ export default function AutorizacaoRecebimento() {
 
         {/* Favorecido */}
         <div className="border border-green-700">
-          <div className="bg-green-700 text-white text-sm px-2 py-1 font-semibold">FAVORECIDO</div>
+          <div className="bg-green-700 text-white text-sm px-2 py-1 font-semibold">DEPOSITANTE</div>
 
           <div className="grid grid-cols-2 border-t border-green-700 text-sm">
             <div className="border-r border-green-700 p-1">
@@ -177,7 +177,7 @@ export default function AutorizacaoRecebimento() {
               />
             </div>
             <div className="p-1">
-              Cidade/UF:
+              Conta de recebimento
               <Input
                 name="cidadeUF"
                 value={formData.cidadeUF || ""}
@@ -189,7 +189,7 @@ export default function AutorizacaoRecebimento() {
 
           <div className="grid grid-cols-3 border-t border-green-700 text-sm font-semibold">
             <div className="border-r border-green-700 p-1 flex items-center">
-              <span className="whitespace-nowrap text-green-700">Banco/C.C.:</span>
+              <span className="whitespace-nowrap text-green-700">R$:</span>
               <Input
                 name="banco"
                 value={formData.banco || ""}
@@ -207,7 +207,7 @@ export default function AutorizacaoRecebimento() {
               />
             </div>
             <div className="p-1 flex items-center">
-              <span className="whitespace-nowrap text-green-700">Cidade/UF:</span>
+              <span className="whitespace-nowrap text-green-700">Por Extensão:</span>
               <Input
                 name="bancoCidadeUF"
                 value={formData.bancoCidadeUF || ""}

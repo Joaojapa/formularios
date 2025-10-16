@@ -24,11 +24,12 @@ const FormAP = () => {
     historico: "",
     valor: "",
     total: "",
+    dataRecebimento: "", // ✅ Novo campo de data
   });
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
-   // ✅ Carrega dados salvos do localStorage ao montar o componente
+  // ✅ Carrega dados salvos do localStorage ao montar o componente
   useEffect(() => {
     const savedData = localStorage.getItem("formData_AP");
     if (savedData) {
@@ -48,7 +49,7 @@ const FormAP = () => {
     });
   };
 
-  // ✅ Nova função completa (com substituição e restauração de inputs)
+  // ✅ Gera o PDF (com substituição e restauração dos inputs)
   const generatePDF = async () => {
     const element = formRef.current;
     if (!element) return;
@@ -58,13 +59,20 @@ const FormAP = () => {
       description: "Aguarde enquanto o formulário é processado.",
     });
 
-    // 🔹 Substitui inputs/textarea por spans temporários
     const inputs = element.querySelectorAll("input, textarea");
     const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
     inputs.forEach((input) => {
       const span = document.createElement("span");
-      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+      let value = (input as HTMLInputElement | HTMLTextAreaElement).value;
+
+      // ✅ Formata a data para DD/MM/AAAA no PDF
+      if ((input as HTMLInputElement).type === "date" && value) {
+        const [yyyy, mm, dd] = value.split("-");
+        value = `${dd}/${mm}/${yyyy}`;
+      }
+
+      span.textContent = value;
       span.style.whiteSpace = "pre-wrap";
       span.style.wordBreak = "break-word";
       span.style.fontSize = window.getComputedStyle(input).fontSize;
@@ -81,7 +89,6 @@ const FormAP = () => {
       (input as HTMLElement).style.display = "none";
     });
 
-    // 🔹 Captura o formulário como imagem
     const canvas = await html2canvas(element as HTMLElement, {
       scale: 2,
       useCORS: true,
@@ -95,7 +102,6 @@ const FormAP = () => {
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Autorizacao_Pagamento.pdf");
 
-    // 🔹 Restaura inputs originais
     tempElements.forEach(({ input, span }) => {
       input.style.display = "";
       span.remove();
@@ -293,9 +299,20 @@ const FormAP = () => {
             <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1">
               APROVAÇÃO
             </div>
+
+            {/* ✅ Campo de data com seletor */}
             <div className="text-center p-1 text-[11px]">
               Recebi o valor líquido constante acima
-              <br />____/____/____ Data
+              <div className="flex items-center justify-center mt-1 gap-2">
+                <Input
+                  type="date"
+                  name="dataRecebimento"
+                  value={formData.dataRecebimento}
+                  onChange={handleInputChange}
+                  className="h-6 w-38 text-xs border border-green-700 text-center"
+                />
+                <span></span>
+              </div>
             </div>
           </div>
 
