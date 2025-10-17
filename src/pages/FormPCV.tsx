@@ -438,8 +438,9 @@ const FormPCV = () => {
 
   {/* SAÍDA */}
   <div className="grid grid-cols-12 border-b border-green-700">
-    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
-      Saída
+        <div className="col-span-2 flex items-center justify-between border-r border-green-700 p-1">
+      Saída:
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
     </div>
     <div className="col-span-2 flex items-center justify-between border-r border-green-700 p-1">
       <span className="text-xs">Nº dias (C)</span>
@@ -457,8 +458,9 @@ const FormPCV = () => {
 
   {/* RETORNO */}
   <div className="grid grid-cols-12 border-b border-green-700">
-    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
-      Retorno
+        <div className="col-span-2 flex items-center justify-between border-r border-green-700 p-1">
+      Retorno:
+        <Input className="inline w-1/2 h-6 border border-green-700 text-sm" />
     </div>
     <div className="col-span-2 flex items-center justify-between border-r border-green-700 p-1">
       <span className="text-xs">Nº dias (I)</span>
