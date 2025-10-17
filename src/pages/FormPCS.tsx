@@ -326,86 +326,119 @@ export default function PCSForm() {
               </div>
 
               {/* Observação / Valores */}
-              <div className="grid grid-cols-12 gap-2 mt-1">
-                <div className="col-span-8 border border-green-700 p-2">
-                  <div className="font-semibold text-green-700 text-sm">Observação:</div>
-                  <Textarea
-                    name="observacao"
-                    value={formData.observacao}
-                    onChange={handleInputChange}
-                    className="w-full h-20 resize-none text-sm border-none"
-                  />
-                </div>
-                <div className="col-span-4 border border-green-700 p-2">
-                  <div className="font-semibold text-green-700 text-sm">Valor do Suprimento</div>
-                  <Input
-                    name="valorSuprimento"
-                    value={formData.valorSuprimento}
-                    onChange={handleInputChange}
-                    className="w-full h-8 text-sm mt-1 border-green-700"
-                  />
-                  <div className="mt-2 font-semibold text-green-700 text-sm">Despesas Realizadas</div>
-                  <Input
-                    name="despesasRealizadas"
-                    value={formData.despesasRealizadas}
-                    onChange={handleInputChange}
-                    className="w-full h-8 text-sm mt-1 border-green-700"
-                  />
-                  <div className="mt-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={formData.saldoReceber}
-                        onChange={(e) =>
-                          setFormData((s) => ({ ...s, saldoReceber: e.target.checked }))
-                        }
-                      />
-                      <span>- Receber</span>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1">
-                      <input
-                        type="checkbox"
-                        checked={formData.saldoDevolver}
-                        onChange={(e) =>
-                          setFormData((s) => ({ ...s, saldoDevolver: e.target.checked }))
-                        }
-                      />
-                      <span>- Devolver</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+<div className="grid grid-cols-12 gap-2 mt-1">
+  <div className="col-span-8 border border-green-700 p-2">
+    <div className="font-semibold text-green-700 text-sm">Observação:</div>
+    <Textarea
+      name="observacao"
+      value={formData.observacao}
+      onChange={handleInputChange}
+      className="w-full h-20 resize-none text-sm border-none"
+    />
+  </div>
 
-              {/* Assinaturas */}
-              <div className="grid grid-cols-4 border border-green-700 mt-2 text-sm">
-                <div className="border-r border-green-700 p-3 text-center font-semibold text-green-700">
-                  Emitente
-                </div>
-                <div className="border-r border-green-700 p-3 text-center">
-                  Atesto que os serviços foram prestados em favor do SINPAF
-                </div>
-                <div className="border-r border-green-700 p-3 text-center font-semibold text-green-700">
-                  Conferência / Aprovação
-                </div>
-                <div className="p-3 text-center">
-                  Recebi a importância acima
-                  <br />____/____/____ Data
-                </div>
-              </div>
+  <div className="col-span-4 border border-green-700 p-2">
+    <div className="font-semibold text-green-700 text-sm">Valor do Suprimento</div>
+    <Input
+      name="valorSuprimento"
+      value={formData.valorSuprimento}
+      onChange={handleInputChange}
+      className="w-full h-8 text-sm mt-1 border-green-700"
+    />
 
-              <div className="grid grid-cols-4 border-x border-b border-green-700 text-sm">
-                {[...Array(4)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="text-center p-6 border-r border-green-700 last:border-r-0"
-                  >
-                    <div className="border-t border-dotted border-green-700 mt-5" />
-                    <div className="text-green-700 mt-2">Assinatura</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+    <div className="mt-2 font-semibold text-green-700 text-sm">Despesas Realizadas</div>
+    <Input
+      name="despesasRealizadas"
+      value={formData.despesasRealizadas}
+      onChange={handleInputChange}
+      className="w-full h-8 text-sm mt-1 border-green-700"
+    />
+
+    {/* NOVO CAMPO ADICIONADO AQUI */}
+    <div className="mt-2 font-semibold text-green-700 text-sm">Saldo a:</div>
+    <Input
+      name="saldoFinal"
+      value={formData.saldoFinal}
+      onChange={handleInputChange}
+      className="w-full h-8 text-sm mt-1 border-green-700"
+    />
+    {/* FIM DO NOVO CAMPO */}
+
+    <div className="mt-2 text-sm">
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={formData.saldoReceber}
+          onChange={(e) =>
+            setFormData((s) => ({ ...s, saldoReceber: e.target.checked }))
+          }
+        />
+        <span>- Receber</span>
+      </div>
+      <div className="flex items-center gap-2 mt-1">
+        <input
+          type="checkbox"
+          checked={formData.saldoDevolver}
+          onChange={(e) =>
+            setFormData((s) => ({ ...s, saldoDevolver: e.target.checked }))
+          }
+        />
+        <span>- Devolver</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{/* Assinaturas */}
+<div className="grid grid-cols-5 border border-green-700 mt-2 text-sm text-green-700 font-semibold">
+  <div className="border-r border-green-700 p-3 text-center">
+    Emitente
+    <br />____/____/____ Data
+  </div>
+  <div className="border-r border-green-700 p-3 text-center">
+    Recibo Doc.
+    <br />____/____/____ Data
+  </div>
+  <div className="border-r border-green-700 p-3 text-center">
+    Conferência
+    <br />____/____/____ Data
+  </div>
+  <div className="border-r border-green-700 p-3 text-center">
+    Aprovação
+    <br />____/____/____ Data
+  </div>
+  <div className="p-3 text-center">
+    Recebi a importância acima
+    <br />____/____/____ Data
+  </div>
+</div>
+
+{/* Linhas de assinatura + local */}
+<div className="grid grid-cols-5 border-x border-b border-green-700 text-sm">
+  {[...Array(5)].map((_, i) => (
+    <div
+      key={i}
+      className="text-center p-6 border-r border-green-700 last:border-r-0"
+    >
+      {/* Só mostra "Local" no último quadrado */}
+      {i === 4 && (
+        <>
+          <div className="border-t border-dotted border-green-700 mt-2" />
+          <div className="text-green-700 mt-1">Local</div>
+        </>
+      )}
+
+      {/* Linha de Assinatura */}
+      <div className="border-t border-dotted border-green-700 mt-5" />
+      <div className="text-green-700 mt-2">Assinatura</div>
+    </div>
+  ))}
+</div>
+</div>
+</div>
+
 
           {/* Botão PDF */}
           <div className="mt-4 flex justify-center">

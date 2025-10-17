@@ -298,207 +298,290 @@ const FormPCV = () => {
             </div>
           </div>
 
-          {/* -------- FAVORECIDO bloco ---------- */}
-          <div className="border border-green-700 mt-2">
-            <div className="bg-green-700 text-white px-2 py-1 font-semibold">F A V O R E C I D O</div>
+    <div className="p-2 border-t border-green-700 text-sm">
+ {/* -------- FAVORECIDO bloco ---------- */}
+<div className="border border-green-700 mt-2">
+  <div className="bg-green-700 text-white px-2 py-1 font-semibold text-sm tracking-wider">
+    F A V O R E C I D O
+  </div>
 
-            <div className="p-2 grid grid-cols-6 gap-1 text-sm">
-              <div className="col-span-3">
-                <div className="flex items-center">
-                  <div className="w-20">Nome:</div>
-                  <Input name="nome" value={favorecido.nome} onChange={handleFavChange} className="h-7 text-sm w-full border border-green-700" />
-                </div>
-              </div>
-              <div className="col-span-1">
-                <div className="flex items-center">
-                  <div className="w-16">CPF:</div>
-                  <Input name="cpf" value={favorecido.cpf} onChange={handleFavChange} className="h-7 text-sm w-full border border-green-700" />
-                </div>
-              </div>
-              <div className="col-span-2">
-                <div className="flex items-center">
-                  <div className="w-16">Cargo:</div>
-                  <Input name="cargo" value={favorecido.cargo} onChange={handleFavChange} className="h-7 text-sm w-full border border-green-700" />
-                </div>
-              </div>
-
-              <div className="col-span-2">
-                <div className="flex items-center mt-1">
-                  <div className="w-20">Banco:</div>
-                  <Input name="banco" value={favorecido.banco} onChange={handleFavChange} className="h-7 text-sm w-full border border-green-700" />
-                </div>
-              </div>
-              <div className="col-span-2">
-                <div className="flex items-center mt-1">
-                  <div className="w-20">Agência:</div>
-                  <Input name="agencia" value={favorecido.agencia} onChange={handleFavChange} className="h-7 text-sm w-full border border-green-700" />
-                </div>
-              </div>
-              <div className="col-span-2">
-                <div className="flex items-center mt-1">
-                  <div className="w-20">Cidade/Estado:</div>
-                  <Input name="cidadeEstado" value={favorecido.cidadeEstado} onChange={handleFavChange} className="h-7 text-sm w-full border border-green-700" />
-                </div>
-              </div>
-
-              <div className="col-span-2 mt-1">
-                <div className="flex items-center">
-                  <div className="w-20">C/C:</div>
-                  <Input name="cc" value={favorecido.cc} onChange={handleFavChange} className="h-7 text-sm w-full border border-green-700" />
-                </div>
-              </div>
-
-              {/* Roteiro / Objetivo / Observações */}
-              <div className="col-span-6 mt-2">
-                <div className="text-sm font-semibold">Roteiro:</div>
-                <Textarea value={roteiro} onChange={(e) => setRoteiro(e.target.value)} className="w-full h-8 resize-none border border-green-700 text-sm" />
-              </div>
-
-              <div className="col-span-6 mt-2">
-                <div className="text-sm font-semibold">Objetivo:</div>
-                <Textarea value={objetivo} onChange={(e) => setObjetivo(e.target.value)} className="w-full h-8 resize-none border border-green-700 text-sm" />
-              </div>
-
-              <div className="col-span-6 mt-2">
-                <div className="text-sm font-semibold">Observações:</div>
-                <Textarea value={obsPrincipais} onChange={(e) => setObsPrincipais(e.target.value)} className="w-full h-12 resize-none border border-green-700 text-sm" />
-              </div>
-            </div>
-          </div>
-
-          {/* -------- Saída / Retorno / Outros / Totais bloco ---------- */}
-          {/* Seção de Saída / Retorno / Outros / Valor Total */}
-<div className="grid grid-cols-2 border border-green-700 text-sm mt-1">
-  {/* Coluna Esquerda */}
-  <div className="border-r border-green-700 p-2 space-y-2">
-    {/* Saída */}
-    <div className="grid grid-cols-12 items-center gap-2">
-      <div className="col-span-2 font-semibold">Saída:</div>
-      <div className="col-span-2 flex items-center gap-1">
-        <span className="text-xs">Nº dias (C):</span>
-        <Input className="h-6 w-full border-green-700" />
+  <div className="text-sm text-green-700">
+    {/* Linha 1 - Nome / CPF / Cargo */}
+    <div className="grid grid-cols-6 border-b border-green-700">
+      <div className="col-span-3 flex items-center border-r border-green-700 p-1">
+        <div className="w-24 font-semibold text-center">Nome</div>
+        <Input
+          name="nome"
+          value={favorecido.nome}
+          onChange={handleFavChange}
+          className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
+        />
       </div>
-      <div className="col-span-3 flex items-center gap-1">
-        <span className="text-xs">Valor das Diárias (C):</span>
-        <Input className="h-6 w-full border-green-700" />
+      <div className="col-span-1 flex items-center border-r border-green-700 p-1">
+        <div className="w-16 font-semibold text-center">CPF</div>
+        <Input
+          name="cpf"
+          value={favorecido.cpf}
+          onChange={handleFavChange}
+          className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
+        />
       </div>
-      <div className="col-span-5 flex items-center gap-1">
-        <span className="text-xs">Adiant. Total Diária de Capital:</span>
-        <Input className="h-6 w-full border-green-700" />
+      <div className="col-span-2 flex items-center p-1">
+        <div className="w-20 font-semibold text-center">Cargo</div>
+        <Input
+          name="cargo"
+          value={favorecido.cargo}
+          onChange={handleFavChange}
+          className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
+        />
       </div>
     </div>
 
-    {/* Retorno */}
-    <div className="grid grid-cols-12 items-center gap-2">
-      <div className="col-span-2 font-semibold">Retorno:</div>
-      <div className="col-span-2 flex items-center gap-1">
-        <span className="text-xs">Nº dias (I):</span>
-        <Input className="h-6 w-full border-green-700" />
+    {/* Linha 2 - Banco / Agência / Cidade/Estado / C/C */}
+    <div className="grid grid-cols-6 border-b border-green-700">
+      <div className="col-span-2 flex items-center border-r border-green-700 p-1">
+        <div className="w-20 font-semibold text-center">Banco</div>
+        <Input
+          name="banco"
+          value={favorecido.banco}
+          onChange={handleFavChange}
+          className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
+        />
       </div>
-      <div className="col-span-3 flex items-center gap-1">
-        <span className="text-xs">Valor das Diárias (I):</span>
-        <Input className="h-6 w-full border-green-700" />
+      <div className="col-span-1 flex items-center border-r border-green-700 p-1">
+        <div className="w-20 font-semibold text-center">Agência</div>
+        <Input
+          name="agencia"
+          value={favorecido.agencia}
+          onChange={handleFavChange}
+          className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
+        />
       </div>
-      <div className="col-span-5 flex items-center gap-1">
-        <span className="text-xs">Adiant. Total Diária de Interior:</span>
-        <Input className="h-6 w-full border-green-700" />
+      <div className="col-span-2 flex items-center border-r border-green-700 p-1">
+        <div className="w-28 font-semibold text-center">Cidade/Estado</div>
+        <Input
+          name="cidadeEstado"
+          value={favorecido.cidadeEstado}
+          onChange={handleFavChange}
+          className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
+        />
       </div>
-    </div>
-
-    {/* Outros */}
-    <div className="grid grid-cols-12 items-center gap-2">
-      <div className="col-span-2 font-semibold">Outros:</div>
-      <div className="col-span-4 flex items-center gap-1">
-        <span className="text-xs">Descrição:</span>
-        <Input className="h-6 w-full border-green-700" />
-      </div>
-      <div className="col-span-3 flex items-center gap-1">
-        <span className="text-xs">Valor (R$):</span>
-        <Input className="h-6 w-full border-green-700" />
-      </div>
-      <div className="col-span-3 flex items-center gap-1">
-        <span className="text-xs">Total Adiantamento (R$):</span>
-        <Input className="h-6 w-full border-green-700" />
-      </div>
-    </div>
-
-    {/* Valor Total */}
-    <div className="grid grid-cols-12 items-center gap-2">
-      <div className="col-span-2 font-semibold">Valor Total (R$):</div>
-      <div className="col-span-4">
-        <Input className="h-6 w-full border-green-700" />
-      </div>
-      <div className="col-span-6 flex items-center gap-1">
-        <span className="text-xs">Valor Total Por Extenso (R$):</span>
-        <Input className="h-6 w-full border-green-700" />
+      <div className="col-span-1 flex items-center p-1">
+        <div className="w-10 font-semibold text-center">C/C</div>
+        <Input
+          name="cc"
+          value={favorecido.cc}
+          onChange={handleFavChange}
+          className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm"
+        />
       </div>
     </div>
   </div>
 
-  {/* Coluna Direita */}
-  <div className="p-2 space-y-2">
-    <div className="font-semibold text-center">
-      ADIANTAMENTO RECEBIDO EM PASSAGEM - R$
-    </div>
-    <div className="text-xs italic text-center">
-      EM CASO DE RECUPERAÇÃO DE PASSAGEM INDICAR:
-    </div>
-    <div className="grid grid-cols-3 gap-2 mt-1">
-      <div>
-        <span className="text-xs">Fornecedor</span>
-        <Input className="h-6 w-full border-green-700" />
-      </div>
-      <div>
-        <span className="text-xs">Número do Bilhete</span>
-        <Input className="h-6 w-full border-green-700" />
-      </div>
-      <div>
-        <span className="text-xs">Trecho(s)</span>
-        <Input className="h-6 w-full border-green-700" />
-      </div>
-    </div>
 
-    <div className="font-semibold text-center mt-3">
-      PERÍODO EFETIVO DA VIAGEM
-    </div>
-    <div className="grid grid-cols-4 gap-2 text-xs text-center mt-1">
-      <div className="col-span-2">
-        <div className="font-semibold">Saída</div>
-        <div className="grid grid-cols-2 gap-1 mt-1">
-          <Input placeholder="Data" className="h-6 border-green-700" />
-          <Input placeholder="Hora" className="h-6 border-green-700" />
-        </div>
-      </div>
-      <div className="col-span-2">
-        <div className="font-semibold">Retorno</div>
-        <div className="grid grid-cols-2 gap-1 mt-1">
-          <Input placeholder="Data" className="h-6 border-green-700" />
-          <Input placeholder="Hora" className="h-6 border-green-700" />
-        </div>
-      </div>
-    </div>
 
-    <div className="grid grid-cols-4 gap-2 text-xs text-center mt-2">
-      <div>
-        <div className="font-semibold">Nº dias (C)</div>
-        <Input className="h-6 border-green-700" />
-      </div>
-      <div>
-        <div className="font-semibold">Valor Diárias (C)</div>
-        <Input className="h-6 border-green-700" />
-      </div>
-      <div>
-        <div className="font-semibold">Nº dias (I)</div>
-        <Input className="h-6 border-green-700" />
-      </div>
-      <div>
-        <div className="font-semibold">Valor Diárias (I)</div>
-        <Input className="h-6 border-green-700" />
-      </div>
+
+
+             {/* -------- ROTEIRO / OBJETIVO / OBSERVAÇÕES -------- */}
+<div className="border border-green-700 mt-2 text-green-700 text-sm">
+  {/* Roteiro */}
+  <div className="grid grid-cols-6 border-b border-green-700">
+    <div className="col-span-1 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      Roteiro
+    </div>
+    <div className="col-span-5 p-1">
+      <Textarea
+        value={roteiro}
+        onChange={(e) => setRoteiro(e.target.value)}
+        className="w-full h-8 resize-none border border-green-700 text-sm"
+      />
+    </div>
+  </div>
+
+  {/* Objetivo */}
+  <div className="grid grid-cols-6 border-b border-green-700">
+    <div className="col-span-1 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      Objetivo
+    </div>
+    <div className="col-span-5 p-1">
+      <Textarea
+        value={objetivo}
+        onChange={(e) => setObjetivo(e.target.value)}
+        className="w-full h-8 resize-none border border-green-700 text-sm"
+      />
+    </div>
+  </div>
+
+  {/* Observações */}
+  <div className="grid grid-cols-6">
+    <div className="col-span-1 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      Observações
+    </div>
+    <div className="col-span-5 p-1">
+      <Textarea
+        value={obsPrincipais}
+        onChange={(e) => setObsPrincipais(e.target.value)}
+        className="w-full h-12 resize-none border border-green-700 text-sm"
+      />
     </div>
   </div>
 </div>
+</div>
+</div>
 
+{/* -------- SAÍDA / RETORNO / OUTROS / VALOR TOTAL -------- */}
+<div className="border border-green-700 mt-2 text-green-700 text-sm">
+  {/* Cabeçalho */}
+  <div className="bg-green-700 text-white px-2 py-1 font-semibold tracking-wider text-center">
+    S A Í D A &nbsp;&nbsp; / &nbsp;&nbsp; R E T O R N O &nbsp;&nbsp; / &nbsp;&nbsp; O U T R O S &nbsp;&nbsp; / &nbsp;&nbsp; V A L O R &nbsp;&nbsp; T O T A L
+  </div>
+
+  {/* SAÍDA */}
+  <div className="grid grid-cols-12 border-b border-green-700">
+    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      Saída
+    </div>
+    <div className="col-span-2 flex items-center justify-between border-r border-green-700 p-1">
+      <span className="text-xs">Nº dias (C)</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+    <div className="col-span-3 flex items-center justify-between border-r border-green-700 p-1">
+      <span className="text-xs">Valor das Diárias (C)</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+    <div className="col-span-5 flex items-center justify-between p-1">
+      <span className="text-xs">Adiant. Total Diária de Capital</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+  </div>
+
+  {/* RETORNO */}
+  <div className="grid grid-cols-12 border-b border-green-700">
+    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      Retorno
+    </div>
+    <div className="col-span-2 flex items-center justify-between border-r border-green-700 p-1">
+      <span className="text-xs">Nº dias (I)</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+    <div className="col-span-3 flex items-center justify-between border-r border-green-700 p-1">
+      <span className="text-xs">Valor das Diárias (I)</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+    <div className="col-span-5 flex items-center justify-between p-1">
+      <span className="text-xs">Adiant. Total Diária de Interior</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+  </div>
+
+  {/* OUTROS */}
+  <div className="grid grid-cols-12 border-b border-green-700">
+    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      Outros
+    </div>
+    <div className="col-span-4 flex items-center justify-between border-r border-green-700 p-1">
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+    <div className="col-span-3 flex items-center justify-between border-r border-green-700 p-1">
+      <span className="text-xs">Valor (R$)</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+    <div className="col-span-3 flex items-center justify-between p-1">
+      <span className="text-xs">Total Adiantamento (R$)</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+  </div>
+
+  {/* VALOR TOTAL */}
+  <div className="grid grid-cols-12">
+    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      Valor Total (R$)
+    </div>
+    <div className="col-span-4 flex items-center justify-between border-r border-green-700 p-1">
+      <Input className="inline w-full h-6 border border-green-700 text-sm" />
+    </div>
+    <div className="col-span-6 flex items-center justify-between p-1">
+      <span className="text-xs">Valor Total Por Extenso (R$)</span>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+    </div>
+  </div>
+
+
+
+  {/* -------- COLUNA DIREITA -------- */}
+<div className="border border-green-700 mt-2 text-green-700 text-sm">
+  {/* Cabeçalho */}
+  <div className="bg-green-700 text-white px-2 py-1 font-semibold tracking-wider text-center">
+    A D I A N T A M E N T O &nbsp;&nbsp; R E C E B I D O &nbsp;&nbsp; E M &nbsp;&nbsp; P A S S A G E N S
+  </div>
+
+  {/* Recuperação de Passagem */}
+  <div className="border-b border-green-700 text-xs italic text-center py-1">
+    EM CASO DE RECUPERAÇÃO DE PASSAGEM INDICAR:
+  </div>
+
+  {/* Fornecedor / Número / Trecho */}
+  <div className="grid grid-cols-3 border-b border-green-700">
+    <div className="flex flex-col items-center justify-center border-r border-green-700 p-1">
+      <div className="font-semibold text-center text-sm">Fornecedor</div>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm mt-1" />
+    </div>
+    <div className="flex flex-col items-center justify-center border-r border-green-700 p-1">
+      <div className="font-semibold text-center text-sm">Número do Bilhete</div>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm mt-1" />
+    </div>
+    <div className="flex flex-col items-center justify-center p-1">
+      <div className="font-semibold text-center text-sm">Trecho(s)</div>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm mt-1" />
+    </div>
+  </div>
+
+  {/* Período Efetivo */}
+  <div className="border-b border-green-700 text-center font-semibold py-1">
+    PERÍODO EFETIVO DA VIAGEM
+  </div>
+
+  {/* Saída / Retorno */}
+  <div className="grid grid-cols-4 border-b border-green-700 text-xs text-center">
+    {/* Saída */}
+    <div className="col-span-2 border-r border-green-700 p-1">
+      <div className="font-semibold text-green-700">Saída</div>
+      <div className="grid grid-cols-2 gap-1 mt-1">
+        <Input placeholder="Data" className="h-6 border border-green-700 text-sm" />
+        <Input placeholder="Hora" className="h-6 border border-green-700 text-sm" />
+      </div>
+    </div>
+    {/* Retorno */}
+    <div className="col-span-2 p-1">
+      <div className="font-semibold text-green-700">Retorno</div>
+      <div className="grid grid-cols-2 gap-1 mt-1">
+        <Input placeholder="Data" className="h-6 border border-green-700 text-sm" />
+        <Input placeholder="Hora" className="h-6 border border-green-700 text-sm" />
+      </div>
+    </div>
+  </div>
+
+  {/* Nº dias / Valor Diárias */}
+  <div className="grid grid-cols-4 text-xs text-center">
+    <div className="border-r border-green-700 p-1">
+      <div className="font-semibold">Nº dias (C)</div>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm mt-1" />
+    </div>
+    <div className="border-r border-green-700 p-1">
+      <div className="font-semibold">Valor Diárias (C)</div>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm mt-1" />
+    </div>
+    <div className="border-r border-green-700 p-1">
+      <div className="font-semibold">Nº dias (I)</div>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm mt-1" />
+    </div>
+    <div className="p-1">
+      <div className="font-semibold">Valor Diárias (I)</div>
+      <Input className="inline w-2/3 h-6 border border-green-700 text-sm mt-1" />
+    </div>
+  </div>
+</div>
+</div>
 
           {/* -------- Tabela ITEM / HISTÓRICO / DIÁRIAS / HOSPEDAGEM / OUTRAS ---------- */}
           <div className="mt-3 border border-green-700">
@@ -540,41 +623,83 @@ const FormPCV = () => {
               </div>
             </div>
 
-            {/* Adiantamento recebido em espécie e total geral */}
-            <div className="grid grid-cols-6 border-t border-green-700 text-sm">
-              <div className="col-span-3 p-2 border-r border-green-700">ADIANTAMENTO RECEBIDO EM ESPÉCIE - R$</div>
-              <div className="col-span-1 p-2 border-r border-green-700">
-                <Input name="adiantamentoRecebidoEspecie" value={totais.adiantamentoRecebidoEspecie} onChange={handleTotaisChange} className="w-full h-8 text-sm text-right" />
-              </div>
-              <div className="col-span-2 p-2">
-                <div className="grid grid-cols-2 gap-1">
-                  <div className="text-sm">TOTAL GERAL DA DESPESA (d + h + o) - R$</div>
-                  <div>
-                    <Input name="totalGeralDespesa" value={totais.totalGeralDespesa} onChange={handleTotaisChange} className="w-full h-8 text-sm text-right" />
-                  </div>
-                </div>
-              </div>
-            </div>
+       {/* -------- ADIANTAMENTO / TOTAL GERAL / SALDO -------- */}
+<div className="border border-green-700 mt-2 text-green-700 text-sm">
+  {/* ADIANTAMENTO RECEBIDO EM ESPÉCIE E TOTAL GERAL */}
+  <div className="grid grid-cols-6 border-b border-green-700">
+    {/* Label */}
+    <div className="col-span-3 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      ADIANTAMENTO RECEBIDO EM ESPÉCIE - R$
+    </div>
+    {/* Valor em espécie */}
+    <div className="col-span-1 flex items-center justify-center border-r border-green-700 p-1">
+      <Input
+        name="adiantamentoRecebidoEspecie"
+        value={totais.adiantamentoRecebidoEspecie}
+        onChange={handleTotaisChange}
+        className="inline w-2/3 h-6 border border-green-700 text-right text-sm"
+      />
+    </div>
+    {/* Total geral da despesa */}
+    <div className="col-span-2 flex flex-col justify-center items-center p-1">
+      <div className="font-semibold text-center text-sm">
+        TOTAL GERAL DA DESPESA <br />
+        <span className="text-xs">(d + h + o) - R$</span>
+      </div>
+      <Input
+        name="totalGeralDespesa"
+        value={totais.totalGeralDespesa}
+        onChange={handleTotaisChange}
+        className="inline w-2/3 h-6 border border-green-700 text-right text-sm mt-1"
+      />
+    </div>
+  </div>
 
-            {/* SALDO (Receber / Devolver) */}
-            <div className="grid grid-cols-6 border-t border-green-700 text-sm items-center">
-              <div className="col-span-2 p-2 border-r border-green-700">SALDO</div>
-              <div className="col-span-2 p-2">
-                <label className="inline-flex items-center mr-4">
-                  <input type="radio" name="saldoTipo" checked={totais.saldoTipo === "Receber"} onChange={() => setTotais((s) => ({ ...s, saldoTipo: "Receber" }))} className="mr-1" />
-                  Receber
-                </label>
-                <label className="inline-flex items-center mr-4">
-                  <input type="radio" name="saldoTipo" checked={totais.saldoTipo === "Devolver"} onChange={() => setTotais((s) => ({ ...s, saldoTipo: "Devolver" }))} className="mr-1" />
-                  Devolver
-                </label>
-              </div>
-              <div className="col-span-2 p-2 text-right">
-                <div className="text-sm">VALOR POR EXTENSO</div>
-                <Input value={viagemInfo.valorPorExtenso} onChange={(e) => setViagemInfo((s) => ({ ...s, valorPorExtenso: e.target.value }))} className="w-full h-8 text-sm border border-green-700" />
-              </div>
-            </div>
-          </div>
+  {/* SALDO */}
+  <div className="grid grid-cols-6">
+    {/* Label SALDO */}
+    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+      SALDO
+    </div>
+
+    {/* Opções Receber / Devolver */}
+    <div className="col-span-2 flex items-center justify-center border-r border-green-700 p-1">
+      <label className="inline-flex items-center mx-2">
+        <input
+          type="radio"
+          name="saldoTipo"
+          checked={totais.saldoTipo === 'Receber'}
+          onChange={() => setTotais((s) => ({ ...s, saldoTipo: 'Receber' }))}
+          className="mr-1 accent-green-700"
+        />
+        Receber
+      </label>
+      <label className="inline-flex items-center mx-2">
+        <input
+          type="radio"
+          name="saldoTipo"
+          checked={totais.saldoTipo === 'Devolver'}
+          onChange={() => setTotais((s) => ({ ...s, saldoTipo: 'Devolver' }))}
+          className="mr-1 accent-green-700"
+        />
+        Devolver
+      </label>
+    </div>
+
+    {/* Valor por extenso */}
+    <div className="col-span-2 flex flex-col justify-center items-center p-1">
+      <div className="font-semibold text-center text-sm">VALOR POR EXTENSO</div>
+      <Input
+        value={viagemInfo.valorPorExtenso}
+        onChange={(e) =>
+          setViagemInfo((s) => ({ ...s, valorPorExtenso: e.target.value }))
+        }
+        className="inline w-2/3 h-6 border border-green-700 text-sm text-center mt-1"
+      />
+    </div>
+  </div>
+</div>
+</div>
 
           {/* Observação vertical à esquerda + espaço em branco */}
           <div className="mt-3 grid grid-cols-12 gap-2">

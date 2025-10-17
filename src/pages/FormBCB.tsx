@@ -503,64 +503,44 @@ const FormBCB = () => {
           </div>
 
           {/* Rodapé assinaturas */}
-          <div className="mt-4 border border-green-700">
-            <div className="grid grid-cols-3 text-sm">
-              <div className="p-3 border-r border-green-700 text-center">Preparado por</div>
-              <div className="p-3 border-r border-green-700 text-center">Conferido por</div>
-              <div className="p-3 text-center">Aprovado por</div>
-            </div>
+<div className="mt-4 border border-green-700">
+  <div className="grid grid-cols-3 text-sm">
+    <div className="p-3 border-r border-green-700 text-center">Preparado por</div>
+    <div className="p-3 border-r border-green-700 text-center">Conferido por</div>
+    <div className="p-3 text-center">Aprovado por</div>
+  </div>
 
-            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="p-3 border-r border-green-700 text-center">
-                <Input
-                  name="preparadoNome"
-                  value={assinaturas.preparadoNome}
-                  onChange={handleAssinaturasChange}
-                  className="w-full h-8 text-sm mb-2"
-                  placeholder="Nome"
-                />
-                <div className="text-[12px]">Data</div>
-                <Input
-                  name="preparadoData"
-                  value={assinaturas.preparadoData}
-                  onChange={handleAssinaturasChange}
-                  className="w-32 mx-auto h-8 text-sm"
-                />
-              </div>
-              <div className="p-3 border-r border-green-700 text-center">
-                <Input
-                  name="conferidoNome"
-                  value={assinaturas.conferidoNome}
-                  onChange={handleAssinaturasChange}
-                  className="w-full h-8 text-sm mb-2"
-                  placeholder="Nome"
-                />
-                <div className="text-[12px]">Data</div>
-                <Input
-                  name="conferidoData"
-                  value={assinaturas.conferidoData}
-                  onChange={handleAssinaturasChange}
-                  className="w-32 mx-auto h-8 text-sm"
-                />
-              </div>
-              <div className="p-3 text-center">
-                <Input
-                  name="aprovadoNome"
-                  value={assinaturas.aprovadoNome}
-                  onChange={handleAssinaturasChange}
-                  className="w-full h-8 text-sm mb-2"
-                  placeholder="Nome"
-                />
-                <div className="text-[12px]">Data</div>
-                <Input
-                  name="aprovadoData"
-                  value={assinaturas.aprovadoData}
-                  onChange={handleAssinaturasChange}
-                  className="w-32 mx-auto h-8 text-sm"
-                />
-              </div>
-            </div>
-          </div>
+  <div className="grid grid-cols-3 border-t border-green-700 text-sm">
+    <div className="p-3 border-r border-green-700 text-center">
+      <Input
+        name="preparadoNome"
+        value={assinaturas.preparadoNome}
+        onChange={handleAssinaturasChange}
+        className="w-full h-8 text-sm"
+        placeholder="Nome"
+      />
+    </div>
+    <div className="p-3 border-r border-green-700 text-center">
+      <Input
+        name="conferidoNome"
+        value={assinaturas.conferidoNome}
+        onChange={handleAssinaturasChange}
+        className="w-full h-8 text-sm"
+        placeholder="Nome"
+      />
+    </div>
+    <div className="p-3 text-center">
+      <Input
+        name="aprovadoNome"
+        value={assinaturas.aprovadoNome}
+        onChange={handleAssinaturasChange}
+        className="w-full h-8 text-sm"
+        placeholder="Nome"
+      />
+    </div>
+  </div>
+</div>
+
 
           {/* Botão PDF */}
           <div className="mt-4 flex justify-center">

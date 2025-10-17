@@ -153,7 +153,16 @@ const FormCC = () => {
               </div>
             </div>
 
-            {/* Banco / Agência / Conta / Cheque */}
+            <div className="border-x border-b border-green-700 p-1 text-sm font-semibold">
+             Valor por extenso:
+            <Input
+                name="valorExtenso"
+                  value={formData.valorExtenso}
+                      onChange={handleInputChange}
+                          className="inline w-5/6 h-100 border border-green-700 ml-2 text-sm"
+                           />
+                             </div>
+             {/* Banco / Agência / Conta / Cheque */}
             <div className="grid grid-cols-12 border-x border-b border-green-700 text-sm font-semibold">
               <div className="col-span-3 border-r border-green-700 p-1 flex items-center">
                 <span className="whitespace-nowrap">Banco:</span>

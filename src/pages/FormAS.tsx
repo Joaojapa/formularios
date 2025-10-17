@@ -24,8 +24,7 @@ const FormAS = () => {
     valorExtenso: "",
     observacoes: "",
   });
-  
- // ✅ Carrega dados salvos no localStorage ao abrir a página
+
   useEffect(() => {
     const savedData = localStorage.getItem("formASData");
     if (savedData) {
@@ -33,12 +32,9 @@ const FormAS = () => {
     }
   }, []);
 
-  // ✅ Salva automaticamente no localStorage sempre que formData muda
   useEffect(() => {
     localStorage.setItem("formASData", JSON.stringify(formData));
   }, [formData]);
-
-
 
   const handleChange = (e) => {
     setFormData({
@@ -47,12 +43,10 @@ const FormAS = () => {
     });
   };
 
-  // ✅ Função atualizada com substituição de inputs e geração de PDF
   const generatePDF = async () => {
     const element = document.querySelector("#form-as");
     if (!element) return;
 
-    // 🔹 Substitui inputs/textarea por spans temporários
     const inputs = element.querySelectorAll("input, textarea");
     const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
@@ -75,7 +69,6 @@ const FormAS = () => {
       (input as HTMLElement).style.display = "none";
     });
 
-    // 🔹 Captura o formulário como imagem
     const canvas = await html2canvas(element as HTMLElement, {
       scale: 2,
       useCORS: true,
@@ -90,17 +83,15 @@ const FormAS = () => {
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Autorizacao_de_Suprimento.pdf");
 
-    // 🔹 Restaura inputs originais
     tempElements.forEach(({ input, span }) => {
       input.style.display = "";
       span.remove();
     });
   };
 
-   return (
+  return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="container mx-auto px-4">
-        {/* 🔹 ID do formulário corrigido */}
         <form
           id="form-as"
           className="bg-white border border-green-700 p-2 rounded-md max-w-5xl mx-auto text-green-800"
@@ -109,9 +100,6 @@ const FormAS = () => {
           <div className="grid grid-cols-12 border border-green-700 mb-1">
             <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 p-2">
               <img src="/SINPAF.png" alt="SINPAF" className="w-20 mb-1" />
-              <div className="text-xs text-green-800 font-semibold">
-              
-              </div>
             </div>
 
             <div className="col-span-6 text-center p-2 border-r border-green-700">
@@ -123,7 +111,7 @@ const FormAS = () => {
                 AS - AUTORIZAÇÃO DE SUPRIMENTO
               </div>
               <div className="text-left mt-1 text-green-800 font-semibold text-sm">
-                SEÇÃO:{" "}
+                SEÇÃO:
                 <Input
                   name="secao"
                   value={formData.secao}
@@ -159,79 +147,101 @@ const FormAS = () => {
 
           {/* Favorecido */}
           <div className="border border-green-700 text-sm">
-            <div className="grid grid-cols-12 border-b border-green-700">
-              <div className="col-span-1 flex items-center justify-center bg-green-50 font-semibold border-r border-green-700">
-                FAVORECIDO
+            <div className="bg-green-700 text-white font-semibold px-2 py-1">
+              FAVORECIDO
+            </div>
+
+            {/* Nome */}
+            <div className="grid grid-cols-2 border-t border-green-700">
+              <div className="border-r border-green-700 p-1">
+                Nome:
+                <Input
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleChange}
+                  className="inline w-5/6 h-6 border border-green-700 ml-2"
+                />
               </div>
-              <div className="col-span-11 p-2 space-y-1">
-                <div className="flex items-center">
-                  Nome:
-                  <Input
-                    name="nome"
-                    value={formData.nome}
-                    onChange={handleChange}
-                    className="inline w-2/3 h-6 border border-green-700 ml-2"
-                  />
-                  <span className="ml-4">CPF:</span>
-                  <Input
-                    name="cpf"
-                    value={formData.cpf}
-                    onChange={handleChange}
-                    className="inline w-1/3 h-6 border border-green-700 ml-2"
-                  />
-                </div>
-                <div className="flex items-center">
-                  Cargo:
-                  <Input
-                    name="cargo"
-                    value={formData.cargo}
-                    onChange={handleChange}
-                    className="inline w-2/5 h-6 border border-green-700 ml-2"
-                  />
-                  <span className="ml-4">Banco (nome/código):</span>
-                  <Input
-                    name="banco"
-                    value={formData.banco}
-                    onChange={handleChange}
-                    className="inline w-2/5 h-6 border border-green-700 ml-2"
-                  />
-                </div>
-                <div className="flex items-center">
-                  Agência:
-                  <Input
-                    name="agencia"
-                    value={formData.agencia}
-                    onChange={handleChange}
-                    className="inline w-1/4 h-6 border border-green-700 ml-2"
-                  />
-                  <span className="ml-4">Conta Corrente:</span>
-                  <Input
-                    name="conta"
-                    value={formData.conta}
-                    onChange={handleChange}
-                    className="inline w-1/4 h-6 border border-green-700 ml-2"
-                  />
-                  <span className="ml-4">Cidade/Estado:</span>
-                  <Input
-                    name="cidadeEstadoBanco"
-                    value={formData.cidadeEstadoBanco}
-                    onChange={handleChange}
-                    className="inline w-1/4 h-6 border border-green-700 ml-2"
-                  />
-                  <span className="ml-4">Data limite prestação:</span>
-                  <Input
-                    name="dataPrestacao"
-                    value={formData.dataPrestacao}
-                    onChange={handleChange}
-                    className="inline w-1/4 h-6 border border-green-700 ml-2"
-                  />
-                </div>
+              <div className="p-1">
+                CPF:
+                <Input
+                  name="cpf"
+                  value={formData.cpf}
+                  onChange={handleChange}
+                  className="inline w-4/6 h-6 border border-green-700 ml-2"
+                />
+              </div>
+            </div>
+
+            {/* Cargo e Banco */}
+            <div className="grid grid-cols-2 border-t border-green-700">
+              <div className="border-r border-green-700 p-1">
+                Cargo:
+                <Input
+                  name="cargo"
+                  value={formData.cargo}
+                  onChange={handleChange}
+                  className="inline w-5/6 h-6 border border-green-700 ml-2"
+                />
+              </div>
+              <div className="p-1">
+                Banco (nome/código):
+                <Input
+                  name="banco"
+                  value={formData.banco}
+                  onChange={handleChange}
+                  className="inline w-4/6 h-6 border border-green-700 ml-2"
+                />
+              </div>
+            </div>
+
+            {/* Agência e Conta */}
+            <div className="grid grid-cols-2 border-t border-green-700">
+              <div className="border-r border-green-700 p-1">
+                Agência:
+                <Input
+                  name="agencia"
+                  value={formData.agencia}
+                  onChange={handleChange}
+                  className="inline w-5/6 h-6 border border-green-700 ml-2"
+                />
+              </div>
+              <div className="p-1">
+                Conta Corrente:
+                <Input
+                  name="conta"
+                  value={formData.conta}
+                  onChange={handleChange}
+                  className="inline w-4/6 h-6 border border-green-700 ml-2"
+                />
+              </div>
+            </div>
+
+            {/* Cidade e Data */}
+            <div className="grid grid-cols-2 border-t border-green-700">
+              <div className="border-r border-green-700 p-1">
+                Cidade/Estado:
+                <Input
+                  name="cidadeEstadoBanco"
+                  value={formData.cidadeEstadoBanco}
+                  onChange={handleChange}
+                  className="inline w-5/6 h-6 border border-green-700 ml-2"
+                />
+              </div>
+              <div className="p-1">
+                Data limite prestação:
+                <Input
+                  name="dataPrestacao"
+                  value={formData.dataPrestacao}
+                  onChange={handleChange}
+                  className="inline w-4/6 h-6 border border-green-700 ml-2"
+                />
               </div>
             </div>
           </div>
 
           {/* Objetivo */}
-          <div className="grid grid-cols-12 border-x border-b border-green-700 text-sm">
+          <div className="grid grid-cols-12 border-x border-b border-green-700 text-sm mt-1">
             <div className="col-span-1 flex items-center justify-center bg-green-50 font-semibold border-r border-green-700">
               OBJETIVO
             </div>
@@ -267,31 +277,7 @@ const FormAS = () => {
             </div>
           </div>
 
-
-{/* Observações */}
-<div className="border border-green-700 text-center font-semibold text-sm py-[5px]">
-  OBSERVAÇÕES
-</div>
-
-
-<div className="border-x border-b border-green-700">
-  <div className="p-2 h-[150px]">
-    <textarea
-      name="observacoes"
-      value={formData.observacoes}
-      onChange={handleChange}
-      className="w-full h-full resize-none text-sm leading-relaxed outline-none border-none"
-      style={{
-        paddingTop: "4px",
-        display: "block",
-        transform: "translateY(2px)",
-      }}
-    />
-  </div>
-</div>
-
-
-          {/* Autorizo + Recibo */}
+            {/* Autorizo + Recibo */}
           <div className="grid grid-cols-12 border border-green-700 text-sm mt-2">
             <div className="col-span-3 border-r border-green-700 text-center">
               <div className="font-semibold text-green-700 border-b border-green-700 p-1">

@@ -129,15 +129,8 @@ const FormCD = () => {
                 COMPROVANTE DE DESPESAS
               </div>
 
-              <div className="grid grid-cols-12 border-t border-green-700 mt-1 text-green-700 font-semibold">
-                <div className="col-span-2 border-r border-green-700 flex items-center justify-center py-1">
-                  CD
-                  <Input
-                    value={formData.cd}
-                    onChange={(e) => handleInputChange("cd", e.target.value)}
-                    className="ml-2 h-5 w-16 border border-green-700 text-xs"
-                  />
-                </div>
+              
+              <div className="grid grid-cols-12 border-t border-green-700 mt-1">
                 <div className="col-span-10 flex items-center pl-2">
                   SEÇÃO:
                   <Input

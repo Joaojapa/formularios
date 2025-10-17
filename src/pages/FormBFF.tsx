@@ -191,34 +191,6 @@ const FormBFF = () => {
                   />
                 </div>
               </div>
-
-              <div className="flex justify-between mt-1 text-[11px]">
-                <div>VALOR EM R$:
-                  <Input
-                    name="valorEmR$"
-                    value={header["valorEmR$"]}
-                    onChange={handleHeaderChange}
-                    className="ml-2 inline w-36 h-6 text-sm"
-                  />
-                </div>
-                <div>
-                  PERÍODO:
-                  <span className="ml-2">de</span>
-                  <Input
-                    name="periodoDe"
-                    value={header.periodoDe}
-                    onChange={handleHeaderChange}
-                    className="ml-2 inline w-28 h-6 text-sm"
-                  />
-                  <span className="ml-2">a</span>
-                  <Input
-                    name="periodoAte"
-                    value={header.periodoAte}
-                    onChange={handleHeaderChange}
-                    className="ml-2 inline w-28 h-6 text-sm"
-                  />
-                </div>
-              </div>
             </div>
 
             <div className="col-span-3 p-2">
@@ -257,7 +229,7 @@ const FormBFF = () => {
 
             <div className="grid grid-cols-2 border-t border-green-700 text-sm">
               <div className="border-r border-green-700 p-1">
-                <span className="font-semibold">Nome:</span>
+                <span className="font-semibold">VALOR EM R$:</span>
                 <Input
                   name="nome"
                   value={favorecido.nome}
@@ -266,7 +238,8 @@ const FormBFF = () => {
                 />
               </div>
               <div className="p-1">
-                <span className="font-semibold">CPF/CNPJ:</span>
+                <span className="font-semibold">
+PERÍODO:de</span>
                 <Input
                   name="cpfCnpj"
                   value={favorecido.cpfCnpj}
@@ -278,51 +251,13 @@ const FormBFF = () => {
 
             <div className="grid grid-cols-2 border-t border-green-700 text-sm">
               <div className="border-r border-green-700 p-1">
-                <span className="font-semibold">Endereço:</span>
+                <span className="font-semibold">A:</span>
                 <Input
                   name="endereco"
                   value={favorecido.endereco}
                   onChange={handleFavChange}
                   className="ml-2 inline w-5/6 h-6 text-sm"
-                />
-              </div>
-              <div className="p-1">
-                <span className="font-semibold">Cidade/UF:</span>
-                <Input
-                  name="cidadeUf"
-                  value={favorecido.cidadeUf}
-                  onChange={handleFavChange}
-                  className="ml-2 inline w-4/6 h-6 text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1">
-                <span className="font-semibold">Banco/C.C.:</span>
-                <Input
-                  name="banco"
-                  value={favorecido.banco}
-                  onChange={handleFavChange}
-                  className="ml-2 inline w-3/4 h-6 text-sm"
-                />
-              </div>
-              <div className="border-r border-green-700 p-1">
-                <span className="font-semibold">Agência:</span>
-                <Input
-                  name="agencia"
-                  value={favorecido.agencia}
-                  onChange={handleFavChange}
-                  className="ml-2 inline w-3/4 h-6 text-sm"
-                />
-              </div>
-              <div className="p-1">
-                <span className="font-semibold">Cidade/UF:</span>
-                <Input
-                  name="cidadeUfBanco"
-                  value={favorecido.cidadeUfBanco}
-                  onChange={handleFavChange}
-                  className="ml-2 inline w-3/4 h-6 text-sm"
+              
                 />
               </div>
             </div>
@@ -406,8 +341,8 @@ const FormBFF = () => {
           {/* Rodapé de assinaturas */}
           <div className="grid grid-cols-4 border border-green-700 mt-2 text-sm">
             <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">RESPONSÁVEL</div>
-            <div className="border-r border-green-700 text-center p-2 text-[11px]">ATESTO QUE OS SERVIÇOS FORAM PRESTADOS</div>
-            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">CONFERÊNCIA / APROVAÇÃO</div>
+            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">APROVAÇÃO</div>
+            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">CONFERÊNCIA</div>
             <div className="text-center p-2 text-[11px]">Recebi a importância correspondente ao reembolso dos pagamentos constantes do presente boletim.</div>
           </div>
 

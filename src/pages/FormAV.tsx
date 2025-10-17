@@ -31,6 +31,10 @@ const FormAV = () => {
     totalAdiantamento: "",
     valorTotal: "",
     valorExtenso: "",
+     valorDiariasCapital: "",
+    valorDiariasInterior: "",
+    outros: "",
+    valorOutros: "",
   });
 
   const formRef = useRef(null);
@@ -208,6 +212,7 @@ const FormAV = () => {
                 />
               </div>
             </div>
+             </div>
 
             <div className="grid grid-cols-2 border-t border-green-700">
               <div className="border-r border-green-700 p-1 nowrap-input">
@@ -232,7 +237,7 @@ const FormAV = () => {
                   name="cc"
                   value={formData.cc}
                   onChange={handleInputChange}
-                  className="inline w-1/3 h-6 border border-green-700 ml-2"
+                  className="inline w-1/3 h-6 border border-green-700 ml-6"
                 />
               </div>
             </div>
@@ -278,65 +283,141 @@ const FormAV = () => {
             </div>
 
             {/* Saída / Adiantamentos / Retorno */}
-            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1 nowrap-input">
-                <span>Saída: Nº dias (C):</span>
-                <Input
-                  name="saidaDiasC"
-                  value={formData.saidaDiasC}
-                  onChange={handleInputChange}
-                  className="inline w-1/3 h-6 border border-green-700 ml-2"
-                />
-                <span>Valor das Diárias (C):</span>
-                <Input
-                  name="valorDiariasC"
-                  value={formData.valorDiariasC}
-                  onChange={handleInputChange}
-                  className="inline w-1/3 h-6 border border-green-700 ml-2"
-                />
-              </div>
+<div className="grid grid-cols-3 border-t border-green-700 text-sm">
+  <div className="border-r border-green-700 p-1 nowrap-input">
+    <span>Saída:</span>
+    <Input
+      name="saidaDiasC"
+      value={formData.saidaDiasC}
+      onChange={handleInputChange}
+      className="inline w-1/3 h-6 border border-green-700 ml-2"
+    />
+    <span>Nº dias (C):</span>
+    <Input
+      name="valorDiariasC"
+      value={formData.valorDiariasC}
+      onChange={handleInputChange}
+      className="inline w-1/3 h-6 border border-green-700 ml-2"
+    />
+  </div>
 
-              <div className="col-span-2 p-1 flex flex-col gap-1">
-                <div className="nowrap-input">
-                  <span>Adiant. Total Diária de Capital:</span>
-                  <Input
-                    name="adiantCapital"
-                    value={formData.adiantCapital}
-                    onChange={handleInputChange}
-                    className="inline w-1/2 h-6 border border-green-700 ml-2"
-                  />
-                </div>
-                <div className="nowrap-input">
-                  <span>Adiant. Total Diária de Interior:</span>
-                  <Input
-                    name="adiantInterior"
-                    value={formData.adiantInterior}
-                    onChange={handleInputChange}
-                    className="inline w-1/2 h-6 border border-green-700 ml-2"
-                  />
-                </div>
-              </div>
-            </div>
+  <div className="col-span-2 p-1 flex flex-col gap-1">
+    <div className="nowrap-input">
+      <span>Adiant. Total Diária de Capital:</span>
+      <Input
+        name="adiantCapital"
+        value={formData.adiantCapital}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+    <div className="nowrap-input">
+      <span>Adiant. Total Diária de Interior:</span>
+      <Input
+        name="adiantInterior"
+        value={formData.adiantInterior}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+  </div>
+</div>
 
-            <div className="grid grid-cols-3 border-t border-green-700 text-sm">
-              <div className="border-r border-green-700 p-1 nowrap-input">
-                <span>Retorno: Nº dias (I):</span>
-                <Input
-                  name="retornoDiasI"
-                  value={formData.retornoDiasI}
-                  onChange={handleInputChange}
-                  className="inline w-1/3 h-6 border border-green-700 ml-2"
-                />
-                <span>Valor das Diárias (I):</span>
-                <Input
-                  name="valorDiariasI"
-                  value={formData.valorDiariasI}
-                  onChange={handleInputChange}
-                  className="inline w-1/3 h-6 border border-green-700 ml-2"
-                />
-              </div>
-            </div>
-          </div>
+<div className="grid grid-cols-3 border-t border-green-700 text-sm">
+  <div className="border-r border-green-700 p-1 nowrap-input">
+    <span>Retorno:</span>
+    <Input
+      name="retornoDiasI"
+      value={formData.retornoDiasI}
+      onChange={handleInputChange}
+      className="inline w-1/3 h-6 border border-green-700 ml-2"
+    />
+    <span>Nº dias (I):</span>
+    <Input
+      name="valorDiariasI"
+      value={formData.valorDiariasI}
+      onChange={handleInputChange}
+      className="inline w-1/3 h-6 border border-green-700 ml-2"
+    />
+  </div>
+</div>
+
+{/* NOVAS SEÇÕES */}
+<div className="border-t border-green-700 text-sm font-semibold">
+  <div className="grid grid-cols-2 border-b border-green-700">
+    <div className="border-r border-green-700 p-1 flex items-center">
+      <span>Valor das Diárias (C):</span>
+      <Input
+        name="valorDiariasCapital"
+        value={formData.valorDiariasCapital}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+    <div className="p-1 flex items-center">
+      <span>Valor das Diárias (I):</span>
+      <Input
+        name="valorDiariasInterior"
+        value={formData.valorDiariasInterior}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+  </div>
+
+  <div className="grid grid-cols-2 border-b border-green-700">
+    <div className="border-r border-green-700 p-1 flex items-center">
+      <span>Outros:</span>
+      <Input
+        name="outros"
+        value={formData.outros}
+        onChange={handleInputChange}
+        className="inline w-3/4 h-6 border border-green-700 ml-2"
+      />
+    </div>
+    <div className="p-1 flex items-center">
+      <span>Valor (R$):</span>
+      <Input
+        name="valorOutros"
+        value={formData.valorOutros}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+  </div>
+
+  <div className="grid grid-cols-2 border-b border-green-700">
+    <div className="border-r border-green-700 p-1 flex items-center">
+      <span>Total Adiantamento (R$):</span>
+      <Input
+        name="totalAdiantamento"
+        value={formData.totalAdiantamento}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+    <div className="p-1 flex items-center">
+      <span>Valor Total (R$):</span>
+      <Input
+        name="valorTotal"
+        value={formData.valorTotal}
+        onChange={handleInputChange}
+        className="inline w-1/2 h-6 border border-green-700 ml-2"
+      />
+    </div>
+  </div>
+
+  <div className="border-b border-green-700 p-1 flex items-center">
+    <span>Valor por extenso (R$):</span>
+    <Input
+      name="valorExtenso"
+      value={formData.valorExtenso}
+      onChange={handleInputChange}
+      className="inline w-5/6 h-6 border border-green-700 ml-2"
+    />
+  </div>
+</div>
+          
 
           {/* Rodapé */}
           <div className="grid grid-cols-2 border border-green-700 mt-2">
@@ -369,17 +450,18 @@ const FormAV = () => {
             </div>
           </div>
 
-          {/* Botão PDF */}
-          <div className="mt-6 flex justify-center">
-            <Button type="button" size="lg" className="gap-2" onClick={generatePDF}>
-              <Download className="w-4 h-4" />
-              Salvar como PDF
-            </Button>
-          </div>
-        </form>
-      </div>
+       {/* Botão PDF */}
+        <div className="mt-6 flex justify-center">
+          <Button type="button" size="lg" className="gap-2" onClick={generatePDF}>
+            <Download className="w-4 h-4" />
+            Salvar como PDF
+          </Button>
+        </div>
+      </form>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default FormAV;
