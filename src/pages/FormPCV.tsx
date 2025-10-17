@@ -586,32 +586,58 @@ const FormPCV = () => {
 </div>
 
           {/* -------- Tabela ITEM / HISTÓRICO / DIÁRIAS / HOSPEDAGEM / OUTRAS ---------- */}
-          <div className="mt-3 border border-green-700">
-            <div className="grid grid-cols-6 bg-green-50 text-green-700 text-sm font-semibold border-b border-green-700 p-2">
-              <div className="col-span-1 border-r border-green-700 text-center">ITEM</div>
-              <div className="col-span-3 border-r border-green-700 text-center">HISTÓRICO</div>
-              <div className="col-span-1 border-r border-green-700 text-center">DIÁRIAS R$</div>
-              <div className="col-span-1 text-center">HOSPEDAGEM R$</div>
-              <div className="col-span-1 text-center hidden">OUTRAS R$</div>
-            </div>
+<div className="mt-3 border border-green-700">
+  {/* Cabeçalho */}
+  <div className="grid grid-cols-7 bg-green-50 text-green-700 text-sm font-semibold border-b border-green-700 p-2">
+    <div className="col-span-1 border-r border-green-700 text-center">ITEM</div>
+    <div className="col-span-3 border-r border-green-700 text-center">HISTÓRICO</div>
+    <div className="col-span-1 border-r border-green-700 text-center">DIÁRIAS R$</div>
+    <div className="col-span-1 border-r border-green-700 text-center">HOSPEDAGEM R$</div>
+    <div className="col-span-1 text-center">OUTRAS R$</div>
+  </div>
 
-            {/* rows */}
-            <div>
-              {items.map((it, idx) => (
-                <div key={idx} className="grid grid-cols-6 border-t border-green-200 text-sm">
-                  <div className="col-span-1 p-1 border-r border-green-700 text-center">{it.item}</div>
-                  <div className="col-span-3 p-1 border-r border-green-700">
-                    <Textarea value={it.historico} onChange={(e) => handleItemChange(idx, "historico", e.target.value)} className="w-full h-9 resize-none border-none text-sm" />
-                  </div>
-                  <div className="col-span-1 p-1 border-r border-green-700">
-                    <Input value={it.diarias} onChange={(e) => handleItemChange(idx, "diarias", e.target.value)} className="w-full h-8 text-sm text-right border border-green-100" />
-                  </div>
-                  <div className="col-span-1 p-1">
-                    <Input value={it.hospedagem} onChange={(e) => handleItemChange(idx, "hospedagem", e.target.value)} className="w-full h-8 text-sm text-right border border-green-100" />
-                  </div>
-                </div>
-              ))}
-            </div>
+  {/* Linhas */}
+  <div>
+    {items.map((it, idx) => (
+      <div key={idx} className="grid grid-cols-7 border-t border-green-200 text-sm">
+        <div className="col-span-1 p-1 border-r border-green-700 text-center">{it.item}</div>
+
+        <div className="col-span-3 p-1 border-r border-green-700">
+          <Textarea
+            value={it.historico}
+            onChange={(e) => handleItemChange(idx, "historico", e.target.value)}
+            className="w-full h-9 resize-none border-none text-sm"
+          />
+        </div>
+
+        <div className="col-span-1 p-1 border-r border-green-700">
+          <Input
+            value={it.diarias}
+            onChange={(e) => handleItemChange(idx, "diarias", e.target.value)}
+            className="w-full h-8 text-sm text-right border border-green-100"
+          />
+        </div>
+
+        <div className="col-span-1 p-1 border-r border-green-700">
+          <Input
+            value={it.hospedagem}
+            onChange={(e) => handleItemChange(idx, "hospedagem", e.target.value)}
+            className="w-full h-8 text-sm text-right border border-green-100"
+          />
+        </div>
+
+        <div className="col-span-1 p-1">
+          <Input
+            value={it.outras}
+            onChange={(e) => handleItemChange(idx, "outras", e.target.value)}
+            className="w-full h-8 text-sm text-right border border-green-100"
+          />
+        </div>
+      </div>
+    ))}
+  </div>
+
+
 
             {/* Totais linha */}
             <div className="grid grid-cols-6 border-t border-green-700 text-sm font-semibold">
