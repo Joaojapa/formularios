@@ -273,7 +273,7 @@ inputs.forEach((input) => {
                         name="secao"
                         value={cabecalho.secao}
                         onChange={handleCabecalhoChange}
-                        className="h-7 text-sm border border-green-700 w-1/2"
+                        className="h-7 text-sm border border-green-700 w-10/12"
                       />
                     </div>
                   </div>

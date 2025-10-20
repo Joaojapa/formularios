@@ -146,7 +146,7 @@ const FormRPS = () => {
                     name="secao"
                     value={formData.secao}
                     onChange={handleInputChange}
-                    className="inline ml-2 w-1/2 h-7 border border-green-800 text-sm"
+                    className="inline ml-2 w-10/12 h-7 border border-green-800 text-sm"
                   />
                 </div>
               </div>
@@ -360,19 +360,20 @@ const FormRPS = () => {
   </div>
 
   {/* Nome */}
-  <div className="grid grid-cols-6 border-b border-green-700">
-    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
-      Nome:
-    </div>
-    <div className="col-span-4 flex items-center justify-center p-1">
-      <Input
-        name="nome"
-        value={formData.nome}
-        onChange={handleInputChange}
-        className="inline w-5/6 h-6 border border-green-700 text-sm"
-      />
-    </div>
+ <div className="grid grid-cols-[auto_1fr] border-b border-green-700">
+  <div className="flex items-center justify-center border-r border-green-700 font-semibold text-center px-3">
+    Nome:
   </div>
+  <div className="flex items-center p-1">
+    <Input
+      name="nome"
+      value={formData.nome}
+      onChange={handleInputChange}
+      className="w-full h-6 border border-green-700 text-sm"
+    />
+  </div>
+</div>
+
 
   {/* Endereço / Telefone */}
   <div className="grid grid-cols-6 border-b border-green-700">
@@ -415,28 +416,30 @@ const FormRPS = () => {
       />
     </div>
   </div>
-
-  {/* Local / Data / Ass. */}
-  <div className="grid grid-cols-6 border-b border-green-700">
-    <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
-      Local / Data 
-    </div>
-    <div className="col-span-4 grid grid-cols-3 gap-2 p-1">
-      <Input
-        name="local"
-        value={formData.local}
-        onChange={handleInputChange}
-        className="inline w-full h-6 border border-green-700 text-sm"
-      />
-      <Input
-        name="data"
-        value={formData.data}
-        onChange={handleInputChange}
-        className="inline w-full h-6 border border-green-700 text-sm"
-      />
-      
-    </div>
+  
+{/* Local / Data / Ass. */}
+<div className="grid grid-cols-6 border-b border-green-700">
+  <div className="col-span-2 flex items-center justify-center border-r border-green-700 font-semibold text-center">
+    Local / Data
   </div>
+ <div className="col-span-4 grid grid-flow-col auto-cols-max gap-[100px] p-1">
+  <Input
+    name="local"
+    value={formData.local}
+    onChange={handleInputChange}
+    className="w-70 h-6 border border-green-700 text-sm"
+    placeholder="Digite o local"
+  />
+   <Input
+    type="date"
+    name="data"
+    value={formData.data}
+    onChange={handleInputChange}
+    className="w-30 h-6 border border-green-700 text-sm text-center"
+  />
+</div>
+</div>
+
 
   {/* Assinaturas */}
   <div className="grid grid-cols-3 border-t border-green-700">
