@@ -104,24 +104,73 @@ const FormBCB = () => {
   const handleAssinaturasChange = (e) => {
     setAssinaturas({ ...assinaturas, [e.target.name]: e.target.value });
   };
+const generatePDF = async () => {
+  if (!formRef.current) return;
+  const element = formRef.current;
 
-  const generatePDF = async () => {
-    if (!formRef.current) return;
+  // Substitui inputs/textarea por spans (para capturar os textos)
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements = [];
 
-    const canvas = await html2canvas(formRef.current, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-    });
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    span.textContent = input.value;
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${input.offsetWidth}px`;
+    span.style.height = `${input.offsetHeight}px`;
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    input.parentNode.insertBefore(span, input);
+    tempElements.push({ input, span });
+    input.style.display = "none";
+  });
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Boletim_Caixa_Bancos.pdf");
-  };
+  // Captura o formulário completo em alta resolução
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+
+  const imgWidth = pdfWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  // Adiciona primeira página
+  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pdfHeight;
+
+  // Adiciona páginas subsequentes conforme necessário
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pdfHeight;
+  }
+
+  pdf.save("PCS_Prestacao_Contas_Suprimento.pdf");
+
+  // Restaura inputs originais
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">

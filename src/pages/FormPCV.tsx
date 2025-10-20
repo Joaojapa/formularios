@@ -166,43 +166,80 @@ const FormPCV = () => {
 
   // --- Seu generatePDF igual ---
   const generatePDF = async () => {
-    const element = formRef.current;
-    if (!element) return;
-    const inputs = element.querySelectorAll("input, textarea");
-    const tempElements = [];
+  if (!formRef.current) return;
+  const element = formRef.current;
 
-    inputs.forEach((input) => {
-      const span = document.createElement("span");
-      span.textContent = input.value;
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      span.style.fontSize = window.getComputedStyle(input).fontSize;
-      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-      span.style.color = window.getComputedStyle(input).color;
-      span.style.padding = "2px";
-      span.style.display = "inline-block";
-      span.style.border = "1px solid transparent";
-      span.style.width = `${input.offsetWidth}px`;
-      span.style.height = `${input.offsetHeight}px`;
+  // Substitui inputs/textarea por spans (para capturar os textos)
+  // Substitui inputs/textarea/radio/checkbox por spans equivalentes para capturar corretamente
+const inputs = element.querySelectorAll("input, textarea");
+const tempElements = [];
 
-      input.parentNode.insertBefore(span, input);
-      tempElements.push({ input, span });
-      input.style.display = "none";
-    });
+inputs.forEach((input) => {
+  const span = document.createElement("span");
+  span.style.whiteSpace = "pre-wrap";
+  span.style.wordBreak = "break-word";
+  span.style.fontSize = window.getComputedStyle(input).fontSize;
+  span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+  span.style.color = window.getComputedStyle(input).color;
+  span.style.padding = "2px";
+  span.style.display = "inline-block";
+  span.style.border = "1px solid transparent";
+  span.style.width = `${input.offsetWidth}px`;
+  span.style.height = `${input.offsetHeight}px`;
+  span.style.textAlign = "center";
 
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Prestacao_Contas_Viagem.pdf");
+  // Caso o input seja radio ou checkbox
+  if (input.type === "radio" || input.type === "checkbox") {
+    span.textContent = input.checked ? "●" : "○"; // bolinha preenchida/vazia
+    span.style.fontSize = "14px";
+  } else {
+    span.textContent = input.value;
+  }
 
-    tempElements.forEach(({ input, span }) => {
-      input.style.display = "";
-      span.remove();
-    });
-  };
+  input.parentNode.insertBefore(span, input);
+  tempElements.push({ input, span });
+  input.style.display = "none";
+});
+
+  // Captura o formulário completo em alta resolução
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+
+  const imgWidth = pdfWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  // Adiciona primeira página
+  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pdfHeight;
+
+  // Adiciona páginas subsequentes conforme necessário
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pdfHeight;
+  }
+
+  pdf.save("PCS_Prestacao_Contas_Suprimento.pdf");
+
+  // Restaura inputs originais
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
+};
 
   // markup — replicando fielmente o layout com Tailwind classes e bordas verdes
   return (
@@ -728,18 +765,33 @@ const FormPCV = () => {
   </div>
 </div>
 </div>
+<div className="mt-3 grid grid-cols-12 gap-2">
+  
+  {/* Texto vertical simples */}
+  <div className="col-span-2 flex justify-center items-center">
+    <div
+      className="text-green-700 font-semibold text-[12px]"
+      style={{
+        transform: "rotate(-90deg)",
+        transformOrigin: "center",
+        whiteSpace: "nowrap",
+        lineHeight: "1",
+      }}
+    >
+      OBSERVAÇÕES
+    </div>
+  </div>
 
-          {/* Observação vertical à esquerda + espaço em branco */}
-          <div className="mt-3 grid grid-cols-12 gap-2">
-            <div className="col-span-2">
-              <div className="h-40 border border-green-700 text-center text-[12px] flex items-center justify-center" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
-                OBSERVAÇÕES
-              </div>
-            </div>
-            <div className="col-span-10 border border-green-700 p-2">
-              <Textarea value={observacaoVertical} onChange={(e) => setObservacaoVertical(e.target.value)} className="w-full h-40 resize-none border-none text-sm" />
-            </div>
-          </div>
+  {/* Campo de texto */}
+  <div className="col-span-10 border border-green-700 p-2">
+    <Textarea
+      value={observacaoVertical}
+      onChange={(e) => setObservacaoVertical(e.target.value)}
+      className="w-full h-40 resize-none border-none text-sm text-green-800"
+    />
+  </div>
+</div>
+
 
           {/* Rodapé assinaturas estilo tabela */}
           <div className="mt-3 border border-green-700">

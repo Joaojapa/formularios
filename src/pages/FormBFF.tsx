@@ -97,63 +97,81 @@ const FormBFF = () => {
   };
 
   // 🔹 Gera PDF
-  const generatePDF = async () => {
-    const element = formRef.current;
-    if (!element) return;
+ const generatePDF = async () => {
+  const element = formRef.current;
+  if (!element) return;
 
-    toast({
-      title: "Gerando PDF...",
-      description: "Aguarde enquanto o formulário é processado.",
-    });
+  toast({
+    title: "Gerando PDF...",
+    description: "Aguarde enquanto o formulário é processado.",
+  });
 
-    const inputs = element.querySelectorAll("input, textarea");
-    const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
+  // Substitui inputs por spans para renderizar texto corretamente
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
-    inputs.forEach((input) => {
-      const span = document.createElement("span");
-      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      span.style.fontSize = window.getComputedStyle(input).fontSize;
-      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-      span.style.color = window.getComputedStyle(input).color;
-      span.style.padding = "2px";
-      span.style.display = "inline-block";
-      span.style.border = "1px solid transparent";
-      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
-      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+    span.style.height = `${(input as HTMLElement).offsetHeight}px`;
 
-      input.parentNode?.insertBefore(span, input);
-      tempElements.push({ input: input as HTMLElement, span });
-      (input as HTMLElement).style.display = "none";
-    });
+    input.parentNode?.insertBefore(span, input);
+    tempElements.push({ input: input as HTMLElement, span });
+    (input as HTMLElement).style.display = "none";
+  });
 
-    const canvas = await html2canvas(element as HTMLElement, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+  // Captura a tela com alta resolução
+  const canvas = await html2canvas(element as HTMLElement, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Boletim_Fundo_Fixo.pdf");
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
 
-    tempElements.forEach(({ input, span }) => {
-      input.style.display = "";
-      span.remove();
-    });
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    toast({
-      title: "Download concluído!",
-      description: "O PDF foi gerado com sucesso.",
-    });
+  const imgWidth = pdfWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    // 🔹 (Opcional) limpar o armazenamento após salvar PDF
-    // localStorage.removeItem(STORAGE_KEY);
-  };
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  // Adiciona a primeira imagem e cria novas páginas se precisar
+  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pdfHeight;
+
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pdfHeight;
+  }
+
+  pdf.save("Boletim_Fundo_Fixo.pdf");
+
+  // Restaura inputs originais
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
+
+  toast({
+    title: "Download concluído!",
+    description: "O PDF foi gerado com sucesso, incluindo todas as linhas.",
+  });
+};
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
