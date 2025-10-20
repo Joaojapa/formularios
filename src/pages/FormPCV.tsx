@@ -519,7 +519,7 @@ inputs.forEach((input) => {
       Outros
     </div>
     <div className="col-span-4 flex items-center justify-between border-r border-green-700 p-1">
-      <Input className="inline w-2/3 h-6 border border-green-700 text-sm" />
+      <Input className="inline w-11/12 h-6 border border-green-700 text-sm" />
     </div>
     <div className="col-span-3 flex items-center justify-between border-r border-green-700 p-1">
       <span className="text-xs">Valor (R$)</span>
@@ -674,8 +674,6 @@ inputs.forEach((input) => {
     ))}
   </div>
 
-
-
             {/* Totais linha */}
             <div className="grid grid-cols-6 border-t border-green-700 text-sm font-semibold">
               <div className="col-span-1 p-2 border-r border-green-700">TOTAL DAS DESPESAS</div>
@@ -766,7 +764,7 @@ inputs.forEach((input) => {
 </div>
 </div>
 <div className="mt-3 grid grid-cols-12 gap-2">
-  
+
   {/* Texto vertical simples */}
   <div className="col-span-2 flex justify-center items-center">
     <div
