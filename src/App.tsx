@@ -47,22 +47,22 @@ function Navbar() {
   return (
     <nav className="bg-primary text-primary-foreground shadow-lg rounded-b-2xl">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between py-4 relative">
-          {/* Logo à esquerda */}
-     <Link
-  to="/home"
-  className="flex items-center gap-2 text-xl font-bold hover:opacity-80 transition-opacity z-10"
->
-  <img
-    src="/Sinpa.png"
-    alt="Logo SINPAF"
-    className="h-9 w-auto object-contain"
-  />
-  <span className="text-2xl">SINPAF</span>
-</Link>
+        <div className="flex flex-wrap items-center justify-between py-4 gap-4">
+          {/* Logo */}
+          <Link
+            to="/home"
+            className="flex items-center gap-2 text-xl font-bold hover:opacity-80 transition-opacity"
+          >
+            <img
+              src="/Sinpa.png"
+              alt="Logo SINPAF"
+              className="h-9 w-auto object-contain"
+            />
+            <span className="text-2xl">SINPAF</span>
+          </Link>
 
-          {/* Menu centralizado */}
-          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">
+          {/* Menu de navegação */}
+          <div className="flex flex-wrap justify-center items-center gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -80,22 +80,23 @@ function Navbar() {
                 </Link>
               );
             })}
+          </div>
 
-            {/* Botão "Trocar Senha" com aviso */}
-            <div className="ml-6 flex items-center gap-2">
-              <Link
-                to="/change-password"
-                className="bg-white text-primary px-8 py-0 rounded-xl font-semibold hover:bg-primary-foreground hover:text-black transition-colors"
-              >
-                Trocar Senha
-              </Link>
-            </div>
+          {/* Botão Trocar Senha */}
+          <div>
+            <Link
+              to="/change-password"
+              className="bg-white text-primary px-6 py-1 rounded-xl font-semibold hover:bg-primary-foreground hover:text-black transition-colors"
+            >
+              Trocar Senha
+            </Link>
           </div>
         </div>
       </div>
     </nav>
   );
 }
+
 
 
 function Layout() {

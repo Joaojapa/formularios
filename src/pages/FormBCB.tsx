@@ -104,11 +104,18 @@ const FormBCB = () => {
   const handleAssinaturasChange = (e) => {
     setAssinaturas({ ...assinaturas, [e.target.name]: e.target.value });
   };
+  
 const generatePDF = async () => {
   if (!formRef.current) return;
   const element = formRef.current;
 
-  // Substitui inputs/textarea por spans (para capturar os textos)
+  console.log("Gerando PDF... aguarde.");
+
+  // 🔹 Esconde o botão de salvar PDF antes de gerar
+  const pdfButton = element.querySelector("button");
+  if (pdfButton) pdfButton.style.display = "none";
+
+  // 🔹 Substitui inputs/textarea por spans (para capturar os textos)
   const inputs = element.querySelectorAll("input, textarea");
   const tempElements = [];
 
@@ -131,7 +138,7 @@ const generatePDF = async () => {
     input.style.display = "none";
   });
 
-  // Captura o formulário completo em alta resolução
+  // 🔹 Captura o formulário completo em alta resolução
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
@@ -164,13 +171,16 @@ const generatePDF = async () => {
 
   pdf.save("PCS_Prestacao_Contas_Suprimento.pdf");
 
-  // Restaura inputs originais
+  // 🔹 Restaura inputs e botão
   tempElements.forEach(({ input, span }) => {
     input.style.display = "";
     span.remove();
   });
-};
 
+  if (pdfButton) pdfButton.style.display = "";
+
+  console.log("✅ PDF gerado com sucesso!");
+};
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">

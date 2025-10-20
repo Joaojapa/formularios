@@ -101,12 +101,16 @@ const FormBFF = () => {
   const element = formRef.current;
   if (!element) return;
 
+  // 🔹 Esconde temporariamente o botão "Salvar como PDF"
+  const pdfButton = element.querySelector("button");
+  if (pdfButton) pdfButton.style.display = "none";
+
   toast({
     title: "Gerando PDF...",
     description: "Aguarde enquanto o formulário é processado.",
   });
 
-  // Substitui inputs por spans para renderizar texto corretamente
+  // 🔹 Substitui inputs/textarea por spans (para renderizar texto corretamente)
   const inputs = element.querySelectorAll("input, textarea");
   const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
@@ -129,7 +133,7 @@ const FormBFF = () => {
     (input as HTMLElement).style.display = "none";
   });
 
-  // Captura a tela com alta resolução
+  // 🔹 Captura a tela em alta resolução
   const canvas = await html2canvas(element as HTMLElement, {
     scale: 2,
     useCORS: true,
@@ -148,10 +152,11 @@ const FormBFF = () => {
   let heightLeft = imgHeight;
   let position = 0;
 
-  // Adiciona a primeira imagem e cria novas páginas se precisar
+  // 🔹 Adiciona a primeira página
   pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
   heightLeft -= pdfHeight;
 
+  // 🔹 Cria novas páginas se necessário
   while (heightLeft > 0) {
     position = heightLeft - imgHeight;
     pdf.addPage();
@@ -161,17 +166,20 @@ const FormBFF = () => {
 
   pdf.save("Boletim_Fundo_Fixo.pdf");
 
-  // Restaura inputs originais
+  // 🔹 Restaura inputs e botão
   tempElements.forEach(({ input, span }) => {
     input.style.display = "";
     span.remove();
   });
+
+  if (pdfButton) pdfButton.style.display = "";
 
   toast({
     title: "Download concluído!",
     description: "O PDF foi gerado com sucesso, incluindo todas as linhas.",
   });
 };
+
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -363,57 +371,63 @@ PERÍODO:de</span>
             <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">CONFERÊNCIA</div>
             <div className="text-center p-2 text-[11px]">Recebi a importância correspondente ao reembolso dos pagamentos constantes do presente boletim.</div>
           </div>
+<div className="grid grid-cols-4 border-x border-b border-green-700 text-sm">
+  {/* RESPONSÁVEL */}
+  <div className="p-4 border-r border-green-700 text-center">
+    <div className="text-[11px]">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="responsavelData"
+      value={assinaturas.responsavelData}
+      onChange={handleAssinaturasChange}
+      className="mx-auto mt-1 w-39 h-6 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="text-green-700 mt-1">Assinatura</div>
+  </div>
 
-          <div className="grid grid-cols-4 border-x border-b border-green-700 text-sm">
-            <div className="p-4 border-r border-green-700 text-center">
-              <div className="text-[11px]">Data</div>
-              <Input
-                name="responsavelData"
-                value={assinaturas.responsavelData}
-                onChange={handleAssinaturasChange}
-                className="mx-auto mt-1 w-32 h-6 text-sm"
-              />
-              <div className="border-t border-dotted border-green-700 mt-4" />
-              <div className="text-green-700 mt-1">Assinatura</div>
-            </div>
+  {/* CONFERÊNCIA */}
+  <div className="p-4 border-r border-green-700 text-center">
+    <div className="text-[11px]">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="conferenciaData"
+      value={assinaturas.conferenciaData}
+      onChange={handleAssinaturasChange}
+      className="mx-auto mt-1 w-39 h-6 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="text-green-700 mt-1">Assinatura</div>
+  </div>
 
-            <div className="p-4 border-r border-green-700 text-center">
-              <div className="text-[11px]">Data</div>
-              <Input
-                name="conferenciaData"
-                value={assinaturas.conferenciaData}
-                onChange={handleAssinaturasChange}
-                className="mx-auto mt-1 w-32 h-6 text-sm"
-              />
-              <div className="border-t border-dotted border-green-700 mt-4" />
-              <div className="text-green-700 mt-1">Assinatura</div>
-            </div>
+  {/* APROVAÇÃO */}
+  <div className="p-4 border-r border-green-700 text-center">
+    <div className="text-[11px]">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="aprovacaoData"
+      value={assinaturas.aprovacaoData}
+      onChange={handleAssinaturasChange}
+      className="mx-auto mt-1 w-39 h-6 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="text-green-700 mt-1">Assinatura</div>
+  </div>
 
-            <div className="p-4 border-r border-green-700 text-center">
-              <div className="text-[11px]">Data</div>
-              <Input
-                name="aprovacaoData"
-                value={assinaturas.aprovacaoData}
-                onChange={handleAssinaturasChange}
-                className="mx-auto mt-1 w-32 h-6 text-sm"
-              />
-              <div className="border-t border-dotted border-green-700 mt-4" />
-              <div className="text-green-700 mt-1">Assinatura</div>
-            </div>
-
-            <div className="p-4 text-center">
-              <div className="text-[11px]">Data</div>
-              <Input
-                name="recebidoData"
-                value={assinaturas.recebidoData}
-                onChange={handleAssinaturasChange}
-                className="mx-auto mt-1 w-32 h-6 text-sm"
-              />
-              <div className="border-t border-dotted border-green-700 mt-4" />
-              <div className="text-green-700 mt-1">Assinatura</div>
-            </div>
-          </div>
-
+  {/* RECEBIDO */}
+  <div className="p-4 text-center">
+    <div className="text-[11px]">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="recebidoData"
+      value={assinaturas.recebidoData}
+      onChange={handleAssinaturasChange}
+      className="mx-auto mt-1 w-39 h-6 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="text-green-700 mt-1">Assinatura</div>
+  </div>
+</div>
           {/* Botão PDF */}
           <div className="mt-4 flex justify-center">
             <Button onClick={generatePDF} size="lg" className="gap-2">

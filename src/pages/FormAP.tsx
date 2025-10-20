@@ -50,68 +50,77 @@ const FormAP = () => {
   };
 
   // ✅ Gera o PDF (com substituição e restauração dos inputs)
-  const generatePDF = async () => {
-    const element = formRef.current;
-    if (!element) return;
+ const generatePDF = async () => {
+  const element = formRef.current;
+  if (!element) return;
 
-    toast({
-      title: "Gerando PDF...",
-      description: "Aguarde enquanto o formulário é processado.",
-    });
+  // 🔹 Esconde temporariamente o botão de gerar PDF
+  const pdfButton = element.querySelector("button") as HTMLElement | null;
+  if (pdfButton) pdfButton.style.display = "none";
 
-    const inputs = element.querySelectorAll("input, textarea");
-    const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
+  toast({
+    title: "Gerando PDF...",
+    description: "Aguarde enquanto o formulário é processado.",
+  });
 
-    inputs.forEach((input) => {
-      const span = document.createElement("span");
-      let value = (input as HTMLInputElement | HTMLTextAreaElement).value;
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
-      // ✅ Formata a data para DD/MM/AAAA no PDF
-      if ((input as HTMLInputElement).type === "date" && value) {
-        const [yyyy, mm, dd] = value.split("-");
-        value = `${dd}/${mm}/${yyyy}`;
-      }
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    let value = (input as HTMLInputElement | HTMLTextAreaElement).value;
 
-      span.textContent = value;
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      span.style.fontSize = window.getComputedStyle(input).fontSize;
-      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-      span.style.color = window.getComputedStyle(input).color;
-      span.style.padding = "2px";
-      span.style.display = "inline-block";
-      span.style.border = "1px solid transparent";
-      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
-      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+    // Formata datas para DD/MM/AAAA no PDF
+    if ((input as HTMLInputElement).type === "date" && value) {
+      const [yyyy, mm, dd] = value.split("-");
+      value = `${dd}/${mm}/${yyyy}`;
+    }
 
-      input.parentNode?.insertBefore(span, input);
-      tempElements.push({ input: input as HTMLElement, span });
-      (input as HTMLElement).style.display = "none";
-    });
+    span.textContent = value;
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+    span.style.height = `${(input as HTMLElement).offsetHeight}px`;
 
-    const canvas = await html2canvas(element as HTMLElement, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+    input.parentNode?.insertBefore(span, input);
+    tempElements.push({ input: input as HTMLElement, span });
+    (input as HTMLElement).style.display = "none";
+  });
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Autorizacao_Pagamento.pdf");
+  const canvas = await html2canvas(element as HTMLElement, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
 
-    tempElements.forEach(({ input, span }) => {
-      input.style.display = "";
-      span.remove();
-    });
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    toast({
-      title: "Download concluído!",
-      description: "O PDF foi gerado com sucesso.",
-    });
-  };
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save("Autorizacao_Pagamento.pdf");
+
+  // 🔹 Restaura inputs e botão
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
+
+  if (pdfButton) pdfButton.style.display = "";
+
+  toast({
+    title: "Download concluído!",
+    description: "O PDF foi gerado com sucesso.",
+  });
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">

@@ -83,8 +83,7 @@ const FormPCV = () => {
     savedData?.items ||
       Array.from({ length: NUM_ITEM_ROWS }, (_, i) => ({
         item: i + 1,
-        historico: i === 0 ? "DIÁRIAS" : i === 1 ? "TÁXI URBANO" : "",
-        diarias: "",
+       diarias: "",
         hospedagem: "",
         outras: "",
       }))
@@ -169,45 +168,51 @@ const FormPCV = () => {
   if (!formRef.current) return;
   const element = formRef.current;
 
-  // Substitui inputs/textarea por spans (para capturar os textos)
-  // Substitui inputs/textarea/radio/checkbox por spans equivalentes para capturar corretamente
-const inputs = element.querySelectorAll("input, textarea");
-const tempElements = [];
+  console.log("Gerando PDF... aguarde.");
 
-inputs.forEach((input) => {
-  const span = document.createElement("span");
-  span.style.whiteSpace = "pre-wrap";
-  span.style.wordBreak = "break-word";
-  span.style.fontSize = window.getComputedStyle(input).fontSize;
-  span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-  span.style.color = window.getComputedStyle(input).color;
-  span.style.padding = "2px";
-  span.style.display = "inline-block";
-  span.style.border = "1px solid transparent";
-  span.style.width = `${input.offsetWidth}px`;
-  span.style.height = `${input.offsetHeight}px`;
-  span.style.textAlign = "center";
+  // 🔹 Esconde temporariamente o botão de gerar PDF
+  const pdfButton = element.querySelector("button");
+  if (pdfButton) pdfButton.style.display = "none";
 
-  // Caso o input seja radio ou checkbox
-  if (input.type === "radio" || input.type === "checkbox") {
-    span.textContent = input.checked ? "●" : "○"; // bolinha preenchida/vazia
-    span.style.fontSize = "14px";
-  } else {
-    span.textContent = input.value;
-  }
+  // 🔹 Substitui inputs, textareas, checkboxes e radios por spans (para capturar o texto no PDF)
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements = [];
 
-  input.parentNode.insertBefore(span, input);
-  tempElements.push({ input, span });
-  input.style.display = "none";
-});
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${input.offsetWidth}px`;
+    span.style.height = `${input.offsetHeight}px`;
+    span.style.textAlign = "center";
 
-  // Captura o formulário completo em alta resolução
+    // Caso o input seja radio ou checkbox
+    if (input.type === "radio" || input.type === "checkbox") {
+      span.textContent = input.checked ? "●" : "○"; // bolinha preenchida/vazia
+      span.style.fontSize = "14px";
+    } else {
+      span.textContent = input.value;
+    }
+
+    input.parentNode.insertBefore(span, input);
+    tempElements.push({ input, span });
+    input.style.display = "none";
+  });
+
+  // 🔹 Captura o formulário completo em alta resolução
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
     backgroundColor: "#ffffff",
   });
 
+  // 🔹 Cria o PDF
   const imgData = canvas.toDataURL("image/png");
   const pdf = new jsPDF("p", "mm", "a4");
 
@@ -220,11 +225,9 @@ inputs.forEach((input) => {
   let heightLeft = imgHeight;
   let position = 0;
 
-  // Adiciona primeira página
   pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
   heightLeft -= pdfHeight;
 
-  // Adiciona páginas subsequentes conforme necessário
   while (heightLeft > 0) {
     position = heightLeft - imgHeight;
     pdf.addPage();
@@ -234,12 +237,17 @@ inputs.forEach((input) => {
 
   pdf.save("PCS_Prestacao_Contas_Suprimento.pdf");
 
-  // Restaura inputs originais
+  // 🔹 Restaura inputs e o botão
   tempElements.forEach(({ input, span }) => {
     input.style.display = "";
     span.remove();
   });
+
+  if (pdfButton) pdfButton.style.display = "";
+
+  console.log("✅ PDF gerado com sucesso!");
 };
+
 
   // markup — replicando fielmente o layout com Tailwind classes e bordas verdes
   return (
@@ -800,51 +808,87 @@ inputs.forEach((input) => {
               <div className="p-2 border-r border-green-700 text-center">APROVAÇÃO</div>
               <div className="p-2 text-center">Recebi o valor acima</div>
             </div>
-
-            <div className="grid grid-cols-5 text-sm border-t border-green-700">
-              {/* EMITENTE */}
-              <div className="p-2 border-r border-green-700 text-center">
-                <div className="text-xs">Data</div>
-                <Input name="emitenteData" value={rodape.emitenteData} onChange={handleRodapeChange} className="w-32 mx-auto h-7 text-sm" />
-                <div className="border-t border-dotted border-green-700 mt-3" />
-                <div className="mt-1">Visto</div>
-              </div>
-
-              {/* RECEBI DOC */}
-              <div className="p-2 border-r border-green-700 text-center">
-                <div className="text-xs">Data</div>
-                <Input name="recebiDocData" value={rodape.recebiDocData} onChange={handleRodapeChange} className="w-32 mx-auto h-7 text-sm" />
-                <div className="border-t border-dotted border-green-700 mt-3" />
-                <div className="mt-1">Visto</div>
-              </div>
-
-              {/* CONFERIDO */}
-              <div className="p-2 border-r border-green-700 text-center">
-                <div className="text-xs">Data</div>
-                <Input name="conferidoData" value={rodape.conferidoData} onChange={handleRodapeChange} className="w-32 mx-auto h-7 text-sm" />
-                <div className="border-t border-dotted border-green-700 mt-3" />
-                <div className="mt-1">Visto</div>
-              </div>
-
-              {/* APROVAÇÃO */}
-              <div className="p-2 border-r border-green-700 text-center">
-                <div className="text-xs">Data</div>
-                <Input name="aprovacaoData" value={rodape.aprovacaoData} onChange={handleRodapeChange} className="w-32 mx-auto h-7 text-sm" />
-                <div className="border-t border-dotted border-green-700 mt-3" />
-                <div className="mt-1">Visto</div>
-              </div>
-
-              {/* RECEBI O VALOR ACIMA */}
-              <div className="p-2 text-center">
-                <div className="text-xs">Local</div>
-                <Input name="recebiLocal" value={rodape.recebiLocal} onChange={handleRodapeChange} className="w-32 mx-auto h-7 text-sm" />
-                <div className="text-xs mt-2">Data</div>
-                <Input name="recebiDataFinal" value={rodape.recebiDataFinal} onChange={handleRodapeChange} className="w-32 mx-auto h-7 text-sm" />
-                <div className="border-t border-dotted border-green-700 mt-3" />
-                <div className="mt-1">Assinatura</div>
-              </div>
             </div>
-          </div>
+
+<div className="grid grid-cols-5 text-sm border-t border-green-700">
+  {/* EMITENTE */}
+  <div className="p-2 border-r border-green-700 text-center">
+    <div className="text-xs">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="emitenteData"
+      value={rodape.emitenteData}
+      onChange={handleRodapeChange}
+      className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-3" />
+    <div className="mt-1">Visto</div>
+  </div>
+
+  {/* RECEBI DOC */}
+  <div className="p-2 border-r border-green-700 text-center">
+    <div className="text-xs">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="recebiDocData"
+      value={rodape.recebiDocData}
+      onChange={handleRodapeChange}
+      className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-3" />
+    <div className="mt-1">Visto</div>
+  </div>
+
+  {/* CONFERIDO */}
+  <div className="p-2 border-r border-green-700 text-center">
+    <div className="text-xs">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="conferidoData"
+      value={rodape.conferidoData}
+      onChange={handleRodapeChange}
+      className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-3" />
+    <div className="mt-1">Visto</div>
+  </div>
+
+  {/* APROVAÇÃO */}
+  <div className="p-2 border-r border-green-700 text-center">
+    <div className="text-xs">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="aprovacaoData"
+      value={rodape.aprovacaoData}
+      onChange={handleRodapeChange}
+      className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-3" />
+    <div className="mt-1">Visto</div>
+  </div>
+
+  {/* RECEBI O VALOR ACIMA */}
+  <div className="p-2 text-center">
+    <div className="text-xs">Local</div>
+    <Input
+      name="recebiLocal"
+      value={rodape.recebiLocal}
+      onChange={handleRodapeChange}
+      className="w-32 mx-auto h-7 text-sm border border-green-700"
+    />
+    <div className="text-xs mt-2">Data</div>
+    <Input
+      type="date" // ✅ calendário nativo
+      name="recebiDataFinal"
+      value={rodape.recebiDataFinal}
+      onChange={handleRodapeChange}
+      className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
+    />
+    <div className="border-t border-dotted border-green-700 mt-3" />
+    <div className="mt-1">Assinatura</div>
+  </div>
+</div>
+
 
           {/* Botão PDF */}
           <div className="mt-4 flex justify-center">

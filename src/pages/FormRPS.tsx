@@ -67,53 +67,65 @@ const FormRPS = () => {
   };
 
   const generatePDF = async () => {
-    const element = formRef.current;
-    if (!element) return;
-    console.log("Gerando PDF... aguarde.");
+  const element = formRef.current;
+  if (!element) return;
 
-    const inputs = element.querySelectorAll("input, textarea");
-    const tempElements = [];
+  console.log("Gerando PDF... aguarde.");
 
-    inputs.forEach((input) => {
-      const span = document.createElement("span");
-      span.textContent = input.value;
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      span.style.fontSize = window.getComputedStyle(input).fontSize;
-      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-      span.style.color = window.getComputedStyle(input).color;
-      span.style.padding = "2px";
-      span.style.display = "inline-block";
-      span.style.border = "1px solid transparent";
-      span.style.width = `${input.offsetWidth}px`;
-      span.style.height = `${input.offsetHeight}px`;
+  // 🔹 Oculta o botão antes de gerar o PDF
+  const pdfButton = document.querySelector("button");
+  if (pdfButton) pdfButton.style.display = "none";
 
-      input.parentNode.insertBefore(span, input);
-      tempElements.push({ input, span });
-      input.style.display = "none";
-    });
+  // --- Substitui inputs e textareas por spans temporários ---
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements = [];
 
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    span.textContent = input.value;
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${input.offsetWidth}px`;
+    span.style.height = `${input.offsetHeight}px`;
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    input.parentNode.insertBefore(span, input);
+    tempElements.push({ input, span });
+    input.style.display = "none";
+  });
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Recibo_Prestacao_Servicos_RPS.pdf");
+  // --- Gera o canvas ---
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
 
-    tempElements.forEach(({ input, span }) => {
-      input.style.display = "";
-      span.remove();
-    });
+  // --- Cria o PDF ---
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    console.log("PDF gerado com sucesso!");
-  };
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save("Recibo_Prestacao_Servicos_RPS.pdf");
+
+  // --- Restaura os inputs e o botão ---
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
+
+  if (pdfButton) pdfButton.style.display = ""; // mostra o botão de novo
+
+  console.log("PDF gerado com sucesso!");
+};
+
   
   return (
     <div className="min-h-screen bg-gray-100 py-8">

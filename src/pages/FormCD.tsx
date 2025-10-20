@@ -50,60 +50,67 @@ const FormCD = () => {
   };
 
   const generatePDF = async () => {
-    const element = formRef.current;
-    if (!element) return;
+  const element = formRef.current;
+  if (!element) return;
 
-    alert("Gerando PDF... Aguarde enquanto o formulário é processado.");
+  // 🔹 Esconde temporariamente o botão de gerar PDF
+  const pdfButton = element.querySelector("button");
+  if (pdfButton) pdfButton.style.display = "none";
 
-    // Substitui inputs por spans (melhor renderização no PDF)
-    const inputs = element.querySelectorAll("input, textarea");
-    const tempElements = [];
+  alert("Gerando PDF... Aguarde enquanto o formulário é processado.");
 
-    inputs.forEach((input) => {
-      const span = document.createElement("span");
-      span.textContent = input.value;
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      span.style.fontSize = window.getComputedStyle(input).fontSize;
-      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-      span.style.color = window.getComputedStyle(input).color;
-      span.style.padding = "2px";
-      span.style.display = "inline-block";
-      span.style.border = "1px solid transparent";
-      span.style.width = `${input.offsetWidth}px`;
-      span.style.height = `${input.offsetHeight}px`;
+  // 🔹 Substitui inputs/textarea por spans (melhor renderização no PDF)
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements = [];
 
-      input.parentNode.insertBefore(span, input);
-      tempElements.push({ input, span });
-      input.style.display = "none";
-    });
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    span.textContent = input.value;
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${input.offsetWidth}px`;
+    span.style.height = `${input.offsetHeight}px`;
 
-    // Captura a tela
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+    input.parentNode.insertBefore(span, input);
+    tempElements.push({ input, span });
+    input.style.display = "none";
+  });
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  // 🔹 Captura a tela
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Comprovante_de_Despesas.pdf");
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    // Restaura os inputs
-    tempElements.forEach(({ input, span }) => {
-      input.style.display = "";
-      span.remove();
-    });
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save("Comprovante_de_Despesas.pdf");
 
-    alert("Download concluído! O PDF foi gerado com sucesso.");
+  // 🔹 Restaura os inputs e o botão
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
 
-    // 🔹 (Opcional) limpar storage depois de gerar PDF
-    // localStorage.removeItem(STORAGE_KEY);
-  };
+  if (pdfButton) pdfButton.style.display = "";
+
+  alert("Download concluído! O PDF foi gerado com sucesso.");
+
+  // 🔹 (Opcional) limpar storage depois de gerar PDF
+  // localStorage.removeItem(STORAGE_KEY);
+};
+
   return (
     <div className="min-h-screen bg-gray-100 py-6">
       <div className="container mx-auto px-4">
@@ -219,57 +226,57 @@ const FormCD = () => {
 
           {/* Rodapé */}
           <div className="grid grid-cols-3 border border-green-700 mt-2 text-xs font-semibold text-green-700">
-            <div className="border-r border-green-700 text-center py-1">
-              FAVORECIDO
-            </div>
-            <div className="border-r border-green-700 text-center py-1">
-              APROVAÇÃO
-            </div>
-            <div className="text-center py-1">
-              RECEBI O VALOR REFERENTE À PRESENTE DESPESA
-            </div>
-          </div>
+  <div className="border-r border-green-700 text-center py-1">
+    FAVORECIDO
+  </div>
+  <div className="border-r border-green-700 text-center py-1">
+    APROVAÇÃO
+  </div>
+  <div className="text-center py-1">
+    RECEBI O VALOR REFERENTE À PRESENTE DESPESA
+  </div>
+</div>
 
-          <div className="grid grid-cols-3 border-x border-b border-green-700 text-xs text-center">
-            <div className="border-r border-green-700 p-2">
-              Data:
-              <Input
-                value={formData.favorecidoData}
-                onChange={(e) =>
-                  handleInputChange("favorecidoData", e.target.value)
-                }
-                className="ml-2 h-5 w-24 border border-green-700 text-xs"
-              />
-              <div className="border-t border-dotted border-green-700 mt-4" />
-              <div className="mt-1 text-green-700">Nome Legível</div>
-            </div>
+<div className="grid grid-cols-3 border-x border-b border-green-700 text-xs text-center">
+  {/* FAVORECIDO */}
+  <div className="border-r border-green-700 p-2">
+    Data:
+    <Input
+      type="date" // ✅ calendário nativo
+      value={formData.favorecidoData}
+      onChange={(e) => handleInputChange("favorecidoData", e.target.value)}
+      className="ml-2 h-5 w-39 border border-green-700 text-xs text-center"
+    />
+    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="mt-1 text-green-700">Nome Legível</div>
+  </div>
 
-            <div className="border-r border-green-700 p-2">
-              Data:
-              <Input
-                value={formData.aprovacaoData}
-                onChange={(e) =>
-                  handleInputChange("aprovacaoData", e.target.value)
-                }
-                className="ml-2 h-5 w-24 border border-green-700 text-xs"
-              />
-              <div className="border-t border-dotted border-green-700 mt-4" />
-              <div className="mt-1 text-green-700">Assinatura</div>
-            </div>
+  {/* APROVAÇÃO */}
+  <div className="border-r border-green-700 p-2">
+    Data:
+    <Input
+      type="date" // ✅ calendário nativo
+      value={formData.aprovacaoData}
+      onChange={(e) => handleInputChange("aprovacaoData", e.target.value)}
+      className="ml-2 h-5 w-39 border border-green-700 text-xs text-center"
+    />
+    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="mt-1 text-green-700">Assinatura</div>
+  </div>
 
-            <div className="p-2">
-              Data:
-              <Input
-                value={formData.recebidoData}
-                onChange={(e) =>
-                  handleInputChange("recebidoData", e.target.value)
-                }
-                className="ml-2 h-5 w-24 border border-green-700 text-xs"
-              />
-              <div className="border-t border-dotted border-green-700 mt-4" />
-              <div className="mt-1 text-green-700">Assinatura</div>
-            </div>
-          </div>
+  {/* RECEBIDO */}
+  <div className="p-2">
+    Data:
+    <Input
+      type="date" // ✅ calendário nativo
+      value={formData.recebidoData}
+      onChange={(e) => handleInputChange("recebidoData", e.target.value)}
+      className="ml-2 h-5 w-39 border border-green-700 text-xs text-center"
+    />
+    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="mt-1 text-green-700">Assinatura</div>
+  </div>
+</div>
 
           {/* Botão PDF */}
           <div className="mt-6 flex justify-center">

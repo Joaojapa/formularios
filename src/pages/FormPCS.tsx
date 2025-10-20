@@ -35,6 +35,12 @@ export default function PCSForm() {
       despesasRealizadas: "",
       saldoReceber: false,
       saldoDevolver: false,
+        dataEmitente: "",
+  dataReciboDoc: "",
+  dataConferencia: "",
+  dataAprovacao: "",
+  dataRecebimento: "",
+
     }
   );
 
@@ -65,7 +71,13 @@ export default function PCSForm() {
   if (!formRef.current) return;
   const element = formRef.current;
 
-  // Substitui inputs/textarea por spans (para capturar os textos)
+  console.log("Gerando PDF... aguarde.");
+
+  // 🔹 Esconde temporariamente o botão "Salvar como PDF"
+  const pdfButton = element.querySelector("button");
+  if (pdfButton) pdfButton.style.display = "none";
+
+  // 🔹 Substitui inputs/textarea por spans (para capturar os textos)
   const inputs = element.querySelectorAll("input, textarea");
   const tempElements = [];
 
@@ -88,7 +100,7 @@ export default function PCSForm() {
     input.style.display = "none";
   });
 
-  // Captura o formulário completo em alta resolução
+  // 🔹 Captura o formulário completo em alta resolução
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
@@ -119,15 +131,19 @@ export default function PCSForm() {
     heightLeft -= pdfHeight;
   }
 
+  // 🔹 Salva o PDF
   pdf.save("PCS_Prestacao_Contas_Suprimento.pdf");
 
-  // Restaura inputs originais
+  // 🔹 Restaura inputs e botão
   tempElements.forEach(({ input, span }) => {
     input.style.display = "";
     span.remove();
   });
-};
 
+  if (pdfButton) pdfButton.style.display = "";
+
+  console.log("✅ PDF gerado com sucesso!");
+};
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -157,7 +173,7 @@ export default function PCSForm() {
                   name="secao"
                   value={formData.secao}
                   onChange={handleInputChange}
-                  className="inline ml-2 h-6 w-1/2 text-sm border-green-700"
+                  className="inline ml-2 h-6 w-10/12 text-sm border-green-700"
                 />
               </div>
             </div>
@@ -417,25 +433,69 @@ export default function PCSForm() {
 
 {/* Assinaturas */}
 <div className="grid grid-cols-5 border border-green-700 mt-2 text-sm text-green-700 font-semibold">
+  {/* Emitente */}
   <div className="border-r border-green-700 p-3 text-center">
-    Emitente
-    <br />____/____/____ Data
+    <div>Emitente</div>
+    <Input
+      type="date"
+      name="dataEmitente"
+      value={formData.dataEmitente}
+      onChange={handleInputChange}
+className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+    />
+    <div className="text-xs mt-1">Data</div>
   </div>
+
+  {/* Recibo Doc. */}
   <div className="border-r border-green-700 p-3 text-center">
-    Recibo Doc.
-    <br />____/____/____ Data
+    <div>Recibo Doc.</div>
+    <Input
+      type="date"
+      name="dataReciboDoc"
+      value={formData.dataReciboDoc}
+      onChange={handleInputChange}
+      className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+    />
+    <div className="text-xs mt-1">Data</div>
   </div>
+
+  {/* Conferência */}
   <div className="border-r border-green-700 p-3 text-center">
-    Conferência
-    <br />____/____/____ Data
+    <div>Conferência</div>
+    <Input
+      type="date"
+      name="dataConferencia"
+      value={formData.dataConferencia}
+      onChange={handleInputChange}
+className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+    />
+    <div className="text-xs mt-1">Data</div>
   </div>
+
+  {/* Aprovação */}
   <div className="border-r border-green-700 p-3 text-center">
-    Aprovação
-    <br />____/____/____ Data
+    <div>Aprovação</div>
+    <Input
+      type="date"
+      name="dataAprovacao"
+      value={formData.dataAprovacao}
+      onChange={handleInputChange}
+      className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+    />
+    <div className="text-xs mt-1">Data</div>
   </div>
+
+  {/* Recebimento */}
   <div className="p-3 text-center">
-    Recebi a importância acima
-    <br />____/____/____ Data
+    <div>Recebi a importância acima</div>
+    <Input
+      type="date"
+      name="dataRecebimento"
+      value={formData.dataRecebimento}
+      onChange={handleInputChange}
+      className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+    />
+    <div className="text-xs mt-1">Data</div>
   </div>
 </div>
 
@@ -446,7 +506,7 @@ export default function PCSForm() {
       key={i}
       className="text-center p-6 border-r border-green-700 last:border-r-0"
     >
-      {/* Só mostra "Local" no último quadrado */}
+      {/* Só mostra “Local” no último quadrado */}
       {i === 4 && (
         <>
           <div className="border-t border-dotted border-green-700 mt-2" />
@@ -460,8 +520,7 @@ export default function PCSForm() {
     </div>
   ))}
 </div>
-</div>
-</div>
+
 
 
           {/* Botão PDF */}
@@ -472,6 +531,8 @@ export default function PCSForm() {
           </div>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 }

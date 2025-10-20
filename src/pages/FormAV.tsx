@@ -6,6 +6,15 @@ import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
+// Fallback toast: if your project already provides a toast (e.g. react-hot-toast or shadcn useToast),
+// replace this with the appropriate import or remove this fallback.
+const toast =
+  (globalThis as any).toast ??
+  ((opts: { title?: string; description?: string }) => {
+    // Minimal fallback so generatePDF calls don't crash; replace with real UI toast if available.
+    console.info("toast:", opts?.title ?? "", opts?.description ?? "");
+  });
+
 const FormAV = () => {
   const [formData, setFormData] = useState({
     secao: "",
@@ -35,6 +44,9 @@ const FormAV = () => {
     valorDiariasInterior: "",
     outros: "",
     valorOutros: "",
+    autorizoData: "",
+reciboLocal: "",
+reciboData: "",
   });
 
   const formRef = useRef(null);
@@ -62,53 +74,70 @@ const FormAV = () => {
 
   // ✅ Igual ao PCSForm – Gera PDF com texto visível no lugar dos inputs
   const generatePDF = async () => {
-        const element = document.querySelector("#form-av");
-    if (!formRef.current) return;
+  const element = document.querySelector("#form-av");
+  if (!element) return;
 
+  // 🔹 Esconde temporariamente o botão de gerar PDF
+  const pdfButton = element.querySelector("button") as HTMLElement | null;
+  if (pdfButton) pdfButton.style.display = "none";
 
-    // 🔹 Substitui inputs e textarea por spans visíveis
-    const inputs = element.querySelectorAll("input, textarea");
-     const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
+  toast({
+    title: "Gerando PDF...",
+    description: "Aguarde enquanto o formulário é processado.",
+  });
 
-        inputs.forEach((input) => {
-      const span = document.createElement("span");
-      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      span.style.fontSize = window.getComputedStyle(input).fontSize;
-      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-      span.style.color = window.getComputedStyle(input).color;
-      span.style.padding = "2px";
-      span.style.display = "inline-block";
-      span.style.border = "1px solid transparent";
-      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
-      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+  // 🔹 Substitui inputs/textarea por spans para renderização correta
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
-     input.parentNode?.insertBefore(span, input);
-      tempElements.push({ input: input as HTMLElement, span });
-      (input as HTMLElement).style.display = "none";
-    });
-    const canvas = await html2canvas(element as HTMLElement, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+    span.style.height = `${(input as HTMLElement).offsetHeight}px`;
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    input.parentNode?.insertBefore(span, input);
+    tempElements.push({ input: input as HTMLElement, span });
+    (input as HTMLElement).style.display = "none";
+  });
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Autorizacao_de_Suprimento.pdf");
+  // 🔹 Captura o conteúdo como imagem
+  const canvas = await html2canvas(element as HTMLElement, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
 
-    // 🔹 Restaura inputs originais
-    tempElements.forEach(({ input, span }) => {
-      input.style.display = "";
-      span.remove();
-    });
-  };
-  
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save("Autorizacao_de_Suprimento.pdf");
+
+  // 🔹 Restaura inputs e botão
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
+
+  if (pdfButton) pdfButton.style.display = "";
+
+  toast({
+    title: "Download concluído",
+    description: "O PDF foi gerado com sucesso!",
+  });
+};
+
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <style>{`
@@ -420,35 +449,71 @@ const FormAV = () => {
           
 
           {/* Rodapé */}
-          <div className="grid grid-cols-2 border border-green-700 mt-2">
-            <div className="border-r border-green-700 text-center p-1">
-              <div className="font-semibold text-green-700">AUTORIZO</div>
-              <div className="mt-2">____/____/____ Data</div>
-              <div className="border-t border-dotted border-green-700 mt-2"></div>
-              <div className="text-green-700 mt-1">Assinatura</div>
-            </div>
-            <div className="text-center p-1 text-[12px] leading-tight">
-              <div className="font-semibold text-green-700">RECIBO</div>
-              <p className="mt-2">
-                Recebi a importância acima e Autorizo o Débito dos valores sob minha responsabilidade
-                (adiantamento e passagem) em minha Folha de Pagamento nos casos previstos nas normas internas.
-              </p>
-              <div className="mt-2 flex justify-evenly text-center">
-                <div>
-                  <div className="border-t border-dotted border-green-700 mt-4 w-40 mx-auto"></div>
-                  <div className="text-green-700 text-xs mt-1">Local</div>
-                </div>
-                <div>
-                  <div className="border-t border-dotted border-green-700 mt-4 w-40 mx-auto"></div>
-                  <div className="text-green-700 text-xs mt-1">Data</div>
-                </div>
-                <div>
-                  <div className="border-t border-dotted border-green-700 mt-4 w-40 mx-auto"></div>
-                  <div className="text-green-700 text-xs mt-1">Assinatura</div>
-                </div>
-              </div>
-            </div>
-          </div>
+<div className="grid grid-cols-2 border border-green-700 mt-2 text-sm">
+  {/* 🔹 Coluna AUTORIZO */}
+  <div className="border-r border-green-700 text-center p-2">
+    <div className="font-semibold text-green-700">AUTORIZO</div>
+
+    {/* Campo de data com calendário nativo */}
+    <div className="mt-3 flex flex-col items-center">
+      <Input
+        type="date"
+        name="autorizoData"
+        value={formData.autorizoData}
+        onChange={handleInputChange}
+        className="w-35 h-6 border border-green-700 text-xs text-center"
+      />
+      <div className="text-green-700 text-xs mt-1">Data</div>
+    </div>
+
+    {/* Linha e texto de assinatura */}
+    <div className="border-t border-dotted border-green-700 mt-4 w-3/4 mx-auto"></div>
+    <div className="text-green-700 mt-1 text-xs">Assinatura</div>
+  </div>
+
+  {/* 🔹 Coluna RECIBO */}
+  <div className="text-center p-2 text-[12px] leading-tight">
+    <div className="font-semibold text-green-700">RECIBO</div>
+    <p className="mt-2">
+      Recebi a importância acima e Autorizo o Débito dos valores sob minha
+      responsabilidade (adiantamento e passagem) em minha Folha de Pagamento
+      nos casos previstos nas normas internas.
+    </p>
+
+    {/* Campos Local / Data / Assinatura */}
+    <div className="mt-3 flex justify-evenly text-center items-end">
+      {/* Local */}
+      <div className="flex flex-col items-center">
+        <Input
+          name="reciboLocal"
+          value={formData.reciboLocal}
+          onChange={handleInputChange}
+          className="w-32 h-6 border border-green-700 text-xs text-center"
+        />
+        <div className="text-green-700 text-xs mt-1">Local</div>
+      </div>
+
+      {/* Data (calendário nativo) */}
+      <div className="flex flex-col items-center">
+        <Input
+          type="date"
+          name="reciboData"
+          value={formData.reciboData}
+          onChange={handleInputChange}
+          className="w-35 h-6 border border-green-700 text-xs text-center"
+        />
+        <div className="text-green-700 text-xs mt-1">Data</div>
+      </div>
+
+      {/* Assinatura */}
+      <div className="flex flex-col items-center">
+        <div className="border-t border-dotted border-green-700 mt-4 w-40 mx-auto"></div>
+        <div className="text-green-700 text-xs mt-1">Assinatura</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
        {/* Botão PDF */}
         <div className="mt-6 flex justify-center">

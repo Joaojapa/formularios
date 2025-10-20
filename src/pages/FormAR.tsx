@@ -31,63 +31,72 @@ export default function AutorizacaoRecebimento() {
 
   // ✅ Gera PDF com campos visíveis (mantendo valores)
   const generatePDF = async () => {
-    const element = document.querySelector("#form-recebimento");
-    if (!element) return;
+  const element = document.querySelector("#form-recebimento");
+  if (!element) return;
 
-    toast({
-      title: "Gerando PDF...",
-      description: "Aguarde enquanto o formulário é processado.",
-    });
+  // 🔹 Esconde temporariamente o botão de gerar PDF
+  const pdfButton = element.querySelector("button");
+  if (pdfButton) pdfButton.style.display = "none";
 
-    const inputs = element.querySelectorAll("input, textarea");
-    const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
+  toast({
+    title: "Gerando PDF...",
+    description: "Aguarde enquanto o formulário é processado.",
+  });
 
-    inputs.forEach((input) => {
-      const span = document.createElement("span");
-      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      span.style.fontSize = window.getComputedStyle(input).fontSize;
-      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-      span.style.color = window.getComputedStyle(input).color;
-      span.style.padding = "2px";
-      span.style.display = "inline-block";
-      span.style.border = "1px solid transparent";
-      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
-      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+  // 🔹 Substitui inputs/textarea por spans para renderização correta
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
-      input.parentNode?.insertBefore(span, input);
-      tempElements.push({ input: input as HTMLElement, span });
-      (input as HTMLElement).style.display = "none";
-    });
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+    span.style.height = `${(input as HTMLElement).offsetHeight}px`;
 
-    const canvas = await html2canvas(element as HTMLElement, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+    input.parentNode?.insertBefore(span, input);
+    tempElements.push({ input: input as HTMLElement, span });
+    (input as HTMLElement).style.display = "none";
+  });
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Autorizacao_Recebimento.pdf");
+  // 🔹 Captura o conteúdo como imagem
+  const canvas = await html2canvas(element as HTMLElement, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
 
-    // Restaura os inputs
-    tempElements.forEach(({ input, span }) => {
-      input.style.display = "";
-      span.remove();
-    });
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    toast({
-      title: "Download concluído",
-      description: "O PDF foi gerado com sucesso!",
-    });
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save("Autorizacao_Recebimento.pdf");
 
-    // (Opcional) limpar storage depois do PDF:
-    // localStorage.removeItem("formRecebimentoData");
-  };
+  // 🔹 Restaura inputs e botão
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
+
+  if (pdfButton) pdfButton.style.display = "";
+
+  toast({
+    title: "Download concluído",
+    description: "O PDF foi gerado com sucesso!",
+  });
+
+  // (Opcional) limpar storage depois do PDF:
+  // localStorage.removeItem("formRecebimentoData");
+};
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -111,7 +120,7 @@ export default function AutorizacaoRecebimento() {
                 name="secao"
                 value={formData.secao || ""}
                 onChange={handleChange}
-                className="inline w-2/3 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0"
+                className="inline w-10/12 h-6 border border-green-700 ml-2 text-sm rounded-none focus:outline-none focus:ring-0"
               />
             </div>
           </div>
@@ -257,38 +266,70 @@ export default function AutorizacaoRecebimento() {
           </div>
         </div>
 
-        {/* Rodapé */}
-        <div className="grid grid-cols-4 border border-green-700 mt-2 text-sm">
-          <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1">
-            AUTORIZO
-          </div>
-          <div className="border-r border-green-700 text-center p-1 text-[11px]"></div>
-          <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1"></div>
-          <div className="text-center p-1 text-[11px]">Recebi a importância acima.</div>
-        </div>
+{/* Rodapé */}
+<div className="grid grid-cols-4 border border-green-700 mt-2 text-sm">
+  <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1">
+    AUTORIZO
+  </div>
+  <div className="border-r border-green-700 text-center p-1 text-[11px]"></div>
+  <div className="border-r border-green-700 text-center font-semibold text-green-700 p-1"></div>
+  <div className="text-center p-1 text-[11px]">
+    Recebi a importância acima.
+  </div>
+</div>
 
-        <div className="grid grid-cols-4 border-x border-b border-green-700 text-sm">
-          <div className="text-center p-4 border-r border-green-700">
-            <div className="border-t border-green-700 mt-4" />
-            <div className="text-green-700 mt-1">Data</div>
-            <div className="border-t border-green-700 mt-4" />
-            <div className="text-green-700 mt-1">Assinatura</div>
-          </div>
-          <div className="text-center p-4 border-r border-green-700">
-            <div className="border-t border-green-700 mt-12" />
-            <div className="text-green-700 mt-1">Assinatura</div>
-          </div>
-          <div className="text-center p-4 border-r border-green-700">
-            <div className="border-t border-green-700 mt-12" />
-            <div className="text-green-700 mt-1">Local</div>
-          </div>
-          <div className="text-center p-4">
-            <div className="border-t border-green-700 mt-4" />
-            <div className="text-green-700 mt-1">Assinatura</div>
-            <div className="mt-4">____/____/______</div>
-            <div>Data</div>
-          </div>
-        </div>
+<div className="grid grid-cols-4 border-x border-b border-green-700 text-sm">
+  {/* Coluna 1 */}
+  <div className="text-center p-4 border-r border-green-700">
+    {/* Campo de data com calendário nativo */}
+    <Input
+      type="date"
+      name="autorizoData"
+      value={formData.autorizoData}
+      onChange={handleChange}
+      className="w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+    />
+    <div className="text-green-700 mt-1 text-xs">Data</div>
+
+    <div className="border-t border-green-700 mt-4 w-32 mx-auto" />
+    <div className="text-green-700 mt-1 text-xs">Assinatura</div>
+  </div>
+
+  {/* Coluna 2 */}
+  <div className="text-center p-4 border-r border-green-700">
+    <div className="border-t border-green-700 mt-12 w-32 mx-auto" />
+    <div className="text-green-700 mt-1 text-xs">Assinatura</div>
+  </div>
+
+  {/* Coluna 3 */}
+  <div className="text-center p-4 border-r border-green-700">
+    <Input
+      name="rodapeLocal"
+      value={formData.rodapeLocal}
+      onChange={handleChange}
+      placeholder="Cidade / Estado"
+      className="w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+    />
+    <div className="text-green-700 mt-1 text-xs">Local</div>
+  </div>
+
+  {/* Coluna 4 */}
+  <div className="text-center p-4">
+    <div className="border-t border-green-700 mt-4 w-32 mx-auto" />
+    <div className="text-green-700 mt-1 text-xs">Assinatura</div>
+
+    {/* Campo de data com calendário nativo */}
+    <Input
+      type="date"
+      name="reciboData"
+      value={formData.reciboData}
+      onChange={handleChange}
+      className="w-39 h-6 border border-green-700 text-xs text-center mx-auto mt-4"
+    />
+    <div className="text-green-700 mt-1 text-xs">Data</div>
+  </div>
+</div>
+
 
         {/* Botão download */}
         <div className="flex justify-end p-2 bg-white">

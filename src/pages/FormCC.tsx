@@ -48,65 +48,73 @@ const FormCC = () => {
   };
 
   const generatePDF = async () => {
-    const element = formRef.current;
-    if (!element) return;
+  const element = formRef.current;
+  if (!element) return;
 
-    toast({
-      title: "Gerando PDF...",
-      description: "Aguarde enquanto o formulário é processado.",
-    });
+  // 🔹 Esconde temporariamente o botão "Salvar como PDF"
+  const pdfButton = element.querySelector("button");
+  if (pdfButton) pdfButton.style.display = "none";
 
-    // 🔹 Substitui inputs por spans temporários (melhor renderização)
-    const inputs = element.querySelectorAll("input, textarea");
-    const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
+  toast({
+    title: "Gerando PDF...",
+    description: "Aguarde enquanto o formulário é processado.",
+  });
 
-    inputs.forEach((input) => {
-      const span = document.createElement("span");
-      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
-      span.style.whiteSpace = "pre-wrap";
-      span.style.wordBreak = "break-word";
-      span.style.fontSize = window.getComputedStyle(input).fontSize;
-      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-      span.style.color = window.getComputedStyle(input).color;
-      span.style.padding = "2px";
-      span.style.display = "inline-block";
-      span.style.border = "1px solid transparent";
-      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
-      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+  // 🔹 Substitui inputs/textarea por spans temporários (melhor renderização)
+  const inputs = element.querySelectorAll("input, textarea");
+  const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
-      input.parentNode?.insertBefore(span, input);
-      tempElements.push({ input: input as HTMLElement, span });
-      (input as HTMLElement).style.display = "none";
-    });
+  inputs.forEach((input) => {
+    const span = document.createElement("span");
+    span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+    span.style.whiteSpace = "pre-wrap";
+    span.style.wordBreak = "break-word";
+    span.style.fontSize = window.getComputedStyle(input).fontSize;
+    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+    span.style.color = window.getComputedStyle(input).color;
+    span.style.padding = "2px";
+    span.style.display = "inline-block";
+    span.style.border = "1px solid transparent";
+    span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+    span.style.height = `${(input as HTMLElement).offsetHeight}px`;
 
-    // 🔹 Captura o formulário como imagem
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+    input.parentNode?.insertBefore(span, input);
+    tempElements.push({ input: input as HTMLElement, span });
+    (input as HTMLElement).style.display = "none";
+  });
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Copia_de_Cheque.pdf");
+  // 🔹 Captura o formulário como imagem
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+  });
 
-    // 🔹 Restaura inputs originais
-    tempElements.forEach(({ input, span }) => {
-      input.style.display = "";
-      span.remove();
-    });
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
 
-    toast({
-      title: "Download concluído!",
-      description: "O PDF foi gerado com sucesso.",
-    });
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    // 🔹 (Opcional) limpar após salvar PDF:
-    // localStorage.removeItem(STORAGE_KEY);
-  };
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save("Copia_de_Cheque.pdf");
+
+  // 🔹 Restaura inputs e o botão
+  tempElements.forEach(({ input, span }) => {
+    input.style.display = "";
+    span.remove();
+  });
+
+  if (pdfButton) pdfButton.style.display = "";
+
+  toast({
+    title: "Download concluído!",
+    description: "O PDF foi gerado com sucesso.",
+  });
+
+  // 🔹 (Opcional) limpar após salvar PDF:
+  // localStorage.removeItem(STORAGE_KEY);
+};
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -217,39 +225,39 @@ const FormCC = () => {
             </div>
 
             {/* Linhas de assinatura */}
-            <div className="grid grid-cols-4 border-x border-t border-green-700 mt-2 text-sm font-semibold text-green-700 text-center">
-              <div className="border-r border-green-700 p-1">Emitente</div>
-              <div className="border-r border-green-700 p-1">Conferente</div>
-              <div className="border-r border-green-700 p-1">Dir Adm Fin</div>
-              <div className="p-1">Presidente</div>
-            </div>
+<div className="grid grid-cols-4 border-x border-t border-green-700 mt-2 text-sm font-semibold text-green-700 text-center">
+  <div className="border-r border-green-700 p-1">Emitente</div>
+  <div className="border-r border-green-700 p-1">Conferente</div>
+  <div className="border-r border-green-700 p-1">Dir Adm Fin</div>
+  <div className="p-1">Presidente</div>
+</div>
 
-            {/* Datas e linhas */}
-            <div className="grid grid-cols-4 border-x border-b border-green-700 text-xs text-center">
-              {[
-                "dataEmitente",
-                "dataConferente",
-                "dataDirAdm",
-                "dataPresidente",
-              ].map((field, i) => (
-                <div
-                  key={field}
-                  className={`p-2 ${
-                    i < 3 ? "border-r border-green-700" : ""
-                  }`}
-                >
-                  Data:
-                  <Input
-                    name={field}
-                    value={formData[field]}
-                    onChange={handleInputChange}
-                    className="inline w-24 h-5 border border-green-700 ml-2 text-xs"
-                  />
-                  <div className="border-t border-dotted border-green-700 mt-4" />
-                  <div className="text-green-700 mt-1 text-xs">00/00/20</div>
-                </div>
-              ))}
-            </div>
+{/* Datas e linhas */}
+<div className="grid grid-cols-4 border-x border-b border-green-700 text-xs text-center">
+  {[
+    "dataEmitente",
+    "dataConferente",
+    "dataDirAdm",
+    "dataPresidente",
+  ].map((field, i) => (
+    <div
+      key={field}
+      className={`p-2 ${i < 3 ? "border-r border-green-700" : ""}`}
+    >
+      Data:
+      <Input
+        type="date" // ✅ calendário nativo adicionado
+        name={field}
+        value={formData[field]}
+        onChange={handleInputChange}
+        className="inline w-30 h-5 border border-green-700 ml-2 text-xs text-center"
+      />
+      <div className="border-t border-dotted border-green-700 mt-4" />
+      <div className="text-green-700 mt-1 text-xs">00/00/20</div>
+    </div>
+  ))}
+</div>
+
 
             {/* Botão PDF */}
             <div className="mt-6 flex justify-center">
