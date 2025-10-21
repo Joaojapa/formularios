@@ -47,6 +47,8 @@ const FormAV = () => {
     autorizoData: "",
 reciboLocal: "",
 reciboData: "",
+sinpaf: false,
+convidado: false,
   });
 
   const formRef = useRef(null);
@@ -202,114 +204,156 @@ reciboData: "",
             </div>
           </div>
 
-          {/* Linha SINPAF / CONVIDADO */}
-          <div className="border border-green-700 p-1 text-green-700 font-semibold text-sm">
-            SEÇÃO: SINPAF ( ) CONVIDADO ( )
-          </div>
+        {/* Linha SINPAF / CONVIDADO com "checkbox" visual (compatível com PDF) */}
+<div className="border border-green-700 p-1 text-green-700 font-semibold text-sm flex items-center gap-4">
+  <span>SEÇÃO:</span>
 
-          {/* Favorecido */}
-          <div className="border border-green-700 mt-1">
-            <div className="bg-green-700 text-white text-center py-1 font-semibold">
-              FAVORECIDO
-            </div>
+  <span
+    onClick={() =>
+      setFormData({ ...formData, sinpaf: true, convidado: false })
+    }
+    className="flex items-center gap-1 cursor-pointer select-none"
+  >
+    <span
+      className={`inline-block w-4 h-4 border border-green-700 text-center leading-4 text-[12px] font-bold rounded-full ${
+        formData.sinpaf ? "bg-green-700 text-white" : "bg-transparent text-green-700"
+      }`}
+    >
+      {formData.sinpaf ? " " : ""}
+    </span>
+    SINPAF
+  </span>
 
-            {/* Campos */}
-            <div className="grid grid-cols-2 border-t border-green-700">
-              <div className="border-r border-green-700 p-1">
-                Nome:
-                <Input
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleInputChange}
-                  className="inline w-5/6 h-6 border border-green-700 ml-2"
-                />
-              </div>
-              <div className="p-1 nowrap-input">
-                CPF:
-                <Input
-                  name="cpf"
-                  value={formData.cpf}
-                  onChange={handleInputChange}
-                  className="inline w-1/3 h-6 border border-green-700 ml-2"
-                />
-                Cargo:
-                <Input
-                  name="cargo"
-                  value={formData.cargo}
-                  onChange={handleInputChange}
-                  className="inline w-1/3 h-6 border border-green-700 ml-2"
-                />
-              </div>
-            </div>
-             </div>
+  <span
+    onClick={() =>
+      setFormData({ ...formData, convidado: true, sinpaf: false })
+    }
+    className="flex items-center gap-1 cursor-pointer select-none"
+  >
+    <span
+        className={`inline-block w-4 h-4 border border-green-700 text-center leading-4 text-[12px] font-bold rounded-full ${
+        formData.convidado ? "bg-green-700 text-white" : "bg-transparent text-green-700"
+      }`}
+    >
+      {formData.convidado ? " " : ""}
+    </span>
+    CONVIDADO
+  </span>
+</div>
+{/* Favorecido */}
+<div className="border border-green-700 mt-1">
+  <div className="bg-green-700 text-white text-center py-1 font-semibold">
+    FAVORECIDO
+  </div>
 
-            <div className="grid grid-cols-2 border-t border-green-700">
-              <div className="border-r border-green-700 p-1 nowrap-input">
-                Banco:
-                <Input
-                  name="banco"
-                  value={formData.banco}
-                  onChange={handleInputChange}
-                  className="inline w-5/6 h-6 border border-green-700 ml-2"
-                />
-              </div>
-              <div className="p-1 nowrap-input">
-                Agência:
-                <Input
-                  name="agencia"
-                  value={formData.agencia}
-                  onChange={handleInputChange}
-                  className="inline w-1/4 h-6 border border-green-700 ml-2"
-                />
-                C/C:
-                <Input
-                  name="cc"
-                  value={formData.cc}
-                  onChange={handleInputChange}
-                  className="inline w-1/3 h-6 border border-green-700 ml-6"
-                />
-              </div>
-            </div>
+  {/* Nome / CPF / Cargo */}
+  <div className="grid grid-cols-2 border-t border-green-700">
+    <div className="border-r border-green-700 p-1 flex items-center">
+      <span>Nome:</span>
+      <Input
+        name="nome"
+        value={formData.nome}
+        onChange={handleInputChange}
+        className="ml-2 flex-1 h-6 border border-green-700"
+      />
+    </div>
+    <div className="p-1 grid grid-cols-2 gap-2">
+      <div className="flex items-center">
+        <span>CPF:</span>
+        <Input
+          name="cpf"
+          value={formData.cpf}
+          onChange={handleInputChange}
+          className="ml-2 w-full h-6 border border-green-700"
+        />
+      </div>
+      <div className="flex items-center">
+        <span>Cargo:</span>
+        <Input
+          name="cargo"
+          value={formData.cargo}
+          onChange={handleInputChange}
+          className="ml-2 w-full h-6 border border-green-700"
+        />
+      </div>
+    </div>
+  </div>
 
-            <div className="border-t border-green-700 p-1 nowrap-input">
-              Cidade/Estado:
-              <Input
-                name="cidadeEstado"
-                value={formData.cidadeEstado}
-                onChange={handleInputChange}
-                className="inline w-2/3 h-6 border border-green-700 ml-2"
-              />
-            </div>
+  {/* Banco / Agência / C/C */}
+  <div className="grid grid-cols-2 border-t border-green-700">
+    <div className="border-r border-green-700 p-1 flex items-center">
+      <span>Banco:</span>
+      <Input
+        name="banco"
+        value={formData.banco}
+        onChange={handleInputChange}
+        className="ml-2 flex-1 h-6 border border-green-700"
+      />
+    </div>
+    <div className="p-1 grid grid-cols-2 gap-2">
+      <div className="flex items-center">
+        <span>Agência:</span>
+        <Input
+          name="agencia"
+          value={formData.agencia}
+          onChange={handleInputChange}
+          className="ml-2 w-full h-6 border border-green-700"
+        />
+      </div>
+      <div className="flex items-center">
+        <span>C/C:</span>
+        <Input
+          name="cc"
+          value={formData.cc}
+          onChange={handleInputChange}
+          className="ml-2 w-full h-6 border border-green-700"
+        />
+      </div>
+    </div>
+  </div>
 
-            <div className="border-t border-green-700 p-1 nowrap-input">
-              Roteiro:
-              <Input
-                name="roteiro"
-                value={formData.roteiro}
-                onChange={handleInputChange}
-                className="inline w-5/6 h-6 border border-green-700 ml-2"
-              />
-            </div>
+  {/* Cidade / Roteiro / Objetivo */}
+  <div className="grid grid-cols-3 border-t border-green-700">
+    <div className="border-r border-green-700 p-1 flex items-center">
+      <span>Cidade/Estado:</span>
+      <Input
+        name="cidadeEstado"
+        value={formData.cidadeEstado}
+        onChange={handleInputChange}
+        className="ml-2 flex-1 h-6 border border-green-700"
+      />
+    </div>
+    <div className="border-r border-green-700 p-1 flex items-center">
+      <span>Roteiro:</span>
+      <Input
+        name="roteiro"
+        value={formData.roteiro}
+        onChange={handleInputChange}
+        className="ml-2 flex-1 h-6 border border-green-700"
+      />
+    </div>
+    <div className="p-1 flex items-center">
+      <span>Objetivo:</span>
+      <Input
+        name="objetivo"
+        value={formData.objetivo}
+        onChange={handleInputChange}
+        className="ml-2 flex-1 h-6 border border-green-700"
+      />
+    </div>
+  </div>
 
-            <div className="border-t border-green-700 p-1 nowrap-input">
-              Objetivo:
-              <Input
-                name="objetivo"
-                value={formData.objetivo}
-                onChange={handleInputChange}
-                className="inline w-5/6 h-6 border border-green-700 ml-2"
-              />
-            </div>
-
-            <div className="border-t border-green-700 p-1">
-              Observações:
-              <Textarea
-                name="observacoes"
-                value={formData.observacoes}
-                onChange={handleInputChange}
-                className="w-full h-20 border border-green-700 resize-none mt-1"
-              />
-            </div>
+  {/* Observações */}
+  <div className="border-t border-green-700 p-1">
+    <span>Observações:</span>
+    <Textarea
+      name="observacoes"
+      value={formData.observacoes}
+      onChange={handleInputChange}
+      className="w-full h-20 border border-green-700 resize-none mt-1"
+    />
+  </div>
+</div>
 
             {/* Saída / Adiantamentos / Retorno */}
 <div className="grid grid-cols-3 border-t border-green-700 text-sm">

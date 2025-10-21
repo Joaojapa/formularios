@@ -24,6 +24,9 @@ import Login from "./pages/login";
 import Register from "./pages/Register";
 import RecuperarSenha from "./pages/RecuperarSenha";
 
+// 👇 Importa o ScrollToTop
+import { ScrollToTop } from "@/pages/ScrollToTop";
+
 const queryClient = new QueryClient();
 
 function Navbar() {
@@ -61,7 +64,7 @@ function Navbar() {
             <span className="text-2xl">SINPAF</span>
           </Link>
 
-          {/* Menu de navegação */}
+          {/* Menu */}
           <div className="flex flex-wrap justify-center items-center gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -97,15 +100,13 @@ function Navbar() {
   );
 }
 
-
-
 function Layout() {
   const location = useLocation();
   const hideNavbar =
     location.pathname === "/" ||
     location.pathname === "/login" ||
     location.pathname === "/register" ||
-    location.pathname === "/forgot-password"; // esconder navbar aqui também
+    location.pathname === "/forgot-password";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -142,6 +143,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Layout />
       </BrowserRouter>
     </TooltipProvider>
