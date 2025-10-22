@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { useToast } from "@/components/ui/use-toast"; // ✅ se estiver usando Shadcn Toast
+import { useToast } from "@/components/ui/use-toast";
 
-const STORAGE_KEY = "formCCData"; // 🔹 chave única para este formulário
+const STORAGE_KEY = "formCCData";
 
 const FormCC = () => {
   const [formData, setFormData] = useState({
@@ -27,15 +27,11 @@ const FormCC = () => {
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
-  // 🔹 Carrega dados salvos ao abrir
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setFormData(JSON.parse(saved));
-    }
+    if (saved) setFormData(JSON.parse(saved));
   }, []);
 
-  // 🔹 Salva automaticamente quando algo muda
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
@@ -48,73 +44,63 @@ const FormCC = () => {
   };
 
   const generatePDF = async () => {
-  const element = formRef.current;
-  if (!element) return;
+    const element = formRef.current;
+    if (!element) return;
 
-  // 🔹 Esconde temporariamente o botão "Salvar como PDF"
-  const pdfButton = element.querySelector("button");
-  if (pdfButton) pdfButton.style.display = "none";
+    const pdfButton = element.querySelector("button");
+    if (pdfButton) pdfButton.style.display = "none";
 
-  toast({
-    title: "Gerando PDF...",
-    description: "Aguarde enquanto o formulário é processado.",
-  });
+    toast({
+      title: "Gerando PDF...",
+      description: "Aguarde enquanto o formulário é processado.",
+    });
 
-  // 🔹 Substitui inputs/textarea por spans temporários (melhor renderização)
-  const inputs = element.querySelectorAll("input, textarea");
-  const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
+    const inputs = element.querySelectorAll("input, textarea");
+    const tempElements: { input: HTMLElement; span: HTMLElement }[] = [];
 
-  inputs.forEach((input) => {
-    const span = document.createElement("span");
-    span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
-    span.style.whiteSpace = "pre-wrap";
-    span.style.wordBreak = "break-word";
-    span.style.fontSize = window.getComputedStyle(input).fontSize;
-    span.style.fontFamily = window.getComputedStyle(input).fontFamily;
-    span.style.color = window.getComputedStyle(input).color;
-    span.style.padding = "2px";
-    span.style.display = "inline-block";
-    span.style.border = "1px solid transparent";
-    span.style.width = `${(input as HTMLElement).offsetWidth}px`;
-    span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+    inputs.forEach((input) => {
+      const span = document.createElement("span");
+      span.textContent = (input as HTMLInputElement | HTMLTextAreaElement).value;
+      span.style.whiteSpace = "pre-wrap";
+      span.style.wordBreak = "break-word";
+      span.style.fontSize = window.getComputedStyle(input).fontSize;
+      span.style.fontFamily = window.getComputedStyle(input).fontFamily;
+      span.style.color = window.getComputedStyle(input).color;
+      span.style.padding = "2px";
+      span.style.display = "inline-block";
+      span.style.border = "1px solid transparent";
+      span.style.width = `${(input as HTMLElement).offsetWidth}px`;
+      span.style.height = `${(input as HTMLElement).offsetHeight}px`;
+      input.parentNode?.insertBefore(span, input);
+      tempElements.push({ input: input as HTMLElement, span });
+      (input as HTMLElement).style.display = "none";
+    });
 
-    input.parentNode?.insertBefore(span, input);
-    tempElements.push({ input: input as HTMLElement, span });
-    (input as HTMLElement).style.display = "none";
-  });
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+    });
 
-  // 🔹 Captura o formulário como imagem
-  const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: "#ffffff",
-  });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("Copia_de_Cheque.pdf");
 
-  const imgData = canvas.toDataURL("image/png");
-  const pdf = new jsPDF("p", "mm", "a4");
+    tempElements.forEach(({ input, span }) => {
+      input.style.display = "";
+      span.remove();
+    });
 
-  const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    if (pdfButton) pdfButton.style.display = "";
 
-  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-  pdf.save("Copia_de_Cheque.pdf");
-
-  // 🔹 Restaura inputs e o botão
-  tempElements.forEach(({ input, span }) => {
-    input.style.display = "";
-    span.remove();
-  });
-
-  if (pdfButton) pdfButton.style.display = "";
-
-  toast({
-    title: "Download concluído!",
-    description: "O PDF foi gerado com sucesso.",
-  });
-
-  // 🔹 (Opcional) limpar após salvar PDF:
-  // localStorage.removeItem(STORAGE_KEY);
-};
+    toast({
+      title: "Download concluído!",
+      description: "O PDF foi gerado com sucesso.",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -138,129 +124,139 @@ const FormCC = () => {
 
           {/* Conteúdo principal */}
           <div className="ml-28">
+
             {/* Nome e Valor */}
             <div className="grid grid-cols-12 border border-green-700 text-sm font-semibold">
-              <div className="col-span-8 border-r border-green-700 p-1 flex items-center">
+              <div className="col-span-8 border-r border-green-700 p-2 flex items-center">
                 <span className="whitespace-nowrap">Nome da Seção Sindical:</span>
                 <Input
                   name="secaoSindical"
                   value={formData.secaoSindical}
                   onChange={handleInputChange}
-                  className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+                  className="ml-2 flex-1 h-7 border border-green-700 text-sm"
                 />
               </div>
 
-              <div className="col-span-4 p-1 flex items-center">
+              <div className="col-span-4 p-2 flex items-center">
                 <span className="whitespace-nowrap">Valor (R$):</span>
                 <Input
                   name="valor"
                   value={formData.valor}
                   onChange={handleInputChange}
-                  className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+                  className="ml-2 flex-1 h-7 border border-green-700 text-sm"
                 />
               </div>
             </div>
 
-            <div className="border-x border-b border-green-700 p-1 text-sm font-semibold">
-             Valor por extenso:
-            <Input
+            {/* 🟩 LINHA VERDE ENTRE BLOCOS */}
+            <div className="border-t border-green-700" />
+
+            {/* Valor por extenso */}
+            <div className="border-x border-b border-green-700 p-2 text-sm font-semibold">
+              Valor por extenso:
+              <Input
                 name="valorExtenso"
-                  value={formData.valorExtenso}
-                      onChange={handleInputChange}
-                          className="inline w-5/6 h-100 border border-green-700 ml-2 text-sm"
-                           />
-                             </div>
-             {/* Banco / Agência / Conta / Cheque */}
+                value={formData.valorExtenso}
+                onChange={handleInputChange}
+                className="inline w-5/6 h-10 border border-green-700 ml-2 text-sm"
+              />
+            </div>
+
+            {/* 🟩 LINHA VERDE ENTRE BLOCOS */}
+            <div className="border-t border-green-700" />
+
+            {/* Banco / Agência / Conta / Cheque */}
             <div className="grid grid-cols-12 border-x border-b border-green-700 text-sm font-semibold">
-              <div className="col-span-3 border-r border-green-700 p-1 flex items-center">
+              <div className="col-span-3 border-r border-green-700 p-2 flex items-center">
                 <span className="whitespace-nowrap">Banco:</span>
                 <Input
                   name="banco"
                   value={formData.banco}
                   onChange={handleInputChange}
-                  className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+                  className="ml-2 flex-1 h-7 border border-green-700 text-sm"
                 />
               </div>
 
-              <div className="col-span-3 border-r border-green-700 p-1 flex items-center">
+              <div className="col-span-3 border-r border-green-700 p-2 flex items-center">
                 <span className="whitespace-nowrap">Agência:</span>
                 <Input
                   name="agencia"
                   value={formData.agencia}
                   onChange={handleInputChange}
-                  className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+                  className="ml-2 flex-1 h-7 border border-green-700 text-sm"
                 />
               </div>
 
-              <div className="col-span-3 border-r border-green-700 p-1 flex items-center">
+              <div className="col-span-3 border-r border-green-700 p-2 flex items-center">
                 <span className="whitespace-nowrap">C/Corrente:</span>
                 <Input
                   name="conta"
                   value={formData.conta}
                   onChange={handleInputChange}
-                  className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+                  className="ml-2 flex-1 h-7 border border-green-700 text-sm"
                 />
               </div>
 
-              <div className="col-span-3 p-1 flex items-center">
+              <div className="col-span-3 p-2 flex items-center">
                 <span className="whitespace-nowrap">Nº Cheque:</span>
                 <Input
                   name="cheque"
                   value={formData.cheque}
                   onChange={handleInputChange}
-                  className="ml-2 flex-1 h-6 border border-green-700 text-sm"
+                  className="ml-2 flex-1 h-7 border border-green-700 text-sm"
                 />
               </div>
             </div>
 
+            {/* 🟩 LINHA VERDE ENTRE BLOCOS */}
+            <div className="border-t border-green-700" />
+
             {/* Favorecido */}
-            <div className="border-x border-b border-green-700 p-1 text-sm font-semibold">
+            <div className="border-x border-b border-green-700 p-2 text-sm font-semibold">
               Favorecido:
               <Input
                 name="favorecido"
                 value={formData.favorecido}
                 onChange={handleInputChange}
-                className="inline w-5/6 h-6 border border-green-700 ml-2 text-sm"
+                className="inline w-5/6 h-7 border border-green-700 ml-2 text-sm"
               />
             </div>
 
+            {/* 🟩 LINHA VERDE ENTRE BLOCOS */}
+            <div className="border-t border-green-700" />
+
             {/* Linhas de assinatura */}
-<div className="grid grid-cols-4 border-x border-t border-green-700 mt-2 text-sm font-semibold text-green-700 text-center">
-  <div className="border-r border-green-700 p-1">Emitente</div>
-  <div className="border-r border-green-700 p-1">Conferente</div>
-  <div className="border-r border-green-700 p-1">Dir Adm Fin</div>
-  <div className="p-1">Presidente</div>
-</div>
+            <div className="grid grid-cols-4 border-x border-t border-green-700 mt-8 text-sm font-semibold text-green-700 text-center">
+              <div className="border-r border-green-700 p-2">Emitente</div>
+              <div className="border-r border-green-700 p-2">Conferente</div>
+              <div className="border-r border-green-700 p-2">Dir Adm Fin</div>
+              <div className="p-2">Presidente</div>
+            </div>
 
-{/* Datas e linhas */}
-<div className="grid grid-cols-4 border-x border-b border-green-700 text-xs text-center">
-  {[
-    "dataEmitente",
-    "dataConferente",
-    "dataDirAdm",
-    "dataPresidente",
-  ].map((field, i) => (
-    <div
-      key={field}
-      className={`p-2 ${i < 3 ? "border-r border-green-700" : ""}`}
-    >
-      Data:
-      <Input
-        type="date" // ✅ calendário nativo adicionado
-        name={field}
-        value={formData[field]}
-        onChange={handleInputChange}
-        className="inline w-30 h-5 border border-green-700 ml-2 text-xs text-center"
-      />
-      <div className="border-t border-dotted border-green-700 mt-4" />
-      <div className="text-green-700 mt-1 text-xs">00/00/20</div>
-    </div>
-  ))}
-</div>
-
+            <div className="grid grid-cols-4 border-x border-b border-green-700 text-xs text-center">
+              {["dataEmitente", "dataConferente", "dataDirAdm", "dataPresidente"].map(
+                (field, i) => (
+                  <div
+                    key={field}
+                    className={`p-4 ${i < 3 ? "border-r border-green-700" : ""}`}
+                  >
+                    Data:
+                    <Input
+                      type="date"
+                      name={field}
+                      value={formData[field]}
+                      onChange={handleInputChange}
+                      className="inline w-32 h-6 border border-green-700 ml-2 text-xs text-center"
+                    />
+                    <div className="border-t border-dotted border-green-700 mt-6" />
+                    <div className="text-green-700 mt-2 text-xs">00/00/20</div>
+                  </div>
+                )
+              )}
+            </div>
 
             {/* Botão PDF */}
-            <div className="mt-6 flex justify-center">
+            <div className="mt-8 flex justify-center mb-12">
               <Button type="button" size="lg" className="gap-2" onClick={generatePDF}>
                 <Download className="w-4 h-4" />
                 Salvar como PDF
