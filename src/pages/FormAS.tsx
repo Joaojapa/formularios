@@ -297,7 +297,7 @@ const [formData, setFormData] = useState({
             </div>
           </div>
 
-            {/* Autorizo + Recibo */}
+   {/* Autorizo + Recibo */}
 <div className="grid grid-cols-12 border border-green-700 text-sm mt-2">
   {/* 🔹 Coluna AUTORIZO */}
   <div className="col-span-3 border-r border-green-700 text-center">
@@ -312,14 +312,14 @@ const [formData, setFormData] = useState({
           type="date"
           name="autorizoData"
           value={formData.autorizoData}
-            onChange={handleChange}
-          className="w-38 h-6 border border-green-700 text-xs text-center"
+          onChange={handleChange}
+          className="w-39 h-6 border border-green-700 text-xs text-center"
         />
       </div>
 
       {/* Linha e texto de assinatura */}
-      <div className="border-t border-dotted border-green-700 mt-6 w-3/4 mx-auto" />
-      <div className="mt-2">Assinatura</div>
+      <div className="border-t border-dotted border-green-700 mt-[70px] w-3/4 mx-auto" />
+      <div className="mt-2 text-green-700 text-xs font-medium">Assinatura</div>
     </div>
   </div>
 
@@ -332,7 +332,7 @@ const [formData, setFormData] = useState({
     </div>
 
     {/* Campos Local / Data / Assinatura */}
-    <div className="flex justify-between items-center mt-6 px-4">
+    <div className="flex justify-between items-center mt-[40px] px-4">
       {/* Local */}
       <div className="flex items-center gap-2">
         <span>Local</span>
@@ -348,16 +348,16 @@ const [formData, setFormData] = useState({
       <div className="flex items-center gap-2">
         <span>Data</span>
         <Input
-          type="date" // ✅ calendário nativo
+          type="date"
           name="reciboData"
           value={formData.reciboData}
-           onChange={handleChange}
+          onChange={handleChange}
           className="w-38 h-6 border border-green-700 text-xs text-center"
         />
       </div>
 
       {/* Assinatura */}
-      <div className="border-t border-dotted border-green-700 w-40 text-center text-xs mt-2">
+      <div className="border-t border-dotted border-green-700 w-40 text-center text-xs mt-[20px] text-green-700 font-medium">
         Assinatura
       </div>
     </div>

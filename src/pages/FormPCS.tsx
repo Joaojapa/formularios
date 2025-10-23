@@ -402,33 +402,57 @@ export default function PCSForm() {
       onChange={handleInputChange}
       className="w-full h-8 text-sm mt-1 border-green-700"
     />
-    {/* FIM DO NOVO CAMPO */}
+   {/* FIM DO NOVO CAMPO */}
 
-    <div className="mt-2 text-sm">
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          checked={formData.saldoReceber}
-          onChange={(e) =>
-            setFormData((s) => ({ ...s, saldoReceber: e.target.checked }))
-          }
-        />
-        <span>- Receber</span>
-      </div>
-      <div className="flex items-center gap-2 mt-1">
-        <input
-          type="checkbox"
-          checked={formData.saldoDevolver}
-          onChange={(e) =>
-            setFormData((s) => ({ ...s, saldoDevolver: e.target.checked }))
-          }
-        />
-        <span>- Devolver</span>
-      </div>
-    </div>
-  </div>
+<div className="mt-2 text-sm text-green-700 font-semibold flex items-center gap-4">
+  {/* Botão tipo "radio" visual - Receber */}
+  <span
+    onClick={() =>
+      setFormData({
+        ...formData,
+        saldoReceber: true,
+        saldoDevolver: false,
+      })
+    }
+    className="flex items-center gap-1 cursor-pointer select-none"
+  >
+    <span
+      className={`inline-block w-4 h-4 border border-green-700 text-center leading-4 text-[12px] font-bold rounded-full ${
+        formData.saldoReceber
+          ? "bg-green-700 text-white"
+          : "bg-transparent text-green-700"
+      }`}
+    >
+      {formData.saldoReceber ? " " : ""}
+    </span>
+    - Receber
+  </span>
+
+  {/* Botão tipo "radio" visual - Devolver */}
+  <span
+    onClick={() =>
+      setFormData({
+        ...formData,
+        saldoDevolver: true,
+        saldoReceber: false,
+      })
+    }
+    className="flex items-center gap-1 cursor-pointer select-none"
+  >
+    <span
+      className={`inline-block w-4 h-4 border border-green-700 text-center leading-4 text-[12px] font-bold rounded-full ${
+        formData.saldoDevolver
+          ? "bg-green-700 text-white"
+          : "bg-transparent text-green-700"
+      }`}
+    >
+      {formData.saldoDevolver ? " " : ""}
+    </span>
+    - Devolver
+  </span>
 </div>
-
+</div>
+</div>
 
 
 {/* Assinaturas */}
@@ -441,7 +465,7 @@ export default function PCSForm() {
       name="dataEmitente"
       value={formData.dataEmitente}
       onChange={handleInputChange}
-className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+      className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
     />
     <div className="text-xs mt-1">Data</div>
   </div>
@@ -467,7 +491,7 @@ className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
       name="dataConferencia"
       value={formData.dataConferencia}
       onChange={handleInputChange}
-className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
+      className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
     />
     <div className="text-xs mt-1">Data</div>
   </div>
@@ -509,13 +533,13 @@ className="mt-2 w-39 h-6 border border-green-700 text-xs text-center mx-auto"
       {/* Só mostra “Local” no último quadrado */}
       {i === 4 && (
         <>
-          <div className="border-t border-dotted border-green-700 mt-2" />
+          <div className="border-t border-dotted border-green-700 mt-[60px]" />
           <div className="text-green-700 mt-1">Local</div>
         </>
       )}
 
       {/* Linha de Assinatura */}
-      <div className="border-t border-dotted border-green-700 mt-5" />
+      <div className="border-t border-dotted border-green-700 mt-[60px]" />
       <div className="text-green-700 mt-2">Assinatura</div>
     </div>
   ))}

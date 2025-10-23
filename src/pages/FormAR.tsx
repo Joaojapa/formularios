@@ -291,13 +291,14 @@ export default function AutorizacaoRecebimento() {
     />
     <div className="text-green-700 mt-1 text-xs">Data</div>
 
-    <div className="border-t border-green-700 mt-4 w-32 mx-auto" />
+    {/* Linha e assinatura com espaçamento padrão */}
+    <div className="border-t border-green-700 mt-[60px] w-32 mx-auto" />
     <div className="text-green-700 mt-1 text-xs">Assinatura</div>
   </div>
 
   {/* Coluna 2 */}
   <div className="text-center p-4 border-r border-green-700">
-    <div className="border-t border-green-700 mt-12 w-32 mx-auto" />
+    <div className="border-t border-green-700 mt-[40px] w-32 mx-auto" />
     <div className="text-green-700 mt-1 text-xs">Assinatura</div>
   </div>
 
@@ -315,7 +316,7 @@ export default function AutorizacaoRecebimento() {
 
   {/* Coluna 4 */}
   <div className="text-center p-4">
-    <div className="border-t border-green-700 mt-4 w-32 mx-auto" />
+    <div className="border-t border-green-700 mt-[40px] w-32 mx-auto" />
     <div className="text-green-700 mt-1 text-xs">Assinatura</div>
 
     {/* Campo de data com calendário nativo */}
@@ -324,11 +325,12 @@ export default function AutorizacaoRecebimento() {
       name="reciboData"
       value={formData.reciboData}
       onChange={handleChange}
-      className="w-39 h-6 border border-green-700 text-xs text-center mx-auto mt-4"
+      className="w-39 h-6 border border-green-700 text-xs text-center mx-auto mt-[40px]"
     />
     <div className="text-green-700 mt-1 text-xs">Data</div>
   </div>
 </div>
+
 
 
         {/* Botão download */}

@@ -453,21 +453,32 @@ const FormRPS = () => {
 </div>
 
 
-  {/* Assinaturas */}
-  <div className="grid grid-cols-3 border-t border-green-700">
-    <div className="text-center border-r border-green-700 p-2">
-      <div className="font-semibold text-green-700">EMITENTE</div>
-      <div className="mt-6 border-t border-dotted border-green-700 pt-4">Assinatura</div>
-    </div>
-    <div className="text-center border-r border-green-700 p-2">
-      <div className="font-semibold text-green-700">ATESTO</div>
-      <div className="mt-6 border-t border-dotted border-green-700 pt-4">Assinatura</div>
-    </div>
-    <div className="text-center p-2">
-      <div className="font-semibold text-green-700">APROVAÇÃO</div>
-      <div className="mt-6 border-t border-dotted border-green-700 pt-4">Assinatura</div>
+ {/* Assinaturas */}
+<div className="grid grid-cols-3 border-t border-green-700">
+  {/* EMITENTE */}
+  <div className="text-center border-r border-green-700 p-2">
+    <div className="font-semibold text-green-700">EMITENTE</div>
+    <div className="border-t border-dotted border-green-700 mt-[60px] text-green-700">
+      Assinatura
     </div>
   </div>
+
+  {/* ATESTO */}
+  <div className="text-center border-r border-green-700 p-2">
+    <div className="font-semibold text-green-700">ATESTO</div>
+    <div className="border-t border-dotted border-green-700 mt-[60px] text-green-700">
+      Assinatura
+    </div>
+  </div>
+
+  {/* APROVAÇÃO */}
+  <div className="text-center p-2">
+    <div className="font-semibold text-green-700">APROVAÇÃO</div>
+    <div className="border-t border-dotted border-green-700 mt-[60px] text-green-700">
+      Assinatura
+    </div>
+  </div>
+</div>
 </div>
 </div>
           {/* Botão PDF */}

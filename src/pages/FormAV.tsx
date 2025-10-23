@@ -511,7 +511,7 @@ convidado: false,
     </div>
 
     {/* Linha e texto de assinatura */}
-    <div className="border-t border-dotted border-green-700 mt-4 w-3/4 mx-auto"></div>
+   <div className="border-t border-dotted border-green-700 mt-[60px] w-3/4 mx-auto"></div>
     <div className="text-green-700 mt-1 text-xs">Assinatura</div>
   </div>
 
@@ -551,7 +551,7 @@ convidado: false,
 
       {/* Assinatura */}
       <div className="flex flex-col items-center">
-        <div className="border-t border-dotted border-green-700 mt-4 w-40 mx-auto"></div>
+              <div className="border-t border-dotted border-green-700 mt-[60px] w-40 mx-auto"></div>
         <div className="text-green-700 text-xs mt-1">Assinatura</div>
       </div>
     </div>

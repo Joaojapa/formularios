@@ -364,25 +364,28 @@ PERÍODO:de</span>
             </div>
           </div>
 
-          {/* Rodapé de assinaturas */}
-          <div className="grid grid-cols-4 border border-green-700 mt-2 text-sm">
-            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">RESPONSÁVEL</div>
-            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">APROVAÇÃO</div>
-            <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">CONFERÊNCIA</div>
-            <div className="text-center p-2 text-[11px]">Recebi a importância correspondente ao reembolso dos pagamentos constantes do presente boletim.</div>
-          </div>
+         {/* Rodapé de assinaturas */}
+<div className="grid grid-cols-4 border border-green-700 mt-2 text-sm">
+  <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">RESPONSÁVEL</div>
+  <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">APROVAÇÃO</div>
+  <div className="border-r border-green-700 text-center font-semibold text-green-700 p-2">CONFERÊNCIA</div>
+  <div className="text-center p-2 text-[11px]">
+    Recebi a importância correspondente ao reembolso dos pagamentos constantes do presente boletim.
+  </div>
+</div>
+
 <div className="grid grid-cols-4 border-x border-b border-green-700 text-sm">
   {/* RESPONSÁVEL */}
   <div className="p-4 border-r border-green-700 text-center">
     <div className="text-[11px]">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="responsavelData"
       value={assinaturas.responsavelData}
       onChange={handleAssinaturasChange}
       className="mx-auto mt-1 w-39 h-6 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-4" />
+     <div className="border-t border-dotted border-green-700 mt-[70px]" />
     <div className="text-green-700 mt-1">Assinatura</div>
   </div>
 
@@ -390,13 +393,13 @@ PERÍODO:de</span>
   <div className="p-4 border-r border-green-700 text-center">
     <div className="text-[11px]">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="conferenciaData"
       value={assinaturas.conferenciaData}
       onChange={handleAssinaturasChange}
       className="mx-auto mt-1 w-39 h-6 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="border-t border-dotted border-green-700 mt-[70px]" />
     <div className="text-green-700 mt-1">Assinatura</div>
   </div>
 
@@ -404,13 +407,13 @@ PERÍODO:de</span>
   <div className="p-4 border-r border-green-700 text-center">
     <div className="text-[11px]">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="aprovacaoData"
       value={assinaturas.aprovacaoData}
       onChange={handleAssinaturasChange}
       className="mx-auto mt-1 w-39 h-6 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-4" />
+       <div className="border-t border-dotted border-green-700 mt-[70px]" />
     <div className="text-green-700 mt-1">Assinatura</div>
   </div>
 
@@ -418,13 +421,13 @@ PERÍODO:de</span>
   <div className="p-4 text-center">
     <div className="text-[11px]">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="recebidoData"
       value={assinaturas.recebidoData}
       onChange={handleAssinaturasChange}
       className="mx-auto mt-1 w-39 h-6 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-4" />
+        <div className="border-t border-dotted border-green-700 mt-[70px]" />
     <div className="text-green-700 mt-1">Assinatura</div>
   </div>
 </div>

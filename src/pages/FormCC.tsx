@@ -225,35 +225,36 @@ const FormCC = () => {
             {/* 🟩 LINHA VERDE ENTRE BLOCOS */}
             <div className="border-t border-green-700" />
 
-            {/* Linhas de assinatura */}
-            <div className="grid grid-cols-4 border-x border-t border-green-700 mt-8 text-sm font-semibold text-green-700 text-center">
-              <div className="border-r border-green-700 p-2">Emitente</div>
-              <div className="border-r border-green-700 p-2">Conferente</div>
-              <div className="border-r border-green-700 p-2">Dir Adm Fin</div>
-              <div className="p-2">Presidente</div>
-            </div>
+           {/* Linhas de assinatura */}
+<div className="grid grid-cols-4 border-x border-t border-green-700 mt-8 text-sm font-semibold text-green-700 text-center">
+  <div className="border-r border-green-700 p-2">Emitente</div>
+  <div className="border-r border-green-700 p-2">Conferente</div>
+  <div className="border-r border-green-700 p-2">Dir Adm Fin</div>
+  <div className="p-2">Presidente</div>
+</div>
 
-            <div className="grid grid-cols-4 border-x border-b border-green-700 text-xs text-center">
-              {["dataEmitente", "dataConferente", "dataDirAdm", "dataPresidente"].map(
-                (field, i) => (
-                  <div
-                    key={field}
-                    className={`p-4 ${i < 3 ? "border-r border-green-700" : ""}`}
-                  >
-                    Data:
-                    <Input
-                      type="date"
-                      name={field}
-                      value={formData[field]}
-                      onChange={handleInputChange}
-                      className="inline w-32 h-6 border border-green-700 ml-2 text-xs text-center"
-                    />
-                    <div className="border-t border-dotted border-green-700 mt-6" />
-                    <div className="text-green-700 mt-2 text-xs">00/00/20</div>
-                  </div>
-                )
-              )}
-            </div>
+<div className="grid grid-cols-4 border-x border-b border-green-700 text-xs text-center">
+  {["dataEmitente", "dataConferente", "dataDirAdm", "dataPresidente"].map(
+    (field, i) => (
+      <div
+        key={field}
+        className={`p-4 ${i < 3 ? "border-r border-green-700" : ""}`}
+      >
+        Data:
+        <Input
+          type="date"
+          name={field}
+          value={formData[field]}
+          onChange={handleInputChange}
+          className="inline w-32 h-6 border border-green-700 ml-2 text-xs text-center"
+        />
+        <div className="border-t border-dotted border-green-700 mt-[65px]" /> {/* espaçamento aumentado */}
+        <div className="text-green-700 mt-2 text-xs">assinatura</div>
+      </div>
+    )
+  )}
+</div>
+
 
             {/* Botão PDF */}
             <div className="mt-8 flex justify-center mb-12">

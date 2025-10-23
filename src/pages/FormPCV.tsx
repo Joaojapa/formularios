@@ -83,8 +83,7 @@ const FormPCV = () => {
     savedData?.items ||
       Array.from({ length: NUM_ITEM_ROWS }, (_, i) => ({
         item: i + 1,
-       diarias: "",
-        hospedagem: "",
+  
         outras: "",
       }))
   );
@@ -305,31 +304,56 @@ const FormPCV = () => {
                   </div>
                 </div>
 
-                {/* checkbox linha SINPAF / convidado as in image */}
-                <div className="mt-1 text-sm">
-                  <label className="inline-flex items-center mr-4">
-                    <input
-                      type="checkbox"
-                      name="sinpafChecked"
-                      checked={cabecalho.sinpafChecked}
-                      onChange={handleCabecalhoChange}
-                      className="mr-1"
-                    />
-                    SINPAF
-                  </label>
-                  <label className="inline-flex items-center mr-4">
-                    <input
-                      type="checkbox"
-                      name="convidadoChecked"
-                      checked={cabecalho.convidadoChecked}
-                      onChange={handleCabecalhoChange}
-                      className="mr-1"
-                    />
-                     CONVIDADO
-                  </label>
-                </div>
-              </div>
-            </div>
+               {/* checkbox linha SINPAF / CONVIDADO estilizados */}
+<div className="mt-1 text-sm text-green-700 font-semibold flex items-center gap-4">
+  {/* SINPAF */}
+  <span
+    onClick={() =>
+      setCabecalho({
+        ...cabecalho,
+        sinpafChecked: true,
+        convidadoChecked: false,
+      })
+    }
+    className="flex items-center gap-1 cursor-pointer select-none"
+  >
+    <span
+      className={`inline-block w-4 h-4 border border-green-700 text-center leading-4 text-[12px] font-bold rounded-full ${
+        cabecalho.sinpafChecked
+          ? "bg-green-700 text-white"
+          : "bg-transparent text-green-700"
+      }`}
+    >
+      {cabecalho.sinpafChecked ? " " : ""}
+    </span>
+    SINPAF
+  </span>
+
+  {/* CONVIDADO */}
+  <span
+    onClick={() =>
+      setCabecalho({
+        ...cabecalho,
+        convidadoChecked: true,
+        sinpafChecked: false,
+      })
+    }
+    className="flex items-center gap-1 cursor-pointer select-none"
+  >
+    <span
+      className={`inline-block w-4 h-4 border border-green-700 text-center leading-4 text-[12px] font-bold rounded-full ${
+        cabecalho.convidadoChecked
+          ? "bg-green-700 text-white"
+          : "bg-transparent text-green-700"
+      }`}
+    >
+      {cabecalho.convidadoChecked ? " " : ""}
+    </span>
+    CONVIDADO
+  </span>
+</div>
+</div>
+</div>
 
             <div className="col-span-2 p-2">
               <div className="text-right text-sm">
@@ -733,29 +757,43 @@ const FormPCV = () => {
       SALDO
     </div>
 
-    {/* Opções Receber / Devolver */}
-    <div className="col-span-2 flex items-center justify-center border-r border-green-700 p-1">
-      <label className="inline-flex items-center mx-2">
-        <input
-          type="radio"
-          name="saldoTipo"
-          checked={totais.saldoTipo === 'Receber'}
-          onChange={() => setTotais((s) => ({ ...s, saldoTipo: 'Receber' }))}
-          className="mr-1 accent-green-700"
-        />
-        Receber
-      </label>
-      <label className="inline-flex items-center mx-2">
-        <input
-          type="radio"
-          name="saldoTipo"
-          checked={totais.saldoTipo === 'Devolver'}
-          onChange={() => setTotais((s) => ({ ...s, saldoTipo: 'Devolver' }))}
-          className="mr-1 accent-green-700"
-        />
-        Devolver
-      </label>
-    </div>
+   {/* Opções Receber / Devolver (estilo visual igual aos outros botões) */}
+<div className="col-span-2 flex items-center justify-center border-r border-green-700 p-1 text-green-700 font-semibold text-sm gap-6">
+  {/* Botão Receber */}
+  <span
+    onClick={() => setTotais((s) => ({ ...s, saldoTipo: "Receber" }))}
+    className="flex items-center gap-1 cursor-pointer select-none"
+  >
+    <span
+      className={`inline-block w-4 h-4 border border-green-700 rounded-full text-center leading-4 text-[12px] font-bold ${
+        totais.saldoTipo === "Receber"
+          ? "bg-green-700 text-white"
+          : "bg-transparent text-green-700"
+      }`}
+    >
+      {totais.saldoTipo === "Receber" ? " " : ""}
+    </span>
+    Receber
+  </span>
+
+  {/* Botão Devolver */}
+  <span
+    onClick={() => setTotais((s) => ({ ...s, saldoTipo: "Devolver" }))}
+    className="flex items-center gap-1 cursor-pointer select-none"
+  >
+    <span
+      className={`inline-block w-4 h-4 border border-green-700 rounded-full text-center leading-4 text-[12px] font-bold ${
+        totais.saldoTipo === "Devolver"
+          ? "bg-green-700 text-white"
+          : "bg-transparent text-green-700"
+      }`}
+    >
+      {totais.saldoTipo === "Devolver" ? " " : ""}
+    </span>
+    Devolver
+  </span>
+</div>
+
 
     {/* Valor por extenso */}
     <div className="col-span-2 flex flex-col justify-center items-center p-1">
@@ -799,72 +837,72 @@ const FormPCV = () => {
 </div>
 
 
-          {/* Rodapé assinaturas estilo tabela */}
-          <div className="mt-3 border border-green-700">
-            <div className="grid grid-cols-5 text-sm font-semibold">
-              <div className="p-2 border-r border-green-700 text-center">EMITENTE</div>
-              <div className="p-2 border-r border-green-700 text-center">RECEBI DOC.</div>
-              <div className="p-2 border-r border-green-700 text-center">CONFERIDO</div>
-              <div className="p-2 border-r border-green-700 text-center">APROVAÇÃO</div>
-              <div className="p-2 text-center">Recebi o valor acima</div>
-            </div>
-            </div>
+         {/* Rodapé assinaturas estilo tabela */}
+<div className="mt-3 border border-green-700">
+  <div className="grid grid-cols-5 text-sm font-semibold">
+    <div className="p-2 border-r border-green-700 text-center">EMITENTE</div>
+    <div className="p-2 border-r border-green-700 text-center">RECEBI DOC.</div>
+    <div className="p-2 border-r border-green-700 text-center">CONFERIDO</div>
+    <div className="p-2 border-r border-green-700 text-center">APROVAÇÃO</div>
+    <div className="p-2 text-center">Recebi o valor acima</div>
+  </div>
+</div>
 
 <div className="grid grid-cols-5 text-sm border-t border-green-700">
   {/* EMITENTE */}
   <div className="p-2 border-r border-green-700 text-center">
     <div className="text-xs">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="emitenteData"
       value={rodape.emitenteData}
       onChange={handleRodapeChange}
       className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-3" />
-    <div className="mt-1">Visto</div>
+    <div className="border-t border-dotted border-green-700 mt-[65px]" />
+    <div className="mt-1">Assinatura</div>
   </div>
 
   {/* RECEBI DOC */}
   <div className="p-2 border-r border-green-700 text-center">
     <div className="text-xs">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="recebiDocData"
       value={rodape.recebiDocData}
       onChange={handleRodapeChange}
       className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-3" />
-    <div className="mt-1">Visto</div>
+  <div className="border-t border-dotted border-green-700 mt-[65px]" />
+    <div className="mt-1">Assinatura</div>
   </div>
 
   {/* CONFERIDO */}
   <div className="p-2 border-r border-green-700 text-center">
     <div className="text-xs">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="conferidoData"
       value={rodape.conferidoData}
       onChange={handleRodapeChange}
       className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-3" />
-    <div className="mt-1">Visto</div>
+       <div className="border-t border-dotted border-green-700 mt-[65px]" />
+    <div className="mt-1">Assinatura</div>
   </div>
 
   {/* APROVAÇÃO */}
   <div className="p-2 border-r border-green-700 text-center">
     <div className="text-xs">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="aprovacaoData"
       value={rodape.aprovacaoData}
       onChange={handleRodapeChange}
       className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-3" />
-    <div className="mt-1">Visto</div>
+       <div className="border-t border-dotted border-green-700 mt-[65px]" />
+    <div className="mt-1">Assinatura</div>
   </div>
 
   {/* RECEBI O VALOR ACIMA */}
@@ -878,17 +916,16 @@ const FormPCV = () => {
     />
     <div className="text-xs mt-2">Data</div>
     <Input
-      type="date" // ✅ calendário nativo
+      type="date"
       name="recebiDataFinal"
       value={rodape.recebiDataFinal}
       onChange={handleRodapeChange}
       className="w-39 mx-auto h-7 text-sm text-center border border-green-700"
     />
-    <div className="border-t border-dotted border-green-700 mt-3" />
+    <div className="border-t border-dotted border-green-700 mt-[65px]" />
     <div className="mt-1">Assinatura</div>
   </div>
 </div>
-
 
           {/* Botão PDF */}
           <div className="mt-4 flex justify-center">

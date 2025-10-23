@@ -5,7 +5,7 @@ import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-const STORAGE_KEY = "formCDData"; // 🔹 chave única no localStorage
+const STORAGE_KEY = "formCDData"; 
 
 const FormCD = () => {
   const formRef = useRef(null);
@@ -28,13 +28,12 @@ const FormCD = () => {
     recebidoAssinatura: "",
   });
 
-  // 🔹 Carregar dados salvos no localStorage ao abrir
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) setFormData(JSON.parse(saved));
   }, []);
 
-  // 🔹 Salvar automaticamente sempre que algo muda
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
@@ -53,13 +52,12 @@ const FormCD = () => {
   const element = formRef.current;
   if (!element) return;
 
-  // 🔹 Esconde temporariamente o botão de gerar PDF
+  
   const pdfButton = element.querySelector("button");
   if (pdfButton) pdfButton.style.display = "none";
 
   alert("Gerando PDF... Aguarde enquanto o formulário é processado.");
 
-  // 🔹 Substitui inputs/textarea por spans (melhor renderização no PDF)
   const inputs = element.querySelectorAll("input, textarea");
   const tempElements = [];
 
@@ -82,7 +80,7 @@ const FormCD = () => {
     input.style.display = "none";
   });
 
-  // 🔹 Captura a tela
+  
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
@@ -97,7 +95,7 @@ const FormCD = () => {
   pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
   pdf.save("Comprovante_de_Despesas.pdf");
 
-  // 🔹 Restaura os inputs e o botão
+
   tempElements.forEach(({ input, span }) => {
     input.style.display = "";
     span.remove();
@@ -107,8 +105,7 @@ const FormCD = () => {
 
   alert("Download concluído! O PDF foi gerado com sucesso.");
 
-  // 🔹 (Opcional) limpar storage depois de gerar PDF
-  // localStorage.removeItem(STORAGE_KEY);
+  
 };
 
   return (
@@ -118,7 +115,7 @@ const FormCD = () => {
           ref={formRef}
           className="bg-white border border-green-700 p-4 rounded-md max-w-4xl mx-auto text-sm"
         >
-          {/* Cabeçalho */}
+          {}
           <div className="grid grid-cols-12 border border-green-700">
             <div className="col-span-3 flex flex-col items-center justify-center border-r border-green-700 py-2">
               <img
@@ -150,7 +147,7 @@ const FormCD = () => {
             </div>
           </div>
 
-          {/* Tabela de despesas */}
+          {}
           <div className="border border-green-700 mt-1">
             <div className="grid grid-cols-12 bg-green-50 border-b border-green-700 text-green-700 font-semibold text-xs">
               <div className="col-span-2 border-r border-green-700 text-center py-1">
@@ -224,7 +221,7 @@ const FormCD = () => {
             </div>
           </div>
 
-          {/* Rodapé */}
+          {}
           <div className="grid grid-cols-3 border border-green-700 mt-2 text-xs font-semibold text-green-700">
   <div className="border-r border-green-700 text-center py-1">
     FAVORECIDO
@@ -242,12 +239,12 @@ const FormCD = () => {
   <div className="border-r border-green-700 p-2">
     Data:
     <Input
-      type="date" // ✅ calendário nativo
+      type="date" 
       value={formData.favorecidoData}
       onChange={(e) => handleInputChange("favorecidoData", e.target.value)}
       className="ml-2 h-5 w-39 border border-green-700 text-xs text-center"
     />
-    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="border-t border-dotted border-green-700 mt-[60px]" />
     <div className="mt-1 text-green-700">Nome Legível</div>
   </div>
 
@@ -255,12 +252,12 @@ const FormCD = () => {
   <div className="border-r border-green-700 p-2">
     Data:
     <Input
-      type="date" // ✅ calendário nativo
+      type="date" 
       value={formData.aprovacaoData}
       onChange={(e) => handleInputChange("aprovacaoData", e.target.value)}
       className="ml-2 h-5 w-39 border border-green-700 text-xs text-center"
     />
-    <div className="border-t border-dotted border-green-700 mt-4" />
+   <div className="border-t border-dotted border-green-700 mt-[60px]" />
     <div className="mt-1 text-green-700">Assinatura</div>
   </div>
 
@@ -268,17 +265,17 @@ const FormCD = () => {
   <div className="p-2">
     Data:
     <Input
-      type="date" // ✅ calendário nativo
+      type="date" 
       value={formData.recebidoData}
       onChange={(e) => handleInputChange("recebidoData", e.target.value)}
       className="ml-2 h-5 w-39 border border-green-700 text-xs text-center"
     />
-    <div className="border-t border-dotted border-green-700 mt-4" />
+    <div className="border-t border-dotted border-green-700 mt-[60px]" />
     <div className="mt-1 text-green-700">Assinatura</div>
   </div>
 </div>
 
-          {/* Botão PDF */}
+          {}
           <div className="mt-6 flex justify-center">
             <Button
               type="button"
